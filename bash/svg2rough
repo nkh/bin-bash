@@ -1,0 +1,5 @@
+#!/bin/bash
+
+[[ $1 == '-h' ]] && { ff https://github.com/fskpf/svg2roughjs/tree/master/nodejs-cli  ; exit ; }
+
+node /home/nadim/nadim/devel/repositories/svg2roughjs/nodejs-cli/src/svg2roughjs "$@"

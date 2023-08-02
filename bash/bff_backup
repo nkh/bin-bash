@@ -1,0 +1,191 @@
+#!/bin/env bash
+
+#todo: winch
+
+bff() # Inspired by fff. Run: bbf 3> some_file, to get exit-time selection
+{
+# SIGWINCH not working! shopt -s checkwinsize ; trap 'rdir' SIGWINCH ;
+declare -A dir_file filters marks tags; declare -a mime ; show_dirs=1 ; kolumn=1
+local BFF=(/ /home/nadim /home/nadim/nadim /home/nadim/nadim/downloads)
+
+fs=/tmp/bff/$$ ; mkdir -p $fs ;
+pushd "$1" &>/dev/null ; tabs+=("$PWD") ; tab=0 ; rdir 
+[[ $1 ]] && return ;
+
+while true; do [[ -n $key ]] && { REPLY=$key ; key= ; } || read -rsn 1 ; case "${REPLY: -1}" in
+	#$'\e'| use esc to quit, fix: arrow send escape so they quit too
+	q|Q) quit ;;
+	g|G) [[ "$REPLY" == 'G' ]] && ((dir_file["$PWD"] = nfiles - 1)) || dir_file["$PWD"]=0 ; list ;;
+	B|j) ((file < nfiles - 1)) && { ((dir_file["$PWD"] = file + 1)) ; list; } ;;
+	A|k) ((file > 0)) && { ((dir_file["$PWD"] = file - 1)) ; list; } ;;
+	5) ((file -= $LINES, file = file < 0 ? 0 : file)) ; list $file ;;
+	6) ((file += $LINES, file = file > nfiles ? nfiles : file)) ; list $file ;;
+	D|h) [[ "$PWD" != / ]]  && { nd="${PWD%/*}" ; opwd=$PWD ; cdir "${nd:-/}" "$opwd"; } ;;
+	C|l|"") [[ -f "${files[file]}" ]] && { "${EDITOR}" "${files[file]}"; echo -e '\e[?25l' ; } \
+		|| { (($nfiles)) ; cdir "${files[file]}" ; } ;;
+	
+	.) ((show_hidden)) && show_hidden= || show_hidden=1 ; rdir ;;
+	H) ((show_dirs ^= 1)) ; rdir ;;
+	s) ((show_size ^= 1)) ; rdir ;;
+	S) ((show_stat ^= 1)) ; list ;;
+
+	f) prompt "~ " -ei "${filters[tab]}" ; filters[tab]="$REPLY" ; filter_mark="~" ; rdir ;;
+	F) filters[tab]= ; filter_mark= ; rdir ;;
+	K) prompt 'sort -k ' -sn 1 && [[ -n $REPLY ]] && kolumn=$REPLY ; rdir ;;
+	[0-9]) cdir "${BFF[REPLY]}" ;;
+	b|n|N) how="$REPLY" ; [[ $how == 'b' ]] && prompt "find: " -e ; ffind "$REPLY" $how ;;
+
+	/) g="$(fd . --color=always | fzf --ansi --info=inline --layout=reverse)" ; \
+		[[ "$g" ]] && nd="$PWD/"$(dirname "$g") && cdir "$nd" "$PWD/$g" ;;
+
+	\?) prompt 'rg: ' -e ; g="$(rg "$REPLY" --color=always | fzf --ansi --info=inline --layout=reverse)"
+		[[ "$g" ]] && { g=${g%:*} && nd="$PWD/"$(dirname "$g") && cdir "$nd" "$PWD/$g" ; } || list ;;
+
+	\:) prompt 'cd: ' -e ; [[ -n $REPLY ]] && cdir "$REPLY" || list ;;
+	m) prompt 'M' -n 1 && [[ -n $REPLY ]] && marks[$REPLY]=$(dirname "${files[file]}") ; refresh ; list ;;
+	\') prompt "'" -n 1 ; refresh ; list ; [[ -n ${marks[$REPLY]} ]] && cdir ${marks[$REPLY]} ;;
+	
+	' '|y|Y) n=${files[file]} ; [[ ${tags[$n]} == '▪' ]] && unset -v 'tags[$n]' || tags[$n]='▪'
+		list ; [[ $REPLY == Y ]] && key=k || key=j ;;
+	u|U) [[ $REPLY == u ]] && for p in "${files[@]}" ; do tags["$p"]='▪' ; done || tags=() ; refresh ; list ;;
+	
+	c) prompt 'cp to: ' -e && [[ -n $REPLY ]] && $(cp "$(selection)"  "$REPLY") ; rdir "$PWD/$REPLY" ;;
+	r) prompt "rename ${files[file]##*/} to: " && mv "${files[file]}" "$PWD/$REPLY" ; rdir ;;
+	M) prompt 'mkdir: ' && [[ "$REPLY" ]] && mkdir -p "$PWD/$REPLY" ; rdir "$PWD/$REPLY" ;;
+	p|P) ((${#tags[@]})) && { [[ $REPLY == p ]] && cmd=cp || cmd=mv ; $cmd "${!tags[@]}" "$PWD" ; tags=() ; rdir ; } ;;
+	x|X) [[ $REPLY == x ]] && chmod a+x $(selection ' ') || chmod a-x $(selection ' ') ; rdir ;;
+	d) ((${#tags[@]})) && sel=", tags: ${#tags[@]}" || sel= ; prompt "delete$sel ? [y/N]: " -n1 \
+		&& [[ $REPLY == y ]] && { rm -rf "$(selection ' ')" ; exit ; tags=() ; } ; rdir ;;
+	
+	t) tabs+=("$PWD") ; ((tab = ${#tabs[@]} - 1)) ; list ;;
+	$'\t') ((tab += 1, tab >= ${#tabs[@]})) && tab=0 ; cdir ${tabs[tab]} ;;
+	
+	\_|\|) tmux split-window -c "$PWD" $( [[ $REPLY == \| ]] && echo -h -p40 || echo -p20)  ;;
+	\!) prompt '!' -e ; [[ -n $REPLY ]] && { refresh ; t=$(selection ' ')
+		[[ $REPLY =~ "\$t" ]] && { eval $REPLY ; echo '$?:' $? ; } || 
+		for n in $t
+			do 
+				p=${n%/*} ; f=${n##*/} ; b=${f%.*} ; [[ "$f" =~ '.' ]] && e=${f##*.} || e=
+				eval $REPLY ; echo '$?': $?
+			done
+		read -sn1 ; } ; rdir ;;
+	v|V) [[ $REPLY == v  ]] && show 1 || { ((preview_all ^= 1)) ; show ; } ;;
+	w|W) [[ $REPLY == w  ]] && show 0 1 || show 0 1 1 ;;
+esac ; done
+}
+
+cdir()
+{
+[[ -d "$1" ]] || return
+[[ "$PPWD" != "$PWD" ]] && PPWD="$PWD" ; PWD="${1}" ; tabs[tab]="$PWD" ;  marks[$'\'']="$PPWD" ; cd "$PWD" ;
+
+LINES=$(tput lines) ; COLS=$(tput cols) ; files=() ; files_color=() ; search=$2 ; select= ; nfiles=0 ; get_dir
+while true ; do
+	read -s -u 4 -t 0.01 p ; [ $? -gt 128 ] && break ; read -s -u 5 pc ; [[ "$PWD" == / ]] && sep= || sep=/
+	 
+	files[$nfiles]="$PWD$sep$p" ;
+	
+	pcl=${pc:0:(( ${#pc} == ${#p} ? ($COLS - 1) : ( (${#pc} - 4) - ${#p} ) + ($COLS - 1) )) }
+	((${#p} > ($COLS - 1))) && { [[ "$p" =~ '.' ]] && e=….${p##*.} || e=… ; pcl=${pcl:0:((${#pcl} - ${#e}))}$e ; }
+	files_color[$nfiles]="$pcl"
+	
+	[[ "$PWD/$p" == "$search" ]] && select=$nfiles ; ((nfiles++))
+done 
+
+mime=($(mimetype -b ${files[@]}))
+
+((lines = nfiles > LINES - 1 ? LINES - 1 : nfiles, center = lines / 2))
+refresh ; list $select
+}
+
+get_dir() { mkapipe 4 ; mkapipe 5 ; ((show_dirs)) && _get_dir d ; _get_dir f ; }
+_get_dir()
+{
+find "$PWD/" -mindepth 1 -maxdepth 1 ${show_hidden:+\( ! -iname ".*" \)} -type $1 -printf "%f\n" | \
+	rg "${filters[tab]}" | \
+	#tee log | 
+	#sort -k $kolumn | \
+	tee >( cut -f 1 >&4) | \
+	cut -f 1 | lscolors >&5
+}
+
+header()  
+{
+a=$* ; l=$(( ${#PWD} - ($COLS - (${#a} + 11) ) ))
+echo -e "\e[H\e[K\e[94m${PWD:l<0?0:l}\e[95m$filter_mark $@ $((tab+1))/${#tabs[@]} ${#tags[@]}\e[m"
+}
+
+list()
+{
+echo -e '\e[?25l' ; (($nfiles == 0)) && header "${#tags[@]}\e[33m<Empty>" && return
+[[ $1 ]] && dir_file[$PWD]=$1 ; file=${dir_file[$PWD]:-0}
+
+((file >= nfiles)) && ((file=nfiles-1))
+((top = nfiles < lines || file <= center ? 0 : file >= nfiles - center ? nfiles - lines : file - center))
+
+((show_stat)) && stat="$(stat -c ' %A %U' ${files[file]}) $(stat -c %s ${files[file]} | numfmt --to=iec)" || stat=
+header "$((file+1))/${nfiles}$stat"
+
+for((i=$top ; i <= ((bottom = top + lines - 1, bottom < 0 ? 0 : bottom)) ; i++))
+	do
+		[[ $i != $file ]] && cursor=${tags[${files[$i]}]:- } || cursor="\e[7;34m${tags[${files[$i]}]:- }\e[m"
+		[[ $i == $bottom  ]]  && nl= || nl='\n'
+		echo -ne "\e[K$cursor${files_color[i]}$nl"
+	done
+
+fsstate ; show
+}
+
+quit()
+{
+((${#tabs[@]} > 1)) \
+	&& { unset -v 'tabs[tab]' ; tabs=("${tabs[@]}") ; ((tab -= 1)) ; key=$'\t'; } \
+	|| { true >&3 && [[ $REPLY == 'q' ]] && selection '\n'  >&3 || :>&3 ; \
+		tcpreview ; ucpreview ; refresh "\e[?25h" ; exit 0 ; }
+}
+
+ffind()
+{
+[[ $2 == 'b' ]] && to_search="$1"
+[[ $2 == 'N' ]] && { ((from = $file > 0 ? $file - 1 : 0)) ; to=0 ; inc='--' ; } \
+		|| { ((from = $file < $nfiles ? (($file + 1)) : $file)) ; to=$nfiles ; inc='++' ; }
+
+for((i=$from ; i != $to ; i$inc)) ; do [[ "${files[i]##*/}" =~ "$to_search" ]] && { list $i ; break ; } ; done
+}
+
+show()
+{
+preview=${1:-preview_all} ; external=$2 ; detached=$3 ; ((preview)) || ((external)) || return
+echo -e "\e[H" ; tcpreview ; ucpreview ;
+n="${files[file]}" ; p=${n%/*} ; f=${n##*/} ; b=${f%.*} ; [[ "$f" =~ '.' ]] && e=${f##*.} || e= ; mime=${mime[file]}
+
+((preview)) && [[ $mime == 'application/x-shellscript' ]] && vipreview "$n"
+((preview)) && [[ $mime == 'text/plain' ]] && [[ -s "$n" ]] && vipreview "$n"
+((preview)) && [[ $e == 'html' ]] && w3m -dump "$n" > /tmp/bff/$$/"$f.txt" && vipreview /tmp/bff/$$/"$f.txt" 
+((preview)) && [[ $e =~ ^(jpg|png)$ ]] && echo -e "0;1;900;0;0;0;;;;;$n\n4;\n3;" | /usr/lib/w3m/w3mimgdisplay
+#((preview)) && [[ $e =~ ^(jpg|png)$ ]] && upreview "$f"
+((preview)) && [[ $e == 'pdf' ]] && pdftotext -l 5 "$n" /tmp/bff/$$/"$f.txt" && vipreview /tmp/bff/$$/"$f.txt" 
+
+((preview)) && [[ -d $f ]] && ./bff "$f" > /tmp/bff/$$/"$f.txt" && tsplit "/usr/bin/less -fR /tmp/bff/$$/$f.txt" 
+
+((external)) && [[ $e == 'jpg' ]] && fim "$n"
+((external)) && [[ $e == 'pdf' ]] && { ((detached)) && (zathura "$n" &) || zathura "$n" ; }
+}
+
+tsplit()    { tp=1 ; tmux sp -h -c "$PWD" "$1" ; pane_id=$(tmux display-mes -p '#{pane_id}') ; tmux select-pane -L ; }
+tcpreview() { ((tp)) && tmux kill-pane -t $pane_id &> /dev/null ; tp= ; }
+
+vipreview() { tsplit "$EDITOR -R '$1'" ; }
+
+ustart()    { mkapipe 6 ; <&6 ueberzug layer --parser bash --silent &  }
+upreview()  { ucpreview ;  up=1 ; >&6 declare -Ap ubz=([action]=add [identifier]=0 [x]=80 [y]=0 [path]="$1") ; }
+ucpreview() { ((up)) && >&6 declare -Ap ubz=([action]="remove" [identifier]=0 [draw]=1) && up=; }
+
+fsstate()   { echo "${files[file]}" > $fs/file ; :> $fs/tags ; for t in "${!tags[@]}" ; do echo "$t">>$fs/tags ; done ; }
+refresh()   { echo -ne "\e[?25l\e[2J\e[H\e[m${1}" ; }
+prompt()    { echo -ne '\e[999B\e[0;H\e[K\e[33m\e[?25h' ; read -rp "$@" ; echo -ne '\e[m' ; echo $REPLY ; }
+rdir()      { cdir "$PWD" "$@" ; }
+mkapipe()   { PIPE=$(mktemp -u) && mkfifo $PIPE && pc="exec $1<>$PIPE" && eval "$pc" && rm $PIPE ; }
+selection() { ((${#tags[@]})) && printf "%s$1" "${!tags[@]}" || printf "%s$1" "${files[file]}" ; } 
+
+use_ueberzuq="ustart" ; bff $@

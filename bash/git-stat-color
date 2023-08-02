@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+mkdir -p /tmp/$USER
+git_stat_color_file=$(mktemp -p /tmp/$USER/ git_stat_color_file_XXXXXXXX)
+git_stat_color_stat=$(mktemp -p /tmp/$USER/ git_stat_color_stat_XXXXXXXX)
+
+[[ "$1" == '-h' ]] && { echo -e "git-stat-color:\n\tgit-stat-color [commitish]" ; exit 0 ; }
+
+git diff --stat=$COLUMNS --color=always "$@" | sed '$ d' | sort -h -r -k 3 |
+	{ while read line ; do echo "${line/[[:space:]]*\|*/}" >>$git_stat_color_file ; echo ${line/*\|/|} >>$git_stat_color_stat ; done ; } 
+
+[[ ! -s $git_stat_color_stat ]] && exit 0 ||
+	paste -d' ' \
+		<(<$git_stat_color_file lscolors) \
+		$git_stat_color_stat |
+	column -o "$(echo '|'  | piper . grey8)" -ts'|'

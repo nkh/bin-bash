@@ -1,0 +1,17 @@
+
+#The perl script has to be executable and somewhere in the path.                                                         
+#This script was generated using used your application name
+
+#Add the following line in your I<~/.bashrc> or B<source> them:
+
+_ra_perl_completion()
+{                     
+local old_ifs="${IFS}"
+local IFS=$'\n';      
+COMPREPLY=( $(ra_perl_completion.pl ${COMP_CWORD} ${COMP_WORDS[@]}) );
+IFS="${old_ifs}"                                                       
+
+return 1;
+}        
+
+complete -o default -F _ra_perl_completion ra

@@ -1,0 +1,18 @@
+#!/bin/bash
+[[ -z "$1" && ! -t 0 ]] && echo <<'EOD'
+NAME
+	efc - edit file at column
+
+SYNOPSIS
+	pipeline | efc 3
+
+DESCRIPTION
+	extract the word at the column specified as argument from stdin
+	and run the $EDITOR with the word as argument
+
+	efc opens parses all the lines in its input and will pass all
+	the files to $EDITOR 
+EOD
+ 
+cat | ec "$1" | oe
+

@@ -1,0 +1,21 @@
+_bgc_piper () { COMPREPLY=( $( [[ -n $2 ]] && compgen -W '--help --global --debug --debug_definition bold underlined flashing black red green yellow blue magenta cyan light_grey dark_grey light_red light_green light_yellow light_blue light_magenta light_cyan white reset on_black on_red on_green on_yellow on_blue on_magenta on_cyan on_light_grey on_dark_grey on_light_red on_light_green on_light_yellow on_light_blue on_light_magenta on_liht_cyan on_white' -- ${COMP_WORDS[COMP_CWORD]} )) ; } 
+complete -F '_bgc_piper' 'piper'
+#complete -o default -F '_bgc_piper' 'a'
+
+
+_bgc_xsel () { COMPREPLY=( $( [[ -n $2 ]] && compgen -W '--clipboard' -- ${COMP_WORDS[COMP_CWORD]} )) ; } 
+complete -o default -F '_bgc_xsel' 'xsel'
+
+_bgc_t () 
+{
+xcompletion='+project @name a add agenda l list due overdue this tod today tom tomorrow week c completed complete uncomplete by ar archive p priority u edit d delete ln gc context project ex expand ln n note dn deletenode en editnode'
+
+completion='add delete edit list complete archive'
+
+COMPREPLY=( $( [[ -n $2 ]] && compgen -W "$completion" -- ${COMP_WORDS[COMP_CWORD]} )) ; 
+
+[[ -z $COMPREPLY ]] && COMPREPLY=( $( echo $completion | tr ' ' "\n" )) ; 
+
+} 
+
+complete -F '_bgc_t' 't'

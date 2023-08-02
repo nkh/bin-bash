@@ -1,0 +1,7 @@
+#!/bin/bash
+
+name=$(tmux list-session -F '#{session_attached}-#{session_name}'| sed -e '/^1-/!d' -e "s/1-\(.\+\)/\1 [$(date +%m-%d@%Hh%M)]/") 
+
+tmux rename-session  "$name"
+
+

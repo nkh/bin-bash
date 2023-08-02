@@ -1,0 +1,28 @@
+
+# bash -ic exit | sort -r -k2
+
+timer_start()
+{
+:> ~/time_bashrc
+echo start $(($(date +%s%N)/1000)) >> ~/time_bashrc
+}
+
+lap()
+{
+echo split $(($(date +%s%N)/1000)) >> ~/time_bashrc
+
+{ tail -1 ~/time_bashrc ; head -1 ~/time_bashrc ; } | cut -f 2 -d' ' \
+	| paste - - -d- 	| paste <(echo \() - <(echo \)/1000000) --delimiters='' | bc -l \
+	| xargs printf '%.3f '
+
+tail -2 ~/time_bashrc | tac | cut -f 2 -d' ' \
+	| paste - - -d- | paste <(echo \() - <(echo \)/1000000) --delimiters='' | bc -l \
+	| xargs printf '%.3f'
+
+echo -e " \033[34m$1\033[m"
+}
+
+true
+
+# vim: set ft=bash:
+

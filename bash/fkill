@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -eo pipefail
+
+p=$(ps aux | fzf -m -q $1 | awk '{print $2}') && kill $p || true

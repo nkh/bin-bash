@@ -1,0 +1,5 @@
+#!/bin/bash
+curl wttr.in/$1
+
+#gnome-terminal --geometry="80x45+30+200"  -x bash -c "curl V2.wttr.in/Malmö && read -n 1"
+

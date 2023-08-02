@@ -1,0 +1,14 @@
+#!/bin/bash
+[[ -z "$1" && ! -t 0 ]] && echo <<'EOD'
+NAME
+	oe - open editor
+
+SYNOPSIS
+	cat list_of_files | oe
+
+DESCRIPTION
+	runs $EDITOR with all the files in stdin as argument
+EOD
+ 
+cat | parallel -X --tty $EDITOR
+

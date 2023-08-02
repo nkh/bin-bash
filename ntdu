@@ -1,0 +1,78 @@
+#!/usr/bin/env perl
+
+use strict ;
+use warnings ;
+use Getopt::Long;
+
+GetOptions
+	(
+	'm|max_depth=i' => \ my $max_depth,
+	'e|entries_per_level=i' => \ my $entries_per_level, 
+	'x|exclude=s' => \ my @exclude, 
+	'h|help'   => sub { print <<'EOH' ;
+NAME	tdu - displays a subset of du's output indented per level
+USAGE 
+	tdu
+	tdu directory
+
+	tdu directory --max_depth N --entries_per_level N --exclude directory
+	tdu directory -m N -e N -x directory -x directory
+EOH
+	exit ;
+	}
+	)
+	or die "Error: Invalid command line arguments\n" ;
+
+#todo: sum the files in the "home" directory; doo not call recursively on files
+
+my $directory = $ARGV[0] // '.' ;
+$max_depth //= 3 ;
+$entries_per_level //= 10 ;
+
+display_level(0, $max_depth - 1, $entries_per_level, $directory, @ARGV[3 .. $#ARGV]) ;
+
+sub display_level
+{
+my ($level, $max_depth, $entries_per_level, $directory, @du_args) = @_ ;
+
+$directory .= '/' unless $directory =~ m[/$] or $directory eq '' ;
+
+my $du_args = join ' ', map {"--exclude '$_'"} @exclude ;
+
+my %h = map {/^([0-9]+)/; $_, $1} `du -b '$directory' --max-depth=1 $du_args`  ;
+my @sorted_entries = (sort {$h{$b} <=> $h{$a} } keys %h)[1 .. $entries_per_level] ;
+
+for( @sorted_entries[0 .. $entries_per_level - 1] ) 
+	{
+	next unless defined $_ ;
+	
+	my ($next_directory) = m/\s+(.+)/ ;
+
+	s[^([0-9]+\s+)$directory][$1] ;
+	s[^([0-9]+)][display_size($1)]e ;
+	print "\t" x $level, $_ ;
+
+	display_level($level + 1, $max_depth, $entries_per_level, $next_directory, @du_args)
+		 if ($level < $max_depth) ;
+	}
+}
+
+
+sub display_size
+{
+my $size = shift ;
+my $i = 0 ;
+
+my @sizes=qw( B K M G T P);
+my @formats=qw( %d %.1f %.1f %.1f %.1f %.1f);
+
+while ($size > 1024) {	$size = $size / 1024 ;	$i++ ;	}
+
+my $size_string = sprintf "$formats[$i]$sizes[$i]", $size ;
+$size_string =~ s/([0-9]{3})\.[0-9]+/$1/ ;
+
+$size_string = sprintf "%5s", $size_string ;
+
+return $size_string ;
+}
+

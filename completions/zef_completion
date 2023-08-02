@@ -1,0 +1,85 @@
+_bgc_zef ()
+{
+commands="install \
+	uninstall \
+	test \
+	fetch \
+	build \
+	look \
+	update \
+	upgrade \
+	search \
+	info \
+	browse \
+	list \
+	depends \
+	rdepends \
+	locate \
+	smoke \
+	nuke"
+
+options="--install-to \
+	--config-path \
+	--update \
+	--/update \
+	--error \
+	--warn \
+	--info \
+	--verbose \
+	--debug \
+	--deps-only \
+	--dry \
+	--serial \
+	--contained \
+	--/test \
+	--/build \
+	--/depends \
+	--/test-depends \
+	--/build-depends \
+	--force-resolve \
+	--force-fetch \
+	--force-extract \
+	--force-build \
+	--force-test \
+	--force-install \
+	--git \
+	--path \
+	--tar \
+	--p5tar \
+	--unzip \
+	--psunzip \
+	--p6ctesters \
+	--cpantesters \
+	--default-builder \
+	--legacy-builder \
+	--curl \
+	--wget \
+	--pswebrequest \
+	--cached \
+	--cpan \
+	--p6c \
+	--metacpan \
+	--nstallpm6 \
+	--tap-harness \
+	--prove \
+	--perl6-test"
+)
+
+if [[ 'zef' == $3 ]] ; then 
+	if [[ -n $2 ]] ; then 
+		COMPREPLY=( $(compgen -W "$commands" -- ${COMP_WORDS[COMP_CWORD]} )) ; 
+	else
+		COMPREPLY=( $( echo "$commands" | tr ' ' "\n" )) ; 
+	fi
+else
+	if [[ -n $2 ]] ; then 
+		COMPREPLY=( $(compgen -W "$options" -- ${COMP_WORDS[COMP_CWORD]} )) ; 
+	else
+		COMPREPLY=( $( echo "$options" | tr ' ' "\n" )) ; 
+	fi
+fi
+
+}
+
+complete -o filenames  -F '_bgc_zef' 'zef'
+

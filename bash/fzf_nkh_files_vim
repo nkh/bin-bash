@@ -1,0 +1,8 @@
+#!/bin/env bash
+{ fd -t l -t f . $META_HOME/bin ; fd -t l -t f . $META_HOME/config ; } \
+| rg -v 'svg|gif|png|jpg|pdf|ranger|axel' \
+| perl -lne 'print unless -B' \
+| lscolors \
+| fzf_preview --preview-window='right:60%' >"$1"
+
+# | fzf --ansi --cycle -m -q "'" >"$1"

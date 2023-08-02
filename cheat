@@ -1,0 +1,395 @@
+#!/usr/bin/env perl
+
+# todo:
+# completion of file names
+# multiple directories to keep the cheat sheet with their projects
+
+use strict ;
+use warnings;
+
+#use Proc::InvokeEditor ;
+use File::Find::Rule ;
+use File::HomeDir ;
+use Getopt::Long ;
+use Data::TreeDumper ;
+
+#------------------------------------------------------------------------------------------------------------------------
+
+$|++ ;
+
+use Readonly ;
+
+Readonly my $FIND_FIRST => 0 ;
+Readonly my $FIND_ALL => 1 ;
+
+Readonly my $SOURCE_OR_PATH => 0 ;
+Readonly my $PATH => 1 ;
+
+#------------------------------------------------------------------------------------------------------------------------
+
+run(@ARGV) ;
+
+#------------------------------------------------------------------------------------------------------------------------
+
+sub run
+{
+
+=head2 run(@command_line_arguments)
+
+Entry point of the module; called by the I<jump> script.
+
+I<Arguments> -
+
+=over 2
+
+=item * @command_line_arguments - options and values pased on the comman line
+
+=back
+
+I<Returns> - 
+
+=over 2
+
+=item * $matches - list of matches for the passed options and values
+
+=item * $options - parsed options
+
+=back
+
+I<Exceptions> - invalid options
+
+I<Note> - May call B<exit>
+
+=cut
+
+my (@command_line_arguments) = @_ ;
+
+my ($options, $command_line_arguments) = parse_command_line(@command_line_arguments) ;
+
+show_help() if($options->{help}) ;
+
+$options->{cat}++ unless 
+	grep {defined $options->{$_}} qw(cat add list list_with_path remove remove_all show_database show_configuration_files version complete) ;
+
+cat($options, $command_line_arguments) if($options->{cat}) ;
+add($options, $command_line_arguments) if($options->{add}) ;
+list($options, $command_line_arguments, $options->{list_with_path}) if($options->{list} || $options->{list_with_path}) ;
+
+complete($options, $command_line_arguments) if($options->{complete}) ;
+
+show_configuration_files($options) if($options->{show_configuration_files}) ;
+show_version() if($options->{version}) ;
+
+return ;
+}
+
+#------------------------------------------------------------------------------------------------------------------------
+
+sub cat 
+{
+
+=head2 [p] cat(\%option, \@cheats)
+
+displays the cheat sheet using $
+
+I<Arguments> -
+
+=over 2
+
+=item * \%options - options parsed from the command line
+
+=item * \@cheats -
+
+=back
+
+I<Returns> - Nothing
+
+I<Exceptions> - None
+
+=cut
+
+my ($options, $cheats) = @_ ;
+
+$options->{sheet} = $cheats->[0] or die "first argument must be file name" ;
+shift @{$cheats} ;
+
+$options->{path} = "$options->{location}/$options->{sheet}" ;
+
+
+if(-e $options->{location})
+	{
+	warn "Cheat sheet doesn't exist." unless(-e "$options->{path}") ;
+
+	if(@{$cheats})
+		{
+		die "Cheat: invalid extra arguments" ;
+		}
+	else
+		{
+		open my $sheet, '<', $options->{path} or die "can't open '$options->{path}' to apppend cheat." ;
+		print STDOUT <$sheet> ; 
+		}
+	}
+else
+	{
+	die "Cheat sheet directory did not exists. Set ENV{CHEAT_SHEET_DIRECTORY} or create ~/.cheat_sheet." ;
+	}
+}
+
+#------------------------------------------------------------------------------------------------------------------------
+
+sub add 
+{
+
+=head2 [p] add(\%option, \@cheats)
+
+Add the cheats to the cheat sheet
+
+I<Arguments> -
+
+=over 2
+
+=item * \%options - options parsed from the command line
+
+=item * \@cheats -
+
+=back
+
+I<Returns> - Nothing
+
+I<Exceptions> - None
+
+=cut
+
+my ($options, $cheats) = @_ ;
+
+$options->{sheet} = $cheats->[0] or die "first argument must be file name" ;
+shift @{$cheats} ;
+
+$options->{path} = "$options->{location}/$options->{sheet}" ;
+
+
+if(-e $options->{location})
+	{
+	if(@{$cheats})
+		{
+		# append arguments to file
+		warn "Cheat sheet doesn't exist; creating $options->{path}.\n" unless(-e "$options->{path}") ;
+		system 'touch' => "$options->{path}" unless(-e "$options->{path}") ;
+
+		open my $sheet, '>>', $options->{path} or die "can't open '$options->{path}' to apppend cheat." ;
+		print $sheet "\n" . join(' ', @{$cheats}) . "\n" ; 
+		}
+	else
+		{
+		warn "Cheat sheet doesn't exist; creating $options->{path}.\n" unless(-e "$options->{path}") ;
+		system 'vi' => "$options->{path}" ;
+		}
+	}
+else
+	{
+	die "Cheat sheet directory did not exists. Set ENV{CHEAT_SHEET_DIRECTORY} or create ~/.cheat_sheet." ;
+	}
+}
+
+#------------------------------------------------------------------------------------------------------------------------
+
+sub list 
+{
+
+=head2 [p] list(\%option, \@cheats)
+
+list the available cheat sheets
+
+I<Arguments> -
+
+=over 2
+
+=item * \%options - options parsed from the command line
+
+=item * \@cheats -
+
+=back
+
+I<Returns> - Nothing
+
+I<Exceptions> - None
+
+=cut
+
+my ($options, $cheats, $full_path) = @_ ;
+
+if(-e $options->{location})
+	{
+	my $search = File::Find::Rule->new ;
+
+	for my $file (sort $search->in($options->{location}))
+		{
+		next if $file =~ /\.swp$/ ;
+		next if -d $file ;
+
+		$file =~ s[^$options->{location}][] unless ($full_path) ;
+		print "$file\n" ;
+		}
+	}
+else
+	{
+	die "Cheat sheet directory did not exists. Set ENV{CHEAT_SHEET_DIRECTORY} or create ~/.cheat_sheet." ;
+	}
+}
+
+#------------------------------------------------------------------------------------------------------------------------
+
+sub parse_command_line
+{
+
+=head2 [p] parse_command_line(@command_line_argumens)
+
+Parses the command line and loads the configuration file
+
+I<Arguments> -
+
+=over 2
+
+=item * @command_line_arguments -  
+
+=back
+
+I<Returns> -
+
+=over 2
+
+=item * \%options - options parsed from the command line
+
+=item * \@command_line_arguments - arguments parsed from the command line
+
+=back
+
+I<Exceptions> - invalid options 
+
+=cut
+
+local @ARGV = @_ ;
+
+my %options = (some_array => []) ;
+
+$options{location} = defined $ENV{CHEAT_SHEET_DIRECTORY} ? $ENV{CHEAT_SHEET_DIRECTORY} : home() . '/.cheat_sheet' ;
+#%options = ( %options, %{ get_config($options{config_location}) } ) ;
+
+die 'Error parsing options!' unless 
+	GetOptions
+                (
+		'c|cat' => \$options{cat},
+		'a|add' => \$options{add},
+		'l|list' => \$options{list},
+		'f|list_with_path' => \$options{list_with_path},
+		'clipboard' => \$options{clipboard},
+		'complete' => \$options{complete},
+
+		'show_configuration_files' => \$options{show_configuration_files},
+		'v|V|version' => \$options{version},
+                'h|help' => \$options{help}, 
+		'd|debug' => \$options{debug},
+                ) ;
+	
+# broken bash completion gives use file regext with quotes from command line!
+#$options{file} = $1 if(defined $options{file} && $options{file} =~ /^(?:'|")(.*)(?:'|")$/) ;
+
+return (\%options, \@ARGV) ;
+}
+
+#------------------------------------------------------------------------------------------------------------------------
+
+sub show_help
+{ 
+
+=head2 [p] show_help()
+
+Extracts the documentation and displays it via I<man>
+
+I<Arguments> - None
+
+I<Returns> - Nothing
+
+I<Exceptions> - Exits the program
+
+=cut
+
+my $result = system $ENV{SHELL}, '-c', "man <(pod2man $0)" ;
+
+!($result >> 8) or warn "Can't display help!\n $!" ;
+
+exit(0) ;
+}
+
+#------------------------------------------------------------------------------------------------------------------------
+
+sub complete
+{
+
+=head2 [p] complete(\%option, \@search_aguments)
+
+Prints and returns all the matches for a set of search options
+
+I<Arguments> -
+
+=over 2
+
+=item * \%options - options parsed from the command line
+
+=item * \@search_arguments -
+
+=back
+
+I<Returns> - an array reference - an array containing all the matches
+
+I<Exceptions> - None
+
+=cut
+
+my ($options, $search_arguments) = @_ ;
+my ($matches) = _complete($options, $search_arguments) ;
+
+print_matches($options, $SOURCE_OR_PATH, $matches) ;
+
+return $matches ;
+}
+
+sub _complete
+{
+
+=head2 [p] _complete(\%options, \@search_arguments)
+
+Returns all the matches for a set of search options
+
+I<Arguments> -
+
+=over 2
+
+=item * \%options - options parsed from the command line
+
+=item * \@search_arguments -
+
+=back
+
+I<Returns> - an array reference - an array containing all the matches
+
+I<Exceptions> - None
+=cut
+
+
+my ($options, $search_arguments) = @_ ;
+
+my ($matches) = find_closest_match($options, $FIND_ALL, $search_arguments) ;
+
+$matches = directory_contains_file($options, $matches) ;
+
+return $matches ;
+}
+
+#------------------------------------------------------------------------------------------------------------------------
+
+
+
+#------------------------------------------------------------------------------------------------------------------------
+

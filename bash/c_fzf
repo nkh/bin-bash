@@ -1,0 +1,3 @@
+#!/bin/bash -i
+sheet="$(c --list | fzf)"
+[[ "$sheet" ]] && c "$sheet"

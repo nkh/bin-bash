@@ -1,0 +1,13 @@
+#!/bin/bash
+
+read -t 0
+pipe_data=$?
+
+if [ $pipe_data -eq 0 ]; then
+	echo "data in the pipe"
+	stdin=$(cat)
+fi
+      
+pico2wave -l=en-GB -w=/tmp/pico2wav.wav "$stdin $*"
+aplay /tmp/pico2wav.wav
+rm /tmp/pico2wav.wav

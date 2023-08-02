@@ -1,0 +1,6 @@
+#!/bin/bash
+clear
+tmux clear-history
+#history -w
+#for i in seq 3 ; do history -d $(/bin/cat $HISTFILE | wc -l) ; done
+#history -r

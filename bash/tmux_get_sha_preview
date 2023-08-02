@@ -1,0 +1,9 @@
+#!/bin/bash
+echo $@
+buffer="$(fgh2)"
+# [[ "$buffer" ]] && { tmux set-buffer "$buffer" ; tmux paste-buffer ; }
+[[ "$buffer" ]] && { echo "$buffer" ; }
+
+# tmux bind -n C-g bind -n C-h popup -w 80% -h 80% -E -d $PWD "./tmux-insert"
+
+

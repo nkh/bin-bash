@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# functions moved in a script so they can be used by fzf preview
+# arg_n: echo "$2" | cut -d : -f $1
+# minus_limit: test $(($number - $minus)) -le $limit && echo $limit || echo $(($number - $minus))
+
+rg --no-heading -n --color=always --colors 'match:style:nobold' --colors 'match:fg:white' $* . | \
+	plc --values | \
+fzf -e -m --info=inline --ansi --color="hl:51" \
+	--preview-window='top:50%' \
+	--preview 'file=$(arg_n 1 {}) line=$(arg_n 2 {}) && echo $file $line && echo "$file" | \
+		plc && \
+		bat --theme="TwoDark" --highlight-line $line --tabs=4 -n --color=always "$file" \
+		 -r $(minus_limit $line 4 1):'
+

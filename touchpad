@@ -1,0 +1,8 @@
+
+if [ -z $1 ] || [ $1 -eq 0 ] 
+
+then
+	synclient TouchPadOff=1
+else
+	synclient TouchPadOff=0
+fi

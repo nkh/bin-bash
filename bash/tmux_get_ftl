@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# tmux bind -Ttable_ctl_g C-g run   "tmux display -p '#{pane_id}'>/tmp/tmux_ftll_destination_pane" \\\; new-window -c "#{pane_current_path}" "tmux_get_ftl"
+
+P=$(mktemp -u) 
+tmux new-window -n tmux_ftll "ftl 3>$P ; tmux wait -S ftll_$$" 
+tmux wait ftll_$$
+
+buffer="$(<$P quote_lines | remove_nl ' ')"
+rm $P
+
+destination_pane="$(</tmp/tmux_ftll_destination_pane)"
+[[ "$buffer" ]] && { tmux set-buffer -t $destination_pane "$buffer" ; tmux paste-buffer -t $destination_pane ; }
+

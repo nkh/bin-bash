@@ -1,0 +1,3 @@
+#!/bin/bash
+set -o pipefail
+ra_files=$(ra check --invalid_requirement_list $1 2>/dev/null | fzf -e --cycle --reverse --inline-info -1 -m | tr "\n" " ") && ra edit $2 $3 $4 $( echo $ra_files) ; unset ra_files

@@ -1,0 +1,117 @@
+#!/usr/bin/env perl
+
+use strict ;
+use warnings ;
+
+# 256colors display index-rgb and small cubes
+# 256colors index  display system colors on background index
+# 256colors R G B  display system colors on background RGB
+ 
+if(@ARGV == 1)
+	{
+	my $color = $ARGV[0] ;
+	printf "\x1b[38;5;$_;48;5;${color}m %3d Barba tenus sapientes \x1b[0m\n", $_ for (0 .. 15) ;
+	}
+elsif(@ARGV == 2)
+	{
+	printf "%3d;%3d \x1b[38;5;$ARGV[1];48;5;$ARGV[0]m   Barba tenus sapientes   \x1b[0m\n\n", $ARGV[0], $ARGV[1] ;
+
+	for my $bg_color ($ARGV[0] - 2 .. $ARGV[0] + 2)
+		{
+		for my $fg_color ($ARGV[1] - 2 .. $ARGV[1] + 2)
+			{
+			printf  "%3d;%3d \x1b[38;5;$fg_color;48;5;${bg_color}m   Barba tenus sapientes   \x1b[0m ", $bg_color, $fg_color ;
+			print '*' if $bg_color == $ARGV[0] && $fg_color == $ARGV[1] ;
+			print "\n" ;
+			}
+		}
+	}
+elsif(@ARGV == 3)
+	{
+	my $color = 16 + ($ARGV[0] * 36) + ($ARGV[1] * 6) + $ARGV[2] ;
+
+	print "rgb$ARGV[0]$ARGV[1]$ARGV[2] is index $color\n" ;
+
+	printf "\x1b[38;5;$_;48;5;${color}m %3d Barba tenus sapientes \x1b[0m\n", $_ for (0 .. 15) ;
+	}
+else
+	{
+	display_all_colors() ;
+	}
+
+sub display_all_colors
+{
+
+# system colors 
+printf "%-2s", $_ for (0 .. 7) ;
+print "\n" ;
+print "\x1b[48;5;${_}m  " for (0 .. 7) ;
+print "\x1b[0m\n";
+
+printf "%-2s", $_ for (8 .. 15) ;
+print "\n" ;
+print "\x1b[48;5;${_}m  " for (8 .. 15) ;
+print "\x1b[0m\n\n";
+
+# color cubes
+for my $blue (0, 3) 
+	{
+	for my $green (0 .. 5) 
+		{
+		for my $red (0 .. 5) 
+			{
+			my $color = 16 + ($red * 36) + ($green * 6) + $blue;
+
+			print "\x1b[38;5;88m$red", "\x1b[38;5;28m$green","\x1b[38;5;12m$blue " ;
+			printf "\x1b[38;5;240m%3d", $color ;
+
+			print "\x1b[38;5;255;48;5;${color}m x " ;
+			$color++ ;
+			print "\x1b[38;5;246;48;5;${color}m x " ;
+			$color++ ;
+			print "\x1b[38;5;0;48;5;${color}m x \x1b[0m " ;
+			}
+		print "\n";
+		}
+
+	print "\n";
+	}
+
+# color cubes
+for my $blue (0, 3) 
+	{
+	for my $green (0 .. 5) 
+		{
+		for my $red (0 .. 5) 
+			{
+			my $color = 16 + ($red * 36) + ($green * 6) + $blue;
+
+			my $lblue = $blue ;
+			printf "\x1b[38;5;240m%3d", $color ;
+
+			print "\x1b[38;5;${color}m $red$green$lblue " ;
+			$lblue++ ;
+			$color++ ;
+			
+			print "\x1b[38;5;${color}m $red$green$lblue " ;
+			$color++ ;
+			$lblue++ ;
+			print "\x1b[38;5;${color}m $red$green$lblue \x1b[0m " ;
+			}
+		print "\n";
+		}
+
+	print "\n";
+	}
+
+# grayscale ramp
+printf "%-4s", $_ for (0 ..  23) ;
+print "\n" ;
+printf "%-4s", $_ for (232 ..  255) ;
+print "\n" ;
+print "\x1b[48;5;${_}m    " for (232 ..  255) ;
+
+}
+
+
+print "\x1b[0m\n";

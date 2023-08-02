@@ -1,0 +1,96 @@
+#!/bin/bash
+
+alias e='edit_config'
+
+EDIT_CONFIG_PATH=("$META_HOME/config" "$META_HOME/bin/bash" "$META_HOME/bin/completions" "$META_HOME/config/ranger" "$META_HOME/linked_files")  
+
+edit_config()
+{
+local file_paths= file=
+
+for file in $@ ; do
+	local this_file_paths= matching_file= path=
+
+	for path in "${EDIT_CONFIG_PATH[@]}" ; do
+		if [[ -f "$path/$file" ]] ; then
+			this_file_paths+="$path/$file\n"
+		else
+			while read  matching_file  ; do
+				this_file_paths+="$matching_file\n"
+			done < <(find -L "$path" -maxdepth 1 -type f -name "$file*")
+		fi
+	done
+
+	file_paths+="$this_file_paths"
+done 
+
+if [[ -n $file_paths ]] ; then
+	  printf $file_paths | parallel -X --tty vim -p
+fi
+}
+
+__edit_config_completion () 
+{
+local currToken="${COMP_WORDS[COMP_CWORD]}" matches matchCount
+local MY_COMPREPLY=()
+
+local search="$2"
+local matches=0
+
+local do_color=10
+local colors=( $LIGHT_BLUE $GREEN $YELLOW $CYAN)
+local c_index=0
+local colored="\n"
+
+if [[ ( ! -n $search ) || $search =~ ^[a-z_A-Z.\ ]+$ ]] ; then
+	for path in "${EDIT_CONFIG_PATH[@]}" ; do
+
+		local path_matches=0 path_colored=''
+		local color="${colors[$c_index]}"
+		(( c_index++ ))
+
+		while IFS="\n" read matching_file ; do
+			(( matches++ ))
+			(( path_matches++ ))
+
+			local file_no_path="$(echo -en $matching_file | sed 's/ /\\\\\\ /' | xargs -n 1 basename)"
+			
+			path_colored+="$file_no_path\n"
+			MY_COMPREPLY+=( "$file_no_path" )
+
+		done < <(find -L "$path" -maxdepth 1 -type f -name "$search*")
+
+		if (( path_matches )) ; then
+			path_colored=$(echo -e "$path_colored" | sort | column -c $(tput cols) | perl '-MFile::LsColor qw(ls_color)'  -pe 's/(\s*)([^\s]+)/$1.ls_color($2)/eg;')
+			colored+="$color$path$RESET\n$path_colored$RESET\n\n"
+		fi
+	done
+
+	if (( do_color )) ; then
+		if (( matches == 1 )) ; then
+			COMPREPLY=("${MY_COMPREPLY[0]}")
+		elif (( matches > 1 )) ; then
+			echo -e "$colored"
+    			COMPREPLY=()
+
+    			local expanded_prompt=$(PS1="$PS1" debian_chroot="$debian_chroot" "$BASH" --norc -i </dev/null 2>&1 | sed -n '${s/^\(.*\)exit$/\1/p}')
+
+    			printf '\n%s%s' "$expanded_prompt" "$COMP_LINE" >/dev/tty
+		fi
+	else
+		COMPREPLY=("${MY_COMPREPLY[@]}")
+	fi
+else
+	COMPREPLY+=( $(compgen -o dirnames -o filenames -o nospace -d -f $search) )
+fi
+} 
+complete -F '__edit_config_completion' 'edit_config'
+complete -o nospace -F '__edit_config_completion' 'e'
+
+[[ "${BASH_SOURCE[0]}" = "${0}" ]] && edit_config $@
+
+unset -f edit_config
+
+
+el() { mkdir -p "$META_HOME/linked_files" ; for s in ${@:1} ; do [[ -e "$s" ]] && ln -s $(pwd)/"$s" "$META_HOME/linked_files"/"$s" || echo "$s doesn't exist"; done ; }
+

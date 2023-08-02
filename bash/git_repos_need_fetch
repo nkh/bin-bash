@@ -1,0 +1,25 @@
+#!/bin/bash
+
+git_need_fetch()
+{
+# check with the remote repository if a branch needs to be fetched
+perl -e '
+for (`git ls-remote --heads 2>/dev/null`) 
+	{
+	($c, $b) = split /\s+/ ; 
+	$b =~ s[refs/heads/][] ; 
+	push @branches, "\tbranch $b is newer on server\n" 
+		if grep { /no such commit/ }
+			`git branch -r --contains $c 2>&1`
+	}
+
+print `pwd` . "@branches" if @branches'
+}
+
+start="${1:-.}"
+
+find "$start" -type d -name .git -print0 | while IFS= read -r -d '' git_directory ; do
+    cd "$git_directory"
+    cd ..
+    git_need_fetch
+done

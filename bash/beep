@@ -1,0 +1,5 @@
+#!/bin/bash
+play -n synth 0.05 sine 880 vol 0.02 &>/dev/null &
+
+
+#uses sox package

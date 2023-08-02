@@ -1,0 +1,12 @@
+#!/bin/bash
+(($1)) && cut -d ' ' -f $1 "${@:2}" || echo '
+NAME
+	ec - extract column
+
+SYNOPSIS
+	pipeline | ec 3
+
+DESCRIPTION
+	echoes word at the specified column
+'
+

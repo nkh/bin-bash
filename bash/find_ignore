@@ -1,0 +1,1 @@
+find_ignore() { find "$@" -not -path "*/\.git/*" -not -path "*/_out_nadim/*" -not -path "*ftl/var/*" -not -path '*/_build/*' -not -path '*/*\.sw*' -not -path '*/blib/*' ; }

@@ -1,0 +1,27 @@
+# what is this?
+Error response from daemon: conflict: unable to delete e4ad922d3836 (must be forced) - image is being used by stopped container 635cbeee0c52
+
+# detach from docker
+--detach-keys option when you run docker attach to override the default CTRL+P, CTRL + Q
+
+# stop docker
+sudo systemctl stop docker
+
+
+# run as different user
+	# for alpin
+	#apk add shadow
+
+	RUN useradd -ms /bin/bash newuser
+	#which creates a home directory for the user and ensures that bash is the default shell.
+	#useradd --create-home --shell /bin/bash
+	
+	# for ubuntu
+	#RUN useradd -d /home/ubuntu -ms /bin/bash -g root -G sudo -p ubuntu ubuntu
+	
+	#RUN echo 'newuser:newpassword' | chpasswd
+	#in order to set password you could use chpasswd like: 
+
+	USER newuser
+	WORKDIR /home/newuser
+

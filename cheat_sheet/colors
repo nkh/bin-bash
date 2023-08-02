@@ -1,0 +1,103 @@
+#!/bin/bash
+
+# takes the ansi colored output from ls -l and put the file first rather than at then end
+#ls -l --color | perl -ane 'my $f = $F[-1] =~ s/\e\[\d+(?>(;\d+)*)m//gr; my ($a, $b) = $F[-1] =~ m/(.*)$f(.*)/ ; printf "%s%-20s%s %s\n", $a, $f, $b, join(" ",  @F[0 .. 7]);'
+
+# perl -pe 's/(\x1b\[([0-9;]*)m)//g ; s/\x1b\[K//g'
+
+# shows the ansi codes in a stream
+alias ansi_show_color_stripped='perl -pe '\''s/(\x1b\[([0-9;]*)m)//g'\'''
+alias ansi_show_stripped_all='perl -pe '\''s/(\x1b\[([0-9;]*)m)//g ; s/\x1b\[K//g'\'''
+alias ansi_show='perl -pe '\''s/(\x1b\[([0-9;]*)m)/$1<$2>/g'\'''
+alias ansi_show_compact='perl -pe '\''s/(\x1b\[([0-9;]*)m)/$1•/g'\'''
+alias ansi_show_mono='perl -pe '\''s/\x1b\[([0-9;]*)m/<$1>/g'\'''
+alias ansi_show_mono_text='perl -pe '\''s/(\x1b\[([0-9;]*)m)/$1<$2>\x1b[0m/g'\'''
+alias ansi_show_tags='perl -pe "s/\e\[/⸋/g"'
+alias no_vim_tab='perl -pe "s/◌|◐/ /g"'
+
+show_tag() { perl -pe "s/\e\[([^$1\e]*$1)/⸋\$1/g" ; }
+
+ansi_strip_tag() { perl -pe "s/\e\[[^$1\e]*$1//g" ; }
+
+# man | piper
+#man tmux | piper '^[A-Z]+\s*[A-Z\s]+' yellow '^\s{15}.*' blue '^\s{10}.*' rgb333 '^\s{5}.*' rgb555 | less -R
+
+# tdu | piper_color_size
+piper_color_size()
+{ 
+piper '\d+\.?\d?[BK]' rgb234  '\d+\.?\d?M' rgb330  '\d+\.?\d?[GTP]' rgb400
+}
+
+# ls --color -lh | piper_color_ls-l
+piper_color_ls-l()
+{ 
+piper $@ \
+'^l' 'black on_cyan' \
+'^d' on_blue \
+'^-' grey4  \
+'([rwx-]{3})+' rgb123 \
+"$USER\s+[_a-zA-Z]+" grey5 \
+'[0-9.]+K\s' grey7  \
+'[5-9][0-9]{2}K\s' rgb033 \
+'[0-9.]+M\s' rgb040 \
+'[0-9.]+G\s' rgb540 \
+'.+?((\d\d:\d\d)|([0-9]{4}))' grey4 
+
+#'\..+' cyan
+}
+
+# du -h | piper_color_du
+piper_color_du()
+{
+piper $@ \
+'^\s*\d+B'                                       rgb105 \
+\
+'^\s*\d{4}(\.\d+)?K'                             rgb010 \
+'^\s*[5-9]\d{2}(\.\d+)?K'                        rgb033 \
+'^\s*[1-4]\d{2}(\.\d+)?K'                        rgb023 \
+'^\s*\d{2}(\.\d+)?K'                             rgb013 \
+'^\s*\d(\.\d+)?K'                                grey7 \
+\
+'^\s*\d{4}(\.\d+)?M'                             rgb510 \
+'^\s*[5-9]\d{2}(\.\d+)?M'                        rgb040 \
+'^\s*[1-4]\d{2}(\.\d+)?M'                        rgb030 \
+'^\s*\d{2}(\.\d+)?M'                             rgb020 \
+'^\s*\d(\.\d+)?M'                                rgb010 \
+\
+'^\s*[5-9]\d{2}(\.\d+)?G'                        rgb540 \
+'^\s*[1-4]\d{2}(\.\d+)?G'                        rgb530 \
+'^\s*\d{2}(\.\d+)?G'                             rgb520 \
+'^\s*\d(\.\d+)?G'                                rgb510 \
+\
+'^\s\d+(\.\d+)?[TP]'                             'yellow on_red' \
+'.+'                                             grey15 \
+'$'                                              reset
+}
+
+piper_color_size2()
+{
+piper $@ \
+'^\s*\d+B'                                       rgb105 \
+\
+'^\s*\d{4}(\.\d+)?K'                             rgb010 \
+'^\s*[5-9]\d{2}(\.\d+)?K'                        rgb033 \
+'^\s*[1-4]\d{2}(\.\d+)?K'                        rgb023 \
+'^\s*\d{2}(\.\d+)?K'                             rgb013 \
+'^\s*\d(\.\d+)?K'                                grey7 \
+\
+'^\s*\d{4}(\.\d+)?M'                             rgb510 \
+'^\s*[5-9]\d{2}(\.\d+)?M'                        rgb040 \
+'^\s*[1-4]\d{2}(\.\d+)?M'                        rgb030 \
+'^\s*\d{2}(\.\d+)?M'                             rgb020 \
+'^\s*\d(\.\d+)?M'                                rgb010 \
+\
+'^\s*[5-9]\d{2}(\.\d+)?G'                        rgb540 \
+'^\s*[1-4]\d{2}(\.\d+)?G'                        rgb530 \
+'^\s*\d{2}(\.\d+)?G'                             rgb520 \
+'^\s*\d(\.\d+)?G'                                rgb510 \
+\
+'^\s\d+(\.\d+)?[TP]'                             'yellow on_red' \
+'$'                                              reset
+}
+
+

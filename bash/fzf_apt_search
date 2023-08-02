@@ -1,0 +1,3 @@
+package="$(apt-cache search ${1:-.} | piper '[^\s]+' {blue}'sprintf "%-40s", {}'{reset} '.*' rgb444 | fzf --ansi | cut -d' ' -f1)"
+[[ "$package" ]] && sudo apt install "$package"
+

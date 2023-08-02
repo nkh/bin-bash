@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+
+use strict ; use warnings ;
+use Term::ANSIColor qw(color) ;
+
+my $RED=color('red') ;
+my $RESET=color('reset') ;
+
+while(<STDIN>)
+	{
+	s/\t/$RED<\\t>$RESET/g ;
+	s/\ /$RED.$RESET/g ;
+	s/\n/$RED<\\n>$RESET\n/g ;
+	s/\0/$RED<\\0>$RESET\n/g ;
+	print ;
+	}
+

@@ -1,0 +1,31 @@
+add_alias()
+{
+[[ -z "$1" ]] && echo -e ${RED}'add_alias: expected one alias definition as argument'${RESET} && return 1
+
+local command="$@"
+
+OLD_IFS="$IFS"
+IFS='=' a=($(printf "%s\n" "$@"))
+alias=${a[0]}
+IFS="$OLD_IFS"
+
+definition=${command#$alias=}
+alias_definition=$(alias "$alias" 2>/dev/null)
+alias_definition=${alias_definition#alias }
+
+previous=$(alias_which "$alias")
+
+if [[ -n "$alias_definition" ]] ; then
+	if [[ "$alias_definition" == "$alias='$definition'" ]] ; then
+		[[ -n "$previous" ]] && printf "$previous\n"
+	else
+		[[ -n "$previous" ]] && printf "$previous\n"
+		printf ${GREEN}"new    : alias $alias='$definition'\n"${RESET}
+		eval "alias $alias='$definition'"
+	fi
+else
+	printf ${GREEN}"new: alias $alias='$definition'\n"${RESET}
+	eval "alias $alias='$definition'"
+fi
+}
+

@@ -1,0 +1,2 @@
+#!/bin/bash
+tmsu files | tr '\n' '\00' | xargs -0 tmsu tags

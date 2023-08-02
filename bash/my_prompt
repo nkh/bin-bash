@@ -1,0 +1,10 @@
+
+x()
+{
+prompt=$( printf "$PS1" | perl -pe 'use Cwd ; s/\\(\[|\])//g ; s/\\w/cwd/e ; $h = scalar grep { ! /^$/ } `history` ; s/\\!/$h/ ; ')
+
+#h=$(perl -e '@h = [qx/cat $ENV{HISTFILE}/]  ; print scalar(@h) . "\n" ; ')
+#echo $h
+
+eval echo "$prompt"
+}

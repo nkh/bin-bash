@@ -1,0 +1,2 @@
+#!/bin/bash
+unrar p -ierr "$1" "$(rar lb "$1" \*.jpg \*.png | sort | head -n1)" > "$2"

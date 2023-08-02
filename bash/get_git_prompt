@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source ~/nadim/config/git_bash_integration.sh
+
+git_prompt

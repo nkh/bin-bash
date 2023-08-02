@@ -1,0 +1,1 @@
+du ~/downloads/*.jpg -b | choose 0 | jq -s add | numfmt --to=iec --format '%4f'

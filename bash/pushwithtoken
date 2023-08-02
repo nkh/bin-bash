@@ -1,0 +1,22 @@
+token="$(get_github_token)"
+
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null | grep -v HEAD)
+
+tracking_branch=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
+tracking_remote=${tracking_branch%%/*}
+remote="$(git remote -v | grep $tracking_remote | grep fetch)"
+
+url=$(<<<"$remote" cut -d$' ' -f1)
+url=$(<<<"$url" cut -f2)
+
+url_token="${url/github.com/$token@github.com}"
+
+# echo branch: $branch
+# echo tracking_branch: $tracking_branch
+# echo tracking_remote: $tracking_remote
+# echo remote: $remote
+# echo url: $url
+# echo url_token: $url_token
+
+git push "$@" "$url_token" "$branch"
+git pull

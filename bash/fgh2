@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+args="$@"
+preview="sha=\$(echo {} | grep -o '[a-f0-9]\{7\}' | head -1) ; [[ \$sha ]] && { git-stat-color \$sha $args ; git diff \$sha HEAD $args | diff-so-fancy ; }"
+
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 1
+
+git log --all --graph --color=always --pretty=format:'%C(yellow)%h %C(white bold)%s %C(blue bold)%d %C(black bold)(%ar, %an)%Creset' "$@" |
+fzf \
+	+s \
+	+m \
+	--tiebreak=index \
+	--ansi \
+	--bind='?:toggle-preview' \
+	--bind='alt-k:preview-up,alt-p:preview-up' \
+	--bind='alt-j:preview-down,alt-n:preview-down' \
+	--bind='alt-w:toggle-preview-wrap' \
+	--bind="alt-v:execute($preview | LESS='-R' less > /dev/tty)" \
+	--preview-window='right:60%' \
+	--preview="$preview" |
+grep -o '[a-f0-9]\{7\}'
+

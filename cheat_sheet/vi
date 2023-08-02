@@ -1,0 +1,223 @@
+# diff two buffers
+buffdo diffthis
+
+# new buffer in a vertical split
+vnew
+
+# execute macro in all buffers and save
+:bufdo execute "normal! @q" | w
+
+# advance line before executing macro
+:.,+10norm @q
+
+# hide all non matching
+/search
+setlocal foldexpr=getline(v:lnum)=~@/?0:1 foldmethod=expr
+
+zR open all
+zM close all
+zE delete all folds
+zd delete current fold
+zk/j previous/next fold
+
+# vim diff
+do - Get changes from other window into the current window.
+dp - Put the changes from current window into the other window.
+]c - Jump to the next change.
+[c - Jump to the previous change.
+
+# move the current window to the far left, bottom, top or right
+Ctrl-w + H, J, K or L 
+
+# complete path
+:help i_CTRL-X_CTRL-
+
+#calculator
+in insert mode
+c-r=
+
+#in .vim/ftplugin/info.vim
+
+" Only apply the mapping to generated buffers
+if &buftype =~? 'nofile'
+    nmap <buffer> gu <Plug>(InfoUp)
+    nmap <buffer> gn <Plug>(InfoNext)
+    nmap <buffer> gp <Plug>(InfoPrev)
+end
+
+nmap <silent> gm :call fzf#vim#buffer_lines('* ', 0)<CR>
+
+nmap <buffer>gg K
+
+# help objects
+:help text-objects
+
+# in commands line, copy the current word
+^r^w
+
+# div commands
+vip<C-V>$A,<Esc> select paragraph, got to visual block mode, end of line insert ','
+
+ca{	Change inside the curly braces (try [, (, etc.)
+da"	Delete the next double-quoted string
+dap	Delete the whole paragraph
+ea	Append to the end of the current word
+gg=G	Reindent the whole file
+g,	Jump back forward through the change list
+g;	Jump to the last change you made
+g_	Move the last non-blank character of the line (but you remove trailing whitespace, right)
+g&	Repeat last substitution on all lines
+`<	Jump to beginning of last visual selection
+`[	Jump to beginning of last yanked text
+`>	Jump to end of last visual selection
+`]	Jump to end of last yanked text
++	Move to the first non-whitespace character of the next line
+>>	Indent current line
+<<	Outdent current line
+&	Repeat last substitution on current line
+yapP	Duplicate the current paragraph
+zg	Add to spelling dictionary
+z=	Show spelling corrections
+zw	Remove from spelling dictionary
+
+# strip trailing spaces
+:%s/\s\+$//e
+
+# fill quickfix
+:cexpr system('java ' . shellescape(expand('%:r')))
+
+#insert mode commands
+^t and ^d, << and >> indent/outdent
+J join next line
+^wx swap windows
+^w= equalize
+^ws split
+^wv vertical split
+gP paste before leave cursor at end
+D == d$
+
+# replace selection by program output, passing the selection in stdin
+vnoremap qq c<C-R>=system('perl -e "\$a=<STDIN> ; printf qq~%0.2f~, \$a/256,  "', @")<CR><ESC>
+
+# Rg word under cursor
+nnoremap <leader>a :Rg <c-r><c-w><cr>
+
+# save the list of recent files from vim to a file:
+vim -c "call append(0, v:oldfiles)" -c "write vim-oldfiles.tmp" -c exit
+
+# strip spaces in file
+%s/\s\+$//e
+
+# man pages via vim
+MANPAGER="vim +MANPAGER -" 
+
+
+in ~/.vim/after/ftplugin/man.vim
+
+set scrolloff=999
+set nospell
+
+# paragraph start/end
+Go to the start of the first word of a paragraph: {w
+Go to the end of the last word of a paragraph: }ge
+
+#change two split windows 
+	vertical to horizonal
+	Ctrl-w t Ctrl-w K
+
+	horizontal to vertical
+	Ctrl-w t Ctrl-w H
+
+	nmap <leader>th <C-w>t<C-w>H and nmap <leader>tk <C-w>t<C-w>K – 
+
+#move window
+Ctrl-w + H, J, K or L
+
+# resize windows
+^E hjkl
+
+#terminal split 
+:vnew term://bash
+:vsplit term://bash#mru
+
+# Mru
+FZFMru
+
+# display ^M
+:set ffs=unix
+:e +ffs=unix # current file only
+
+# paste in the command line
+^-r "
+
+# open file under cusrsor
+gf - Edit existing file under cursor in same window
+C-Wf - Edit existing file under cursor in split window
+C-WC-F - Edit existing file under cursor in vertically split window
+C-Wgf - Edit existing file under cursor in new tabpage# open file, undeer cursor, in new tab ^wgt
+
+# go back to previous file
+^o go back in jump list
+^i go forward
+
+# scroll get position relative to window
+set scroll=1<CR> Then using <C-U> and <C-D>
+
+#get current colors
+This command will open a new window containing all highlight group names, displayed in their own colour:
+:so $VIMRUNTIME/syntax/hitest.vim
+
+Then this command will turn it into an equivalent HTML file (note capital Tee Oh)
+:TOhtml
+
+# exit with error code
+:cquit
+
+# change word, useful in git squash
+cw
+
+#move words 
+b w
+
+#show file name
+ ^G
+
+#vertical split and change split
+vsplit, ^w
+
+#stop spellchecker
+set  spell nospell
+
+#set syntax hilight mode
+set syntax=perl
+
+#?
+vi -o2     :set scrollbind
+
+
+#insensitive_search
+/\csearch
+
+# scroll without moving cursor 
+ctl Y and ctl E
+
+:Fw  foldsearch
+zR unfold all
+
+#completion
+^X
+	n  name
+	l line
+	f file name
+	k word from dico
+	t thesaurus
+
+#?
+vimgrep + quickfix
+
+#autocmd runs command on events
+autocmd BufEnter /usr/share/vim/vim73/doc/*.txt  set nospell
+autocmd BufLeave /usr/share/vim/vim73/doc/*.txt  set spell
+autocmd FileType help setlocal nospell
+
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+MRU=~/nadim/bin/bash/tiled_mru
+[[ -e "$MRU" ]] || touch "$MRU"
+
+CAT=/usr/bin/cat
+
+choice="$(compgen -c | grep -v -F -x -f "$MRU" | sort -u | "$CAT" "$MRU" - | rofi -dmenu -p 'Tiled')"
+
+if [[ -n "$choice" ]] ; then
+	grep -v -F -x -- "$choice" "$MRU" | sponge "$MRU"
+	"$CAT" <(printf -- "$choice\n") "$MRU" | sponge "$MRU"
+
+	tiled_command "$choice" new_desktop
+fi
+

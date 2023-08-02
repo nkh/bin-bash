@@ -1,0 +1,9 @@
+tags () 
+{ 
+echo $(tmsu tags)
+return 0
+    local TAG_VALUE_QUERY='SELECT DISTINCT tag.name || "=" || value.name FROM file_tag JOIN tag ON tag_id=tag.id JOIN value ON value_id=value.id;';
+    echo $(sqlite3 "$HOME/.tmsu/default.db" "$TAG_VALUE_QUERY");
+    local STANDALONE_TAGS='SELECT DISTINCT name FROM tag LEFT OUTER JOIN file_tag ON tag_id=id WHERE (value_id IS NULL) OR (value_id IS 0);';
+    echo $(sqlite3 "$HOME/.tmsu/default.db" "$STANDALONE_TAGS")
+}

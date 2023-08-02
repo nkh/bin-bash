@@ -1,0 +1,32 @@
+_tmsu () 
+{ 
+    local cur prev;
+    COMPREPLY=();
+    cur=${COMP_WORDS[COMP_CWORD]};
+    prev=${COMP_WORDS[COMP_CWORD-1]};
+    prev_prev=${COMP_WORDS[COMP_CWORD-2]};
+    if [ "$COMP_CWORD" -eq 1 ]; then
+        COMPREPLY=($(compgen -W "config copy delete dupes files help imply init merge mount rename repair stats status tag tags unmount untag untagged values version vfs" -- ${cur}));
+        return 0;
+    else
+        if [ "$COMP_CWORD" = "2" ]; then
+            _filedir;
+            return 0;
+        else
+            case "${COMP_WORDS[1]}" in 
+                tag)
+                    if [ "$cur" = "=" ]; then
+                        COMPREPLY=($(compgen -W "$(tmsu values ${prev} 2> /dev/null)" -- ""));
+                    else
+                        if [ "$prev" = "=" ]; then
+                            COMPREPLY=($(compgen -W "$(tmsu values ${prev_prev})" -- $cur));
+                        else
+                            COMPREPLY=($(compgen -W "$(tmsu tags)" -- $cur));
+                        fi;
+                    fi;
+                    return 0
+                ;;
+            esac;
+        fi;
+    fi
+}

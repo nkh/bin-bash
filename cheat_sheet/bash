@@ -1,0 +1,1137 @@
+# de-multiplex lines with prallel
+ls *.es.* | perl -pe 'print; s/\.es//' | parallel -N2 cp {1} {2}
+
+# quick file allocation
+fallocate -l 10G gentoo_root.img
+dd if=$INPUT-FILE of=$OUTPUT-FILE bs=$BLOCK-SIZE count=$NUM-BLOCKS
+
+# tee stdout to stderr
+tee /dev/stderr
+tee /proc/self/fd/2
+
+# poke example
+#!/usr/bin/env sh
+exec poke -L "$0" "$@"
+!#
+
+load elf;
+
+var new_ios = open (argv[0], IOS_M_RDONLY);
+assert (new_ios == 0);
+
+printf ("%Tv\n", Elf64_Ehdr @ 0#B);
+
+
+# binary filter via map and diff
+echo ~/nadim/bin/cheat | map '{ diff --line-format "" "$" <(echo) ; true ; } | rg Binary >/dev/null && echo \"$\" is binary'
+
+# execute command stay in subshell
+bash -i <<< 'some_program with its arguments; exec </dev/tty'
+
+bash --rcfile <(echo '. ~/.bashrc; some_command')
+
+bash -c "ls; pwd; <other commands>; exec bash"
+
+$ ( ls; pwd; exec $BASH; )
+
+$ run() { ( eval "$@"; exec $BASH; ) }
+
+
+# info files in a single file
+info --subnodes page | less
+
+# simple json config via eval
+declare -- values="{\"hello1\":\"world1\",\"hello2\":\"hello2\",\"testk\":\"testv\"}"
+unset hello1 ; ( eval "`echo "$values" | jq -r 'keys[] as $k | "\($k)=\(.[$k])"'`" ; echo $hello1) ; echo $hello1
+
+# xargs and bash -c
+find -size +5M -mtime -700 -not -path "*/video_backup/*" -group nadim | \
+xargs -I{} echo "mimemagic {} | grep -q mp4 && echo {}" | xargs -I {} bash -c {} | \
+xargs -I{} echo "exiftool {} | grep -i rotation | grep -q 0 && echo {}" | xargs -I {} bash -c {} | \
+perl -ne 'chomp ; -e "$_.sha256" && print "$_\n"'
+
+which is the same as 
+
+find -size +5M -mtime -700 -not -path "*/video_backup/*" -group nadim | \
+while read -r f ; do mimemagic $f | grep -q mp4 && echo $f ; done | \
+while read -r f ; do exiftool $f | grep -i rotation | grep -q 0 && echo $f ; done | \
+perl -ne 'chomp ; -e "$_.sha256" && print "$_\n"'
+
+# split path
+get_path () 
+{ 
+local n p b e
+n="$1" ; [[ "$n" =~ / ]] && p="${n%/*}" || p= ; [[ ${p:0:1} != "/" ]] && p="$PWD/$p" ; f="${n##*/}" ; b="${f%.*}" ; [[ "$f" =~ '.' ]] && e="${f##*.}" || e=
+
+local -n gp_parts="$2" ; gp_parts=("$p" "$f" "$b" "$e")
+}
+
+
+# nc's cousins 
+socat
+websocat
+https://github.com/joewalnes/websocketd
+https://github.com/erebe/wstunnel
+
+
+# show filesystem't info
+sudo tune2fs -l /dev/sda2
+
+# stopwatch
+time cat
+^c
+
+time read
+enter
+
+stopwatch() {
+    start=$(date +%s)
+    while true; do
+        days="$(($(( $(date +%s) - $start )) / 86400))"
+        time="$(( $(date +%s) - $start ))"
+        printf '%s day(s) and %s\r' "$days" "$(date -u -d "@$time" +%H:%M:%S)"
+        sleep 0.1
+    done
+}
+
+
+
+# time stopwatch
+while true; do printf '%s\r' "$(date +%H:%M:%S:%N)"; done
+while true; do printf '%s\r' "$(date +%H:%M:%S:%N | cut -c1-11)"; done
+
+# sound in HDMI
+pactl set-card-profile 0 output:hdmi-stereo
+pactl set-card-profile 0 output:analog-stereo
+$ sudo apt install pavucontrol-qt
+
+# parallelization
+The following accepts an arbitrary number of functions/commands as args, and exports a separate
+array for each. Uses shared memory /dev/shm as rendezvous to save disc ops. Silences job control
+by redirecting the stderr of a command group.
+
+foobar(){
+  Foo=("$@")
+  shm="/dev/shm/foobar"
+  for f in ${!Foo[@]}; do
+    for x in ${!Xin[@]}; do
+      { printf "Xout${f}[$x]=\"%s\"\n" \
+        "$( "${Foo[$f]}" "${Xin[$x]}" )" >> $shm &
+      } 2>/dev/null
+      done
+    done
+  wait 2>/dev/null
+  source $shm && >|$shm
+  for f in ${!Foo[@]}; do declare -agp Xout${f}; done
+}
+
+Basically we're simulating a multidimensional array Xout by appending very specific declarations to
+a file. When we're finished, we source those declarations and declare the resulting arrays.
+
+# quote regexp
+quoted_search=${search//\\//\\\\}
+for c in \[ \] \( \) \. \^ \$ \? \* \+; do
+	quoted_search=${quoted_search//"$c"/"\\\\$c"}
+done
+
+# restore deleted files
+testdisk
+
+# create a black image
+time convert -size 2000x2000 'xc:rgb(0,0,0)' red.png
+
+# benchmark
+hyperfine
+
+# color
+palette
+pastel list | pastel sort-by hue | pastel -f format name 
+pastel list | pastel sort-by hue | pastel -f format hex 
+
+# screenkey setting
+screenkey -g 1920x60 -p fixed --persist --bg-color '#232627' --font-color '#494f51' -t 3
+screenkey -p bottom --bg-color '#232627' --font-color '#494f51' -t 1.5
+
+# pipe in bat 
+pbs -wizard builder | bat -l perl --decorations never
+
+# display image in terminal 
+icatimage
+~/go/bin/pixterm 
+
+# find non utf8 characters in file
+grep -axv '.*' file
+
+# strace and ltrace
+https://www.thegeekdiary.com/how-to-use-strace-and-ltrace-commands-in-linux/
+
+# find out which environment variables are used
+ltrace -e getenv ./your_program
+
+perl -pe 's,\00,\n,g' /proc/xxxx/environ
+where xxxx is the PID of your process.
+
+# installing man page manually
+sudo cp man/tmsu.1 /usr/local/share/man/man1/
+
+# turn off caps lock
+xdotool key Caps_Lock
+
+# parallel processing of same data via named pipes
+f() {
+  mkfifo p{i,o}{1,2,3}
+  tr a b < pi1 > po1 &
+  sed 's/./&&/g' < pi2 > po2 &
+  cut -c2- < pi3 > po3 &
+
+  tee pi{1,2} > pi3 &
+  cat po{1,2,3}
+  rm -f p{i,o}{1,2,3}
+}
+printf '%s\n' foo bar | f
+
+
+# swap
+# which processes use swap
+for file in /proc/*/status ; do awk '/VmSwap|Name/{printf $2 " " $3}END{ print ""}' $file; done | sort -k 2 -n -r | less
+# forcing swap back
+sudo swapoff -a; sudo swapon -a
+# To check the swappiness value:
+cat /proc/sys/vm/swappiness
+
+# changesystem swapiness
+sudoedit /etc/sysctl.conf
+add: vm.swappiness = 10
+sudo sysctl -p
+
+# change the value while your system is still running with:
+sysctl vm.swappiness=10
+https://unix.stackexchange.com/questions/88693/why-is-swappiness-set-to-60-by-default
+https://chenhuijing.com/blog/tunnelling-services-for-exposing-localhost-to-the-web/
+
+# tar a directory
+tar -zcvf file.tgz directory
+
+# sum disk usage per file ype 
+find . -iname '*.log' -print0 | du -ch --files0-from=-
+
+# share through public ip via ssh tunnel
+*http://localhost.run/
+ngrok
+localtunnel
+*serveo
+?teleconsole
+pagekit
+
+# open ports with UPNP protocol (iport 1024-65535 are allowed):
+upnpc -a <ip> <port> <external_port> <protocol>
+
+TOR services
+https://golb.hplar.ch/2019/01/expose-server-tor.html
+
+# find who is using inotify
+for foo in /proc/*/fd/*; do readlink -f $foo; done | grep inotify | sort | uniq -c | sort -nr
+
+find /proc/*/fd/* -type l -lname 'anon_inode:inotify' -exec sh -c 'cat $(dirname {})/../cmdline; echo ""' \; 2>/dev/null
+
+# exclude path from find
+find . -type f -not -path '*/\.*'
+
+# Ctrl + Alt + e performs alias, history, and shell expansion on the current line.
+# In other words, the current line is redisplayed as it will be processed by the shell:
+
+ls $HOME/tmp Ctrl Alt + e
+ls -N --color=tty -T 0 /home/cramey
+
+
+# insert all possible combinations
+alt + *
+
+# keep a process running after log out
+disown -h <pid>
+
+# rerun command with replacement
+commande abc ... abc ...
+fc -s abc=123
+	command 123 ... 123 ...
+
+
+# Special socket filenames: /dev/tcp/HOST/PORT and /dev/udp/HOST/PORT
+
+Read from a daytime server (port 13):
+$ cat < /dev/tcp/utcnist.colorado.edu/13
+
+55786 11-08-13 03:34:21 50 0 0 172.3 UTC(NIST) *
+This can be quite useful in conjunction with tcpserver.
+
+$ exec 3<>/dev/tcp/www.google.com/80 # hook up to file desc 3
+$ echo -e "GET / HTTP/1.1\n\n" >&3   # send the HTTP request
+$ cat <&3 
+
+# comment line
+alt+#
+
+# curly brackets
+for i in $(ls) ; { echo  $i ; }
+
+
+# compgen
+compgen -c will list all the commands you could run.
+compgen -a will list all the aliases you could run.
+compgen -b will list all the built-ins you could run.
+compgen -k will list all the keywords you could run.
+compgen -A function will list all the functions you could run.
+compgen -A function -abck will list all the above in one go.
+
+# comment current line 
+alt shit 3
+
+# check shell script
+shellcheck
+
+# plot data on the terminal
+https://github.com/tenox7/ttyplot
+
+# generate hex random
+hexdump -n 4 -v -e '/1 "%02X"' /dev/urandom
+
+# completion directly from the application
+complete -W "$(application --list)" application
+
+# "better" tail -f for single file
+less +F single_file
+
+# pass array elements to xargs
+printf "%s\n" "${FILES[@]}" | xargs -i mv '{}' /path/to/destination
+
+
+# wifi signal strength
+# a='▂▄▆█'; s=$(iwconfig wlp61s0 | sed -E -n 's/[^0-9]*=([0-9]{1,})\/70.*$/\1/p') ; : ${s:='-18'}; echo ${a:0:$(( ( $s / 18 ) + 1 ))}
+
+
+# ditto
+src='aaa/a/' ; dest='bbb' ; for F in $(find $src -type f | grep -v no) ; do mkdir -p $dest/$(dirname ${F#$src}) ; cp $F $dest/${F#$src} ; done ; tree $src ; tree $dest ; rm -rf bbb
+
+# read 3 lines and act on them
+while true
+do
+    read line1 || break
+    echo $line1
+    read line2 || break
+    echo $line2
+    read line3 || break
+    echo $line3
+    echo ""
+done <foo.txt
+
+# comment via parameter expansion
+echo ${COMMENT# output foo bar } \
+        foo\
+        bar
+
+ls \
+        ${COMMENT#
+                give the
+                following arguments
+        }\
+        -la     ${COMMENT# show details for all entries}\
+        .todo
+
+# assign a pipe result into a variable ( alternative to std. var=$[] )
+alias assign="tail -1|tee _T1>/dev/null&&printf \"export \\$1=\$(cat _T1)\nrm _T*\">_T2&&. _T2"
+
+# reading into a variable
+myVar=$(</dev/stdin)
+$(cat file) is equivalent to $(< file)
+
+# Running parallel processes in subshells
+
+	(cat list1 list2 list3 | sort | uniq > list123) &
+	(cat list4 list5 list6 | sort | uniq > list456) &
+	
+	wait   # Don't execute the next command until subshells finish.
+	
+	diff list123 list456
+
+# quoting and reading list from variable
+$ list="One\ntwo\nthree\nfour"
+$ echo "$list"
+One\ntwo\nthree\nfour
+$ list=$'One\ntwo\nthree\nfour'
+$ echo "$list"
+One
+two
+three
+four
+
+while read -r line; do
+    echo "... $line ..."
+done <<< "$list"
+
+
+# using here docs to avoid quoting, multiple levels
+sudo bash <<"EOF"
+whoami
+echo $USER ~
+sudo -u apache bash <<"DOF"
+whoami
+echo $USER ~
+DOF
+EOF
+
+# print an array
+printf '%s\n' "${files[@]}"
+
+# vars from one line
+	# inputter.bash
+	# Read in the values one per line:
+	IFS=$'\n' read A ; read B
+
+	# outputter.bash
+	# Now we can use them.
+	echo "A='${A}'"
+	echo "B='${B}'"
+
+
+	$ ./outputter.bash | ./inputter.bash 
+	A='foo bar'
+	B='  bar'
+
+# grouping
+{ echo 1 ; echo 2 } | cat
+
+
+# bash "xargs"
+function each() {
+    while read line; do
+        for f in "$@"; do
+            $f $line
+        done
+    done
+}
+then you can do things like
+
+... | each command1 command2 "command3 has spaces"
+
+
+
+# columnize data
+1
+2
+3
+.
+.
+.
+1344
+
+I want the result be output.txt
+
+1 2 3 ....42
+43 44      84
+.
+
+awk '{if(n==41){n=0;print $0}else{printf "%s ",$0;n++}}' data.txt 
+awk '{if(NR % 42 == 0){print;}else{printf "%s ",$0}}' data.txt
+perl -ne 'if($. % 42){chomp; print "$_ "}else{ print;}' data.txt 
+perl -pne 's/\n/ / if $. % 42' data.txt
+$ cat original.file | rs 32 42 > reshaped.file
+$ paste -d " " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - < data.txt
+$ paste -d " " $(for i in $(seq 42); do echo "- ";done) < data.txt 
+$ seq 100 | xargs -n 42
+$ xargs -n 42 < data.txt 
+
+
+
+# use bash instead for sed -e 's///' ...
+cat file1 file2 | while read -r line; do echo "${line/@path_to_file/path\/to\/file}"; done
+
+# bash cookbook
+https://github.com/dylanaraps/pure-bash-bible
+
+# inotify style tool
+http://entrproject.org/
+
+# sum file sizes
+{ find _out_nadim/ -type f -name "*.pbs_md5" -printf "%s+"; echo 0; } | bc
+
+# commands to list intersections of files
+grep -Fxv -f file1 file2
+sort file1 file2 | uniq -d
+
+# command to list dependencies based in text input on the cli
+
+
+# merge lines of files
+paste 
+
+# Loop through the lines of two files in parallel
+while read compareFile1 <&3 && read compareFile2 <&4; do     
+ if [[ ! $server =~ [^[:space:]] ]] ; then  #empty line exception
+    continue
+ fi   
+    echo "Comparing file - $compareFile"
+ if diff "$compareFile1" "$compareFile2" >/dev/null ; then
+     echo Same
+ else
+      echo Different
+ fi 
+done 3</infanass/dev/admin/filestoCompare.txt 4<other_file
+
+
+# yank field from command output
+yank, https://github.com/mptre/yank
+
+# command templates
+marker, https://github.com/pindexis/marker
+
+# inotify
+fswatch, watchman, gulp-watch, grunt-watch, guard, or entr.
+https://facebook.github.io/watchman/docs/cmd/watch-project.html
+
+# low sound
+pavucontrol
+
+# not working, list files by type and how many of them under directory
+find ${*-.} -type f | xargs file | awk -F, '{print $1}' | awk '{$1=NULL;print $0}'# block is comment
+
+# comment section
+: <<"SOMEWORD"
+comment
+...
+SOMEWORD
+
+# expand command in-place
+$ command `...` .... "Alt + Ctl + e"
+
+# process line with process substitution as input
+while read line ; do
+	do_something
+done < <( commands producing the input)
+
+# backup with rsynch
+rsync -auv source backup
+
+# gnu parallel example
+time seq  0 20 | parallel -q -j 16 --pipe piper --global hi blue '\d+' red
+
+# enable transparent hugepages, needed by rust programs
+sudo sh -c "echo madvise > /sys/kernel/mm/transparent_hugepage/enabled"
+
+# rust parallel pipe
+time seq  -f 'xxx %f' 0 20 | rust-parallel 'echo {} | piper --global hi blue '\\d+' red' > /dev/null 
+
+# view default bindings
+INPUTRC=~//dev/null bash -c 'bind -pm emacs' | grep -vE '^#|: (do-lowercase-version|self-insert)$' | sort | h forward
+
+# last argument of last line
+meta .
+
+# find upwards
+
+set -e
+path="$1"
+shift 1
+while [[ "$path" != "/" ]];
+do
+    find "$path"  -maxdepth 1 -mindepth 1 "$@"
+    # Note: if you want to ignore symlinks, use "$(realpath -s $path/..)"
+    path="$(readlink -f $path/..)"
+done
+
+# option parsing
+system_files=
+verbose=0 # Variables to be evaluated as shell arithmetic should be initialized to a default or validated beforehand.
+
+while :; do
+	case $1 in
+		-h|-\?|--help)
+			echo "TODO: help needs to be written"
+			# all
+			# process
+			# tmuxake
+			# file
+			# system files
+
+			exit
+			;;
+		-f|--files)       # Takes an option argument, ensuring it has been specified.
+			if [ -n "$2" ]; then
+				file=$2
+				shift
+			else
+				printf 'ERROR: "--file" requires a non-empty option argument.\n' >&2
+				exit 1
+			fi
+			;;
+		--file=?*)
+			file=${1#*=} # Delete everything up to "=" and assign the remainder.
+			;;
+			--file=)         # Handle the case of an empty --file=
+			printf 'ERROR: "--file" requires a non-empty option argument.\n' >&2
+			exit 1
+			;;
+		-v|--verbose)
+			verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
+			;;
+		--)              # End of all options.
+			shift
+			break
+			;;
+		-?*)
+			printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+			;;
+		*)               # Default case: If no more options then break out of the loop.
+			break
+	esac
+
+	shift
+done
+
+# option parsing with getopt
+TEMP=`getopt -o a::bc: --long arga::,argb,argc: -n 'test.sh' -- "$@"`
+eval set -- "$TEMP"
+
+echo "\$@ = $@ "
+
+# extract options and their arguments into variables.
+while true ; do
+	case "$1" in
+		-a|--arga)
+			case "$2" in
+				"") ARG_A='some default value' ; shift 2 ;;
+				*) ARG_A=$2 ; shift 2 ;;
+			esac ;;
+		-b|--argb) ARG_B=1 ; shift ;;
+		-c|--argc)
+			case "$2" in
+				"") shift 2 ;;
+				*) ARG_C=$2 ; shift 2 ;;
+			esac ;;
+		--) shift ; break ;;
+		*) echo "Internal error!" ; exit 1 ;;
+	esac
+done
+
+
+
+# find all commands, aliases, ...
+compgen -c will list all the commands you could run.
+compgen -a will list all the aliases you could run.
+compgen -b will list all the built-ins you could run.
+compgen -k will list all the keywords you could run.
+compgen -A function will list all the functions you could run.
+compgen -A function -abck will list all the above in one go.
+
+compgen -ac | grep searchstr
+
+# environment of process
+strings –a /proc/<pid_of_the_process>/environ
+
+# do something on each line 
+while read x; do echo $x; done << EOF
+$(ls -l $1)
+EOF
+
+#  show path in a nice way
+tr ':' '\n' <<< "$PATH"
+
+# source the output of a command
+eval "$(tmuxake bash-completion)"
+
+# simple command completion
+function _script()
+{
+  _script_commands="abc abbc def"
+
+  local cur prev
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
+
+  return 0
+}
+
+complete -o nospace -F _script test
+
+
+# block or control ^d
+IGNOREEOF
+
+# using variable expansion
+find /{,usr/}{,s}bin/ -type f -ls | awk '$3~/^...s/' | nl
+
+#  remove spaces at begining, and end,  of variable
+var="${var#"${var%%[![:space:]]*}"}" 
+var="${var%"${var##*[![:space:]]}"}"
+
+# one line for loop
+for a in  10 13 8  ; do  tmux kill-session -t $a ; done
+
+# jump t  section in a man page
+# works only with original less
+man tmux | oless -I '+/mOVE-pane'
+
+# file name parsing
+get_file_name(){ echo ${1%.*} ; }
+get_file_ext(){ echo ${1##*.} ; }
+
+# setting tabs in terminal
+tabs 12,19,30
+tabs 12,+5,+5,+20
+tabs 0 # tab becomes a newline
+tabs 8 # default
+
+# unicode characters
+ab • ■ ○ dkmdklf
+
+🌍🚲
+🌣 🌤 
+
+ … ⁉ ☘ ♾ ♿ ⚒ ⚓ ⚔ ⚕ ⚖ ⚗ ⚘ ⚙ ⚚ ⚛ ⚜ ☀ ★ ☠ ☢ ☣ ☮ ☯ ☹ ☺ ☻ ☼ ☾  ♣ ♥ ♫
+⁰ ¹ ² ³ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ 
+
+# use terminal to save and restore cursor position and color
+printf "$red hi \0337 $blue 1234567890 \0338 abc\n"
+current position using \e[6n
+
+# split words
+printf '%s\n' $(< test.txt)
+perl -n -e '@list = map {"$_\n" } grep {/\w/ && length > 1} split /\W+/; print @list if scalar(@list) '  nadim/bin/tdu | sort | uniq -c | less | sort -nr | less
+
+# coreutils
+data | pr -h "header" --columns=2 -l `tput lines` -w `tput cols` --sep-string='    ' -T
+
+# ls colors, definitions and perl module
+https://github.com/trapd00r/LS_COLORS
+
+# print header and passes the rest to the command passed as argument
+# $ text | body sort
+body()
+{
+IFS= read -r header
+printf '%s\n' "$header"
+"$@"
+}
+
+# exclude .directories from  du, tdu support -x now
+excluded=$(find -maxdepth 1 -name '.*' | awk '{print "--exclude " $1}' | sed 's/\.\///' | sed '/^\.$/d' | tr '\n' ' ' ) ; perl du_head ~/ 2 5 $excluded | piper '^[0-9].*$' {on_blue}{reset}
+
+# sort du
+perl -e '%h = map {/.\s/;99**(ord$&&7)-$`,$_} `du -h`; print h{sort%h}'
+
+# run unaliased version of command
+\command
+
+# parsing variables
+check tmux_pid
+
+# human path
+echo $PATH | tr ':' '\n' 
+
+# underline
+export heading='ABCDEF'; 
+export replace='='; 
+echo -e "${heading}\n${heading//?/$replace}"
+
+ABCDEF
+======
+
+# pids recursively
+pidtree() {   echo -n $1 " ";   for _child in $(ps -o pid --no-headers --ppid $1); do     echo -n $_child `pidtree $_child` " ";   done; }
+
+# history expansion, replacement on the command line
+http://www.thegeekstuff.com/2011/08/bash-history-expansion
+
+^to^change ... substitution
+
+:s/to/change/
+:t        remove path
+:h        remove file name
+:r        remove extension
+
+!!:3      !! previous line, :3 third argument
+!cat:2    !cat previous line starting  with cat , ...
+!#:3      !# current line
+!#$       $# current line-current element
+
+!!:*      Gets all the arguments from the previous command
+!!:2*     Gets all the arguments starting from 2nd argument.
+!!:2-$    Same as above. Gets all the arguments starting from 2nd argument.
+!!:2-     Gets all the arguments starting from 2nd argument (except the last argument).
+
+# du first level
+du -ck | awk '{
+   dir = $0;                # preserve the input recordd
+   x = gsub(/\//,"",dir);   # count the slashes, nesting level
+   if (x != 1) next;        # ignore all but top level
+   size = $1 / 1024;        # convert 1024k block count to meg
+   $1 = "";                 # blank the input field
+   printf("%12.3fM %s\n",size,$0);  # display user friendly output
+}'
+
+# create file
+dd if=/dev/zero of=output.dat  bs=1M  count=24
+truncate -s 24m example.file
+
+# single line web servers
+https://gist.github.com/willurd/5720255
+
+while true; do { echo -e 'HTTP/1.0 200 OK\r\n'; sh test; } | nc -l 8080; done
+	where test is a bash script returning text
+	works less good in lynx as \n is not enough
+
+# run with recomputed value of last command
+command `!!`
+
+# multiple pipes in bash
+Process substitution
+tee >(command1) >(command2) | command3
+
+File descriptors
+{ { { tee /dev/fd/3 /dev/fd/4 | command1 >&9;
+    } 3>&1 | command2 >&9;
+  } 4>&1 | command3 >&9;
+} 9>&1
+
+Named pipes
+you need to find a writable directory, create the pipes, and clean up afterwards.
+
+tmp_dir=$(mktemp -d)
+mkfifo "$tmp_dir/f1" "$tmp_dir/f2"
+command1 <"$tmp_dir/f1" & pid1=$!
+command2 <"$tmp_dir/f2" & pid2=$!
+tee "$tmp_dir/f1" "$tmp_dir/f2" | command3
+rm -rf "$tmp_dir"
+wait $pid1 $pid2
+
+# side by side display
+paste <(ls -lh --color | cut -c 1-40 | perl -pe '$_.="a"') <(ls -lh --color | piper_color_ls-l)
+
+# interesting utilities
+fsniper
+sponge pee
+paste
+catonmat.net
+
+# sites with plenty terminal stuff 
+blog.yjl.im plenty text games too
+https://inconsolation.wordpress.com/
+
+# colors
+see dircolors command
+
+# color file
+pygmentize [-l syntaxt] file
+
+# bind -x sets READLINE_LINE and READLINE_POINT
+_xdiscard() {
+    echo -n "${READLINE_LINE:0:$READLINE_POINT}" | xclip
+    READLINE_LINE="${READLINE_LINE:$READLINE_POINT}"
+    READLINE_POINT=0
+}
+_xkill() {
+    echo -n "${READLINE_LINE:$READLINE_POINT}" | xclip
+    READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}"
+}
+_xyank() {
+    READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}$(xclip -o)${READLINE_LINE:$READLINE_POINT}"
+}
+bind -m emacs -x '"\eu": _xdiscard'
+bind -m emacs -x '"\ek": _xkill'
+bind -m emacs -x '"\ey": _xyank'
+
+# pust stuff on the command line. has a disturbing echo though
+runcmd (){ perl -e 'ioctl STDOUT, 0x5412, $_ for split //, <>' }
+writecmd (){ perl -e 'ioctl STDOUT, 0x5412, $_ for split //, do{ chomp($_ = <>); $_ }' }
+
+# edit and source a function, or anything else
+source /dev/stdin < <(bash_function piper_color_du | vipe)
+
+# show du output colorized
+# show du for files over 1M: du/duc -t 1M
+duc(){ du -h $@ | sort -h | head -n -1 | piper_color_du ; }
+
+# empty, slowly, the swap, there must be room in memory
+sudo swapoff -a ; swapon -a
+
+# all arguments except the first
+"${@:2}"
+
+# terminal size
+tput cols tells you the number of columns.
+tput lines tells you the number of rows.
+
+
+# grep replacements
+ucg
+ripgrep
+silver-searcher
+
+# display image on the terminal
+explosion image.jpg
+explosion -h uint -w uint image.jpg
+check https://github.com/daleroberts/tv
+
+# make animated gif from serie of png
+convert -delay 10 -loop 0 *.png animation.gif
+also http://www.lcdf.org/gifsicle/
+
+# make movie from a serie of png file
+ffmpeg -framerate 3 -pattern_type glob -i '*.png' -c:v libx264 -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -pix_fmt yuv420p out.mp4
+https://trac.ffmpeg.org/wiki/Create%20a%20video%20slideshow%20from%20images
+
+# record a screen_cast
+asciinema
+ttyrec ttygif
+peek
+silent_cast
+
+# ascii spinner
+http://stackoverflow.com/questions/2685435/cooler-ascii-spinners
+https://gist.github.com/ellemenno/9489706
+
+# cli commands httracked in down/cli-
+https://github.com/unixorn/git-extra-commands
+https://facebook.github.io/PathPicker/
+https://github.com/jlevy/the-art-of-command-line
+https://kkovacs.eu/cool-but-obscure-unix-tools
+https://github.com/alebcay/awesome-shell
+https://github.com/aharris88/awesome-cli-apps
+https://github.com/herrbischoff/awesome-command-line-apps
+https://github.com/fffaraz/awesome-github
+
+# record terminal
+asciinema
+
+# fancy diff
+gd --color HEAD^^^ | diff-so-fancy | less
+gd --color HEAD^^^ | diff-so-fancy | /usr/bin/less --tabs=4 -RFX --pattern '^(Date|added|deleted|modified): '
+
+# piping into lynx
+lynx --stdion
+cat x.html | lynch --dump --stdin
+
+# qfc
+^f in bash
+
+# disk usage 
+ncdu
+gt5, presents in a browser
+table presentation but slow, https://github.com/ant-fx/disk-usage
+
+# slashdot query
+how2 
+
+# chromium plugin
+https://github.com/philc/vimium
+
+# pipe to a browser
+gotty
+
+# make text html
+command | bcat
+ 
+# extract file names from command output
+fpp
+
+# set sticky bit on directory
+chmod +t dir
+
+# scrap a web site
+httrack
+
+# transfer data from the command line
+http://transfer.sh
+
+#
+restart bluetooth
+	sudo rmmod btusb
+	sudo modprobe btusb
+
+# command line edition
+	^U # delete all backwards
+	^W # delete word backwards
+	^K # kill rest of line
+	^Y # yank
+	alt + # ... comment the line
+	^x ^e #command in editor
+
+	^w ^y^y, #delete last word and insert it twice
+
+	alt+. #to insert previous command's arguments
+
+	echo "!!" > script # !! is previous command
+
+
+whatis /usr/bin/* 2>&1 | grep -v 'nothing app' | wc -l
+
+# bash vatiable completion
+# http://www.tldp.org/LDP/abs/html/parameter-substitution.html
+$ touch file.txt.{1..6}
+$ mv file.{txt,html}
+$ cp file.txt{,.bak}
+$ mv website.co.nz/{testing,production}/index.php
+touch {1..100..7}
+
+
+# diff a file that's on another box
+$ diff -u .bashrc <(ssh remote cat .bashrc)
+
+# tee to processes
+$ ps -ef |  tee >(grep nadim >nadim-procs.txt) >(grep root >roots-procs.txt) 
+
+# lsof
+lsof -c httpd
+lsof -f passwd
+
+# PIPESTATUS is a array variable which contain the exit status of each command
+set -o pipefail
+
+# execute later
+echo "command" | at time
+
+# negative expansion 
+rm -f !(survivior.txt)
+
+mkdir /home/foo/doc/bar && cd $_
+
+#turn off buffering in pipe
+http://unix.stackexchange.com/questions/25372/turn-off-buffering-in-pipe
+stdbuf -i0 -o0 -e0 echo $(date +%m) past $(date +%H) | speak
+
+# divers obscure tools
+http://kkovacs.eu/cool-but-obscure-unix-tools
+
+
+# top like tools
+dstat
+atop
+glances
+ttyrec & ipbt
+slurm -i eth0
+inethogs
+ftop file top, is installed
+iftop
+see sysstat package
+
+# sending stuff to the cloud
+nopaste file file -o
+gist
+imgur
+
+# inotofy utility
+runonchange () { local cmd=( "$@" ) ; while inotifywait --exclude .*.swp -qqre close_write,move,create,delete $1 ; do "${cmd[@]:1}" ; done ; }
+
+fuser: show which process uses a file
+command ESC *: show all possible completions
+timeout 5 command: kill command if it is still running after 5 seconds
+share session: script -qf | tee >(nc -kl 5000)  listen to session: nc (some ip) 192.168.1.64 5000
+get all images from a site: wget -r -l1 --no-parent -nH -nd -P/tmp -A".gif,.jpg" http://example.com/images
+who is using the network: lsof -P -i -n | cut -f 1 -d " "| uniq | tail -n +2
+different commands for stout and stderr: some_command > >(/bin/cmd_for_stdout) 2> >(/bin/cmd_for_stderr)
+
+
+( ( sleep 2h; your-command your-args ) & )
+
+info:/bash/Shell Parameter Expansion
+
+info:/bash/Brace Expansion
+
+info:/history/History Interaction
+
+info:/bash/Command Line Editing
+
+info:/bash/Bash Builtins (bind)
+
+Clean up the line: You can use Ctrl+U to clear up to the beginning.
+Clean up the line: Ctrl+A Ctrl+K to wipe the current line in the terminal
+Cancel the current command/line: Ctrl+C.
+Recall the deleted command: Ctrl+Y (then Alt+Y)
+Go at the beginning of the line: Ctrl+A
+Go at the end of the line: Ctrl+E
+Remove the forward words for example, if you are middle of the command: Ctrl+K
+Remove characters on the left, until the beginning of the word: Ctrl+W
+To clear your entire command prompt: Ctrl + L
+Toggle between the start of line and current cursor position: Ctrl + XX
+
+C-b/e start/end of line
+C-k kill till end of line
+M-f/b forward backwrd one word
+M-DEL delete previous word
+M-d delete next word
+
+C-u Cy delete backward till begining of line, yank
+C-_ undo
+C-xC-e edit command line i editor
+
+C-J/C-???  menu completion
+
+arguments
+command !:4 !:6
+A-N C-A-y
+http://stackoverflow.com/questions/4009412/bash-how-to-use-arguments-from-previous-command
+
+
+https://github.com/blog/2019-how-to-undo-almost-anything-with-git
+
+http://www.lbreyer.com/bash-smart-parsing-howto.html
+
+bind '"\C-x1": accept-line' ; bind '"\C-x2": next-history' ; bind 'RETURN: "\C-e | tee /tmp/xyz.log\C-x1\C-x2"' 
+
+
+!#           | Refer to the entire command line typed so far. 
+http://www.catonmat.net/download/bash-history-cheat-sheet.txt
+
+stty size
+
+find . ! -readable -prune
+
+# edit invalid requirement
+ra check --invalid_requirement_list requirements/to_sort/ 2>/dev/null | fzf -m | parallel -X --tty vi -p
+
+
+# find the valid requirement
+comm -12 <(ra check --invalid_requirement_list requirements/to_sort/ 2> /dev/null | sort) <(find requirements/to_sort/ -maxdepth 1 | sort) | wc -l
+
+# force tty context on a command
+function faketty { script -qfc "$(printf "%q " "$@")"; }
+
+
+# fuzy matchers
+fzf
+qfc, https://github.com/pindexis/qfc
+
+# find duplicates
+find -not -empty -type f -printf "%s\n" | sort -rn | uniq -d | xargs -I{} -n1 find -type f -size {}c -print0 | xargs -0 md5sum | sort | uniq -w32 --all-repeated=separate
+
+# quote file
+awk '{ print "\""$0"\""}'
+
+# print and print empty line every 3rd line
+awk '1; NR%3==0 { print "" }'
+
+# make one line out of two | command | back to two lines
+sed -E 'N;s/(.*)\n(.*)/\2\t\1/' infile | sort | sed -E 's/(.*)\t(.*)/\2\n\1/'
+
+#sed multiple commands
+sed -e 's/\$/S/' -e 's/\%/p/'
+
+# print 5 first lines
+sed -n '1,5p; 6q'
+
+# print fields
+awk '{print $1,$2,$3}'
+
+#show lines between regexs
+text | awk /start-pattern/,/stop-pattern/
+
+# do not show lines between regexes
+text | sed '/start-pattern/,/stop-pattern/d' file
+
+#Extract the Nth line from a file
+awk 'NR==line_number'
+
+# sum all the mumbers in a given Column of a Text
+awk '{ sum += $1 } END { print sum }' file
+
+ vim: set ft=bash :

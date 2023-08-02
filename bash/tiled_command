@@ -1,0 +1,15 @@
+#!/bin/bash
+
+user_command=$1
+want_new_desktop=$2
+
+if [[ -n "$want_new_desktop" ]] ; then
+	max_desktops=6
+	free_desktop=$(( $(seq 0 $max_desktops | grep -v -f <(wmctrl -l | ec 2 | sort -u) | head -1) + 1 ))
+	desktop="--desktop $free_desktop"
+else
+	desktop='--currentdesktop'
+fi
+
+kstart5 $desktop --activate --fullscreen -- "$user_command"
+

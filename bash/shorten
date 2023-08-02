@@ -1,0 +1,39 @@
+#!/bin/bash
+
+shorten () 
+{
+local ellipsis="..." left=false
+OPTIND=1
+
+while getopts "hle:" opt; do
+	case $opt in
+		l) left=true ;;
+		e) ellipsis=$OPTARG ;;
+		h) echo -e "shorten - shorten each line of the piped input"
+			echo -e "\t$ ls | shorten 15"
+			echo ""
+			echo -e "\t-l           Shorten from left side"
+			echo -e "\t-e STRING    replace truncated characters with STRING" ;;
+			
+		*) return 1;;
+	esac
+done
+
+shift $((OPTIND-1))
+
+if [[ -n $1 ]] ; then width=$1 ; else width=$COLUMNS ; fi
+
+to_ellipsis=$(( width - ${#ellipsis} ))
+#echo \$1: \<$1\>, elipsis: ${#ellipsis}, \$COLUMNS: $COLUMNS, width: $width, to_ellipsis: $to_ellipsis ; return
+(( to_ellipsis <= 0 )) &&  exit 1
+
+if $left; then
+	/bin/cat | perl -ne "chomp ; print((length(\$_) <= $width) ? qq{\$_\\n} :  '${ellipsis}' . substr(\$_, -$to_ellipsis) . qq{\\n})"
+else
+	/bin/cat | perl -ne "chomp ; print((length(\$_) <= $width) ? qq{\$_\\n} : substr(\$_, 0, $to_ellipsis) . '${ellipsis}' . qq{\\n})"
+fi
+
+}
+
+shorten $*
+

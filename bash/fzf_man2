@@ -1,0 +1,4 @@
+#!/bin/bash
+
+page="$(. ~/.bashrc &>/dev/null ; man -k . -s 1,3 | sort -u | piper ".*?\W-" blue | fzf --ansi --cycle -q ^ | cut -d" " -f1)"
+[[ "$page" ]] && man2 "$page"

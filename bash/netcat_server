@@ -1,0 +1,47 @@
+#!/bin/bash
+
+port=${2:-8080}
+	
+if [[ -z $1 ]]
+then
+	cat  << EOD	
+NAME	netcat server - serves the output of a shellscript 
+
+	port 8080 is used if none is given
+	current served page is passed to script as first argument
+
+USAGE
+	netcat_server bash_script [port]	
+
+SCRIPT_EXAMPLE	
+
+#!/bin/bash
+
+echo "*************** nc server *****************\n"
+
+echo page: \$1
+printf "\n"
+
+echo "Resources:"
+vmstat -S M
+printf "\n"
+
+echo "Addresses:"
+ifconfig
+printf "\n"
+
+EOD
+
+else
+	page=0
+
+	while true 
+	do 
+		printf "... Waiting for connection to serve page $page on port $port\n"
+		((page++))
+		
+		{ echo -e 'HTTP/1.0 200 OK\r\n'; bash $1 $page ; } | nc -l $port  
+	done
+fi
+
+

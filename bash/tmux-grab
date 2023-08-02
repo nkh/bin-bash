@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# prompt matching function for tmux
+
+if ! type -t __copy_app_match_my_prompt 1> /dev/null ; then
+	# the way it looks for me in a tmux buffer
+	__copy_app_match_my_prompt() { printf '^(\\\\033\\[[^m]+m)?[[:digit:]]+\ '  ; }
+fi
+
+extract_last_command_from_tmux_buffer()
+{
+# extract last command and its output from tmux buffer
+# code can skip section, although it doesn't in this case
+
+read -r -d '' perl_code << 'EOP'
+use warnings ;
+use strict ;
+
+my ($regex, $display_last_line) = @ARGV ;
+
+my ($skipping_blocks, $started) = (0, 0) ;
+		
+LINE:
+while (<STDIN>)
+	{
+	if ($skipping_blocks)
+		{
+		$skipping_blocks-- if /$regex/ ;
+		}
+	else
+		{
+		if (! $started)
+			{
+			#skip the line
+
+			$started++ if /$regex/ ;
+			}
+		else
+			{
+			if(/$regex/)
+				{
+				print if $display_last_line ;
+				last LINE ;
+				}
+			else
+				{
+				print ;
+				}
+			}
+		}
+	}
+EOP
+
+cat | perl -e "$perl_code" "$(__copy_app_match_my_prompt)" "$1" 
+}
+
+tmux-grab() 
+{
+local last_command=false last_command_command=0 ansi_codes=
+
+local PARSING=`getopt -o hlcaA --long help -n 'tmux-grab' -- "$@"`
+eval set -- "$PARSING"
+
+while true ; do
+	case $1 in
+		-h|--help) \
+			echo -e "Usage: grab_tmux_pane [-l -c [-a|A]]" \
+				"\tgrabs and writes the contents of the tmux pane on stdout\n" \
+				"\n" \
+				"\t-l\tgrab last command output\n" \
+				"\t-c\tif -l, include the command\n" \
+				"\t-a\tgrab ansi codes\n" \
+				"\t-A\tgrab ansi codes, active\n"
+			return ;;
+		
+		-l	) last_command=true ; shift ;;
+		-c	) last_command_command=1 ; shift ;;
+		-a	) ansi_codes=" -e " ; shift ;;
+		-A	) ansi_codes=" -e " ; ansi_active=1 ; shift ;;
+		--	) shift ; break ;;
+		*	) echo "tmux-grab: invalid option" ; exit 1 ;;
+	esac
+done
+
+tmux capture-pane -b grab_tmux_pane $ansi_codes -C -J -S - -E -
+tmux save-buffer -b grab_tmux_pane /tmp/grab_tmux_pane
+tmux delete-buffer -b grab_tmux_pane
+
+if [[ -s /tmp/grab_tmux_pane ]] ; then
+	if $last_command ; then
+		tac /tmp/grab_tmux_pane | extract_last_command_from_tmux_buffer $last_command_command | tac | \
+		{ [[ $ansi_active ]] && perl -pe 's/\Q\033[/\e[/g' || cat ; }
+	else
+		cat /tmp/grab_tmux_pane | { [[ $ansi_active ]] && perl -pe 's/\Q\033[/\e[/g' || cat ; }
+	fi
+fi
+}
+
+[[ "${BASH_SOURCE[0]}" = "${0}" ]] && tmux-grab $@
+

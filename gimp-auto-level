@@ -1,0 +1,11 @@
+#!/bin/bash
+
+auto-level()
+{
+files=$1
+gimp -ifd -b '(batch-auto-levels "$files")' -b '(gimp-quit 0)'
+}
+
+auto-level "$@"
+
+

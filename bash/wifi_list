@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+nmcli -d wifi rescan 2> /dev/null
+nmcli --color yes device wifi
+

@@ -1,0 +1,7 @@
+#!/bin/bash
+buffer=`fd --color always | fzf -m --ansi --cycle | quote_lines | remove_nl " "`
+[[ "$buffer" ]] && { tmux set-buffer "$buffer" ; tmux paste-buffer ; }
+
+# tmux bind -n C-g bind -n C-h popup -w 80% -h 80% -E -d $PWD "./tmux-insert"
+
+

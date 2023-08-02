@@ -1,0 +1,2 @@
+[[ $1 == -h || $1 == --help ]] && { echo "ps_top [[mem|cpu] [arg to head]]" ; exit 0 ; }
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%${1:-mem} | head ${@:2}

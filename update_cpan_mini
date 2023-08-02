@@ -1,0 +1,1 @@
+minicpan -r ftp://ftp.uninett.no/pub/CPAN/ -l /devel/cpan

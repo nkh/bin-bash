@@ -1,0 +1,9 @@
+#! /usr/bin/env perl  
+
+while($_ = <>)
+	{
+	#s/\ /\\ /g ;
+	s/(.*)/"$1"/ ;
+	print ;
+	}
+

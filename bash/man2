@@ -1,0 +1,8 @@
+#!/bin/bash
+
+man2_path="/tmp/$USER/man2"
+mkdir -p $man2_path
+
+man2_files=`parallel -k 'man2_file='$man2_path'/{}.man2 ; MANWIDTH=1000 man {} 2>/dev/null | sed -e "1s/ \{2,\}/        /g" -e "\\$s/ \{2,\}/        /g" >$man2_file ; echo $man2_file' ::: "$@"`
+
+vim -p -R -c 'tabdo set nospell' -c 'tabdo set ft=man' -c 'tabdo let &buftype="nofile"' -c 'silent call LessMode()' -c 'normal 0gt' $man2_files

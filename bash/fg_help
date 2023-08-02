@@ -1,0 +1,58 @@
+#!/bin/bash
+
+cat <<'EOD'
+
+Keybind	Action
+<Enter>	Confirm
+<Tab>	Toggle mark
+<C-k/p>	Selection up
+<C-j/n>	Selection down
+<A-k/p>	Preview up
+<A-j/n>	Preview down
+<A-w>	Toggle preview wrap
+<?>	Toggle preview window
+<C-r>	Toggle selection
+<C-s>	Toggle sort
+
+fga:	add
+fgu:	unstage
+fgl:	log
+fgd:	diff
+fgr:	restore
+fgss:	show stash
+fgco:	checkout git branch/tag
+fgcoc:	checkout git commit
+fgh:	get git commit sha
+fgstash
+
+git/                           git_merge_status               git_remote_get_branch          git_show_parents_compact
+git_branch_erase               git_mini_prompt                git_remote_list_branches       git_squash
+git_checkout_branch_in         git_need_fetch                 git_remote_mirror_this_branch  git_status_stat
+git_find_file                  git_perl                       git_remove_from_index          git_track_all_branches
+git_full_prompt                git_prompt                     git_remove_last_commit         git_update_remote
+git_graph_find_commit          git_pwb                        git_repos_need_fetch           git-upload-archive
+git_graph_find_file            git-receive-pack               git-shell                      git-upload-pack
+git_grep                       git-redate                     git_show_children_compact      git_xxx
+git_grep_reformat              git_reduced_prompt             git_show_children_graph
+git_list_files_in_commit       git_remote_delete_branch       git_show_parents
+
+
+gdiff gdiffd gdf gs gss gb gco 
+
+gl gla: git list
+glb: git list branches
+glba: git list all branches with tree
+gnb git new branch
+
+gm: git merge
+gss
+gs
+gs_no_untracked_files
+gsq: git squash
+gri: git rebase interactive, select start
+gup: git update remote
+
+git github
+
+EOD
+

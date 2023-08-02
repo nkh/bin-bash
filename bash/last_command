@@ -1,0 +1,2 @@
+history -p !! | perl -pe 's/^\s*[0-9]+\s*//' | tr -d '\n'
+
