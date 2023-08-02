@@ -1,0 +1,3 @@
+#kdialog --title Pling --passivepopup "$1: $2" 
+music123 /usr/share/sounds/freedesktop/stereo/dialog-information.oga &>/dev/null
+#music123 /usr/share/sounds/pop.wav
