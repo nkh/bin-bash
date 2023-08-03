@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 args="$@"
-preview="sha=\$(echo {} | grep -o '[a-f0-9]\{7\}' | head -1) ; [[ \$sha ]] && { git-stat-color \$sha $args ; git diff \$sha HEAD $args | diff-so-fancy ; }"
+preview="sha=\$(echo {} | grep -o '[a-f0-9]\{7\}' | head -1) ; [[ \$sha ]] && { git-stat-color \$sha $args ; git diff \$sha $args | diff-so-fancy ; }"
 
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 1
 
