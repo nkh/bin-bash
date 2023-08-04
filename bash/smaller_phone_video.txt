@@ -1,0 +1,3 @@
+ffmpeg -i /home/nadim/downloads/valborg.mp4 -ab 56k -ar 22050 -r 15 -s 480x360 -strict experimental -vf "transpose=2"  /home/nadim/downloads/valborg_small.mp4
+
+

@@ -1,3 +1,14 @@
+# change fifo size
+$ mkfifo fifo
+$ exec 3<&- 3<> fifo # close the first pipe and instantiate a new one
+$ (perl -MFcntl -e 'fcntl(STDOUT, 1031, 1048576)'; seq 20000) > fifo
+
+# very large fifo size
+mkfifo fifo
+exec 3<> fifo
+seq 12000000 > >(stdbuf -o100M grep -a '^' > fifo)
+
+
 # de-multiplex lines with prallel
 ls *.es.* | perl -pe 'print; s/\.es//' | parallel -N2 cp {1} {2}
 
