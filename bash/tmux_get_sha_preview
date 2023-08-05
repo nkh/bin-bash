@@ -1,6 +1,6 @@
 #!/bin/bash
 echo $@
-buffer="$(fgh2)"
+buffer="$(fgl2)"
 # [[ "$buffer" ]] && { tmux set-buffer "$buffer" ; tmux paste-buffer ; }
 [[ "$buffer" ]] && { echo "$buffer" ; }
 

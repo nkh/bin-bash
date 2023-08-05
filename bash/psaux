@@ -1,0 +1,3 @@
+#!/bin/bash
+columns=$(tput cols)
+ps aux | cut -c1-$columns | piper '\S+\h+' green '\S+\h+' blue '\S+\h+' yellow '\S+\h+' red '\S+\h+' cyan '\S+\h+' magenta '\S+\h+' red '\S+\h+' green '\S+\h+' blue '\S+\h+' yellow '.*' ansi248
