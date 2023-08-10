@@ -1,3 +1,6 @@
+# multipane window
+vim -c 'windo set scrollbind nomodifiable' -O all* <(seq 5)
+
 # diff two buffers
 buffdo diffthis
 

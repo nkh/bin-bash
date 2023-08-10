@@ -1,3 +1,12 @@
+# todo: title
+exec 3< <(youtube-dl -g --youtube-skip-dash-manifest 'https://www.youtube.com/watch?v=-gcvAxJJiGo')
+IFS= read -r -u3 video
+IFS= read -r -u3 audio
+exec 3>&-
+
+# find add / to dirs
+find * \( -type d -printf "%p/\n" , ! -type d -print \)
+
 # change fifo size
 $ mkfifo fifo
 $ exec 3<&- 3<> fifo # close the first pipe and instantiate a new one

@@ -1,0 +1,1 @@
+tree -n --fromfile --noreport "$@"

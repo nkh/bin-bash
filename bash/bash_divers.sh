@@ -36,12 +36,8 @@ man -k . | \
 	| xargs -r man
 }
 
-headand() 
-{
-IFS= read -r header
-printf '%s\n' "$header"
-"$@"
-}
+headand() { IFS= read -r header ; printf '%s\n' "$header" ; "$@" ; }
+headtee() { IFS= read -r header ; echo "$header" >/dev/tty ; cat ; }
 
 shell-expand () { printf "%s\n" "$@" ; }
 shell-expand-colored () { printf "%s\x1b[30;100m \x1b[0m\n" "$@" ; }
