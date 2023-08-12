@@ -1,0 +1,8 @@
+#!/bin/env perl
+
+my ($type) = @ARGV ;
+
+die "filter-is-type: valid types: f|d\n" unless ( defined $type && ($type eq 'f' || $type eq 'd') ) ;
+
+do { chomp ; (($type eq f && -f $_) || ($type eq d && -d $_)) && print "$_\n" ; } for <STDIN>
+

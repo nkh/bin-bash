@@ -15,6 +15,11 @@ git fetch . HEAD:master
 # find when a file was added
 git log --follow --diff-filter=A --find-renames=40% path_finder
 
+# pick hunks from cherry_pick
+git cherry-pick -n <commit> # get your patch, but don't commit (-n = --no-commit)
+git reset                   # unstage the changes from the cherry-picked commit
+git add -p                  # make all your choices (add the changes you do want)
+git commit                  # make the commit!
 
 # checkout branch from other repo
 git remote add quin https://github.com/qindapao/P5-App-Asciio
