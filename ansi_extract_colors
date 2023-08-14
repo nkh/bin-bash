@@ -1,0 +1,13 @@
+#!/bin/env perl
+
+use strict ; use warnings ;
+
+print map { "$_$2\e[m\n" if /\e(\[([0-9;]*)m)/ } split /(\e(?:\[(?:[0-9;]*)m))/ while <>
+
+# while(<>)
+# 	{
+	# for ( split /(\e(?:\[(?:[0-9;]*)m))/ )
+	# 	{
+	# 	print "$_<$2>\e[m\n" if /\e(\[([0-9;]*)m)/
+	# 	}
+	# }
