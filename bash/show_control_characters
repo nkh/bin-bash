@@ -8,10 +8,69 @@ my $RESET=color('reset') ;
 
 while(<STDIN>)
 	{
-	s/\t/$RED<\\t>$RESET/g ;
+	s/\x1B\[([0-9;]*)m/<color:$1>/g ;
+	s/\x1F/<1F>/g ;
+	s/\x1E/<1E>/g ;
+	s/\x1D/<1D>/g ;
+	s/\x1C/<1C>/g ;
+	s/\x1B/<ESC>/g ;
+	s/\x9B/<CSI>/g ;
+	s/\x1A/<1A>/g ;
+	s/\x10/<10>/g ;
+	s/\xF/<F>/g ;
+	s/\xE/<E>/g ;
+	# s/\xD/<D>/g ; # carriage return
+	s/\xC/<C>/g ;
+	s/\xB/<B>/g ;
+	# s/\xA/<A>/g ; # new line
+	# s/\x9/<9>/g ; # tab
+	s/\x8/<backspace>/g ;
+	s/\x7/<7>/g ;
+	s/\x6/<6>/g ;
+	s/\x5/<5>/g ;
+	s/\x4/<4>/g ;
+	s/\x3/<3>/g ;
+	s/\x2/<2>/g ;
+	s/\x1/<1>/g ;
+	s/\x0/$RED\\0$RESET/g ;
+	s/\t/$RED\\t$RESET/g ;
 	s/\ /$RED.$RESET/g ;
-	s/\n/$RED<\\n>$RESET\n/g ;
-	s/\0/$RED<\\0>$RESET\n/g ;
+	s/\r/$RED\\r$RESET/g ;
+	s/\n/$RED\\n$RESET\n/g ;
+	s/<color:(.*?)>/\e[$1m<$1>/g ;
 	print ;
 	}
 
+# DEC	HEX	CHARACTER
+# 0	0	NULL
+# 1	1	START OF HEADING (SOH)
+# 2	2	START OF TEXT (STX)
+# 3	3	END OF TEXT (ETX)
+# 4	4	END OF TRANSMISSION (EOT)
+# 5	5	END OF QUERY (ENQ)
+# 6	6	ACKNOWLEDGE (ACK)
+# 7	7	BEEP (BEL)
+# 8	8	BACKSPACE (BS)
+# 9	9	HORIZONTAL TAB (HT)
+# 10	A	LINE FEED (LF)
+# 11	B	VERTICAL TAB (VT)
+# 12	C	FF (FORM FEED)
+# 13	D	CR (CARRIAGE RETURN)
+# 14	E	SO (SHIFT OUT)
+# 15	F	SI (SHIFT IN)
+# 16	10	DATA LINK ESCAPE (DLE)
+# 17	11	DEVICE CONTROL 1 (DC1)
+# 18	12	DEVICE CONTROL 2 (DC2)
+# 19	13	DEVICE CONTROL 3 (DC3)
+# 20	14	DEVICE CONTROL 4 (DC4)
+# 21	15	NEGATIVE ACKNOWLEDGEMENT (NAK)
+# 22	16	SYNCHRONIZE (SYN)
+# 23	17	END OF TRANSMISSION BLOCK (ETB)
+# 24	18	CANCEL (CAN)
+# 25	19	END OF MEDIUM (EM)
+# 26	1A	SUBSTITUTE (SUB)
+# 27	1B	ESCAPE (ESC)
+# 28	1C	FILE SEPARATOR (FS) RIGHT ARROW
+# 29	1D	GROUP SEPARATOR (GS) LEFT ARROW
+# 30	1E	RECORD SEPARATOR (RS) UP ARROW
+# 31	1F	UNIT SEPARATOR (US) DOWN ARROW
