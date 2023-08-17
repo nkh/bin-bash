@@ -1,0 +1,9 @@
+#!/bin/bash
+
+sqr
+
+df -h | \
+sqh 1 2> >(piper '.*' 'ansi252 on_ansi236' | sqp xxx) | \
+sort -h -r -k 4 | \
+piper '\S+\h+' green '\S+\h+' blue '\S+\h+' yellow '\S+\h+' green  '\S+\h+' cyan '.*' blue | \
+sqc xxx -

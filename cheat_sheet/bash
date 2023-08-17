@@ -1,3 +1,7 @@
+# show all env variables
+export -p # exported only
+compgen -v | while read line; do echo $line=${!line};done 
+
 # todo: title
 exec 3< <(youtube-dl -g --youtube-skip-dash-manifest 'https://www.youtube.com/watch?v=-gcvAxJJiGo')
 IFS= read -r -u3 video

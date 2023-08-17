@@ -1,0 +1,8 @@
+#!/bin/bash -i
+
+tmux split-window -d -p10
+tmux send-keys 'cd /home/nadim/nadim/devel/repositories/perl_modules/P5-PerlBuildSystem' C-M
+tmux send-keys -t 1 'b install' 
+tmux new-window -d -n test -c /home/nadim/no_backup/pbs_tests/generated_pbs_project
+tmux send-keys 'vi'
+

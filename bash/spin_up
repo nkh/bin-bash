@@ -1,0 +1,5 @@
+#!/bin/bash
+sdt=${1:-2}
+sdt=$(($sdt * 12))
+hdparm -S $sdt /dev/sda
+
