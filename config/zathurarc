@@ -1,0 +1,6 @@
+set recolor-lightcolor \#232627
+set recolor-darkcolor \#B0B0B0
+set recolor-keephue true
+set recolor true
+
+map c recolor

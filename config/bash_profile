@@ -1,0 +1,12 @@
+echo bash_profile start $(($(date +%s%N)/1000)) >> ~/time_bashrc
+
+if [ -f ~/.bashrc ] ; then 
+	source ~/.bashrc 
+fi 
+
+do_it() { echo | bash  ; }
+
+#echo bash_profile hdparam $(($(date +%s%N)/1000)) >> ~/time_bashrc
+#hdparam -S 1 /dev/sda
+#echo bash_profile end $(($(date +%s%N)/1000)) >> ~/time_bashrc
+. "$HOME/.cargo/env"

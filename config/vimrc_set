@@ -1,0 +1,55 @@
+
+set nocompatible
+
+filetype plugin on
+syntax on
+
+set backspace=indent,eol,start
+set breakindent
+set clipboard^=unnamed,unnamedplus
+set dictionary+=/usr/share/dict/words
+set diffopt+=vertical
+set encoding=utf-8
+set foldcolumn=0
+set formatoptions-=cro
+set hidden
+set hlsearch
+set incsearch
+set linebreak
+set number relativenumber
+set paste
+set ruler
+set scroll=1
+set spell
+set splitbelow
+set splitright
+set tabpagemax=100
+set thesaurus+="$META_HOME/config/mthesaur.txt" 
+set viminfo=%,<800,'10,/50,:100,h,f1,n~/.vim/cache/viminfo
+set virtualedit=block
+set wildmenu
+
+set smartindent
+set autoindent
+
+"set t_Co=256
+
+"RGB color support -----------------------------------------------------------
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set background=dark
+
+" show tab -------------------------------------------------------------------
+set list
+hi SpecialKey ctermfg=245  
+set listchars=tab:◐◌
+
+" ??? ------------------------------------------------------------------------
+set fillchars+=stl:─
+set fillchars+=stlnc:─
+set fillchars+=vert:│
+let g:is_bash=1
+
+" markdown supported languages -----------------------------------------------
+let g:markdown_fenced_languages = ['html', 'python', 'ruby', 'vim', 'bash', 'perl', 'javascript', 'xml']
+

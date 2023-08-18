@@ -1,0 +1,2 @@
+General;\n\n    === %FileName%.%FileExtension%\n\n    %Track% (%Track/Position_Total%) - %Album% %Recorded_Date% - %Performer% - %Genre%\n    %Duration/String% - %FileSize/String3% - %Bit rate%\n
+File_End;

@@ -1,0 +1,88 @@
+! run: xrdb -merge ~/.Xresources
+
+Sxiv.background: #000000
+Sxiv.foreground: #808080
+!Sxiv.foreground: #00C0FF
+!Sxiv.font: Hack-9
+
+Nsxiv.*.background: #808080
+Nsxiv.*.foreground: #F0F0F0
+
+xterm*faceName: Noto Mono
+xterm*faceSize: 12
+xterm*renderFont: true
+xterm*foreground: rgb:a8/a8/a8
+xterm*background: rgb:00/00/00
+XTerm*allowBoldFonts: false
+
+! VT Font Menu: Unreadable
+xterm*faceSize1: 8
+! VT font menu: Tiny
+xterm*faceSize2: 10
+! VT font menu: Medium
+xterm*faceSize3: 12
+! VT font menu: Large
+xterm*faceSize4: 14
+! VT font menu: Huge
+xterm*faceSize5: 22
+
+xterm*VT100.Translations: #override \
+    Ctrl <Key> minus: smaller-vt-font() \n\
+    Ctrl <Key> plus: larger-vt-font() \n\
+    Ctrl <Key> 0: set-vt-font(d)
+    Shift <KeyPress> Insert: insert-selection(CLIPBOARD) \n\
+    Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
+    Ctrl Shift <Key>C:    copy-selection(CLIPBOARD) \n\
+    Ctrl <Btn1Up>: exec-formatted("xdg-open '%t'", PRIMARY)
+
+xterm*cursorColor: #777777
+
+xterm*background: rgb:1a/1a/1a
+xterm*foreground: #bbbbbb
+
+! Blacks
+xterm*color0:           #151515
+xterm*color8:           #505450
+!xterm*color0:         rgb:23/26/27 
+!xterm*color8:         rgb:7f/8c/8d
+
+! Reds
+!xterm*color1:           #a60101
+!xterm*color9:           #f99090
+xterm*color1: #f62400
+xterm*color9: #c0392b
+
+! Greens
+!xterm*color2:           #026802
+!xterm*color10:          #a7e14b
+xterm*color2:           #17d116
+xterm*color10:          #1cdc9a
+
+! Yellows
+!xterm*color3:           #ab6e03
+!xterm*color11:          #fddc01
+xterm*color3:           #f67400
+xterm*color11:          #fcbc4b
+
+! Blues
+!xterm*color4:           #4a5463
+!xterm*color12:          #7d8794
+xterm*color4:           rgb:1d/99/f3
+xterm*color12:          rgb:3d/ae/e9
+
+! Purples
+!xterm*color5:           #9c3885
+!xterm*color13:          #e628ba
+xterm*color5:           rgb:9b/59/b6
+xterm*color13:          rgb:8e/44/ad
+
+! Cyans
+!xterm*color6:           #08bab0
+!xterm*color14:          #74fff7
+xterm*color6:           rgb:1a/bc/9c
+xterm*color14:          rgb:16/a0/85
+
+! Whites
+xterm*color7:           #bbbbbb
+xterm*color15:          rgb:dd/dd/dd
+

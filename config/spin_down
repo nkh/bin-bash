@@ -1,0 +1,2 @@
+#!/bin/bash
+hdparm -S 1 /dev/sda

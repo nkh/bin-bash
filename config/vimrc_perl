@@ -1,0 +1,25 @@
+
+func! PerlSyntax()
+	let omakeprg = &makeprg
+	let oef      = &errorformat
+	let exeFile  = expand("%:t")
+	
+	" setlocal makeprg=perl -MVi::QuickFix
+	setlocal makeprg=perl
+	" set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+	set errorformat+=%m\ at\ %f\ line\ %l\.
+	set errorformat+=%m\ at\ %f\ line\ %l
+	
+	silent make %
+	" cfile errors.err
+	copen
+	redraw!
+	
+	let &makeprg     = omakeprg
+	let &errorformat = oef
+endfunc
+
+nmap pl :!perl %<.pl<CR>
+map <F6> :call PerlSyntax()<CR>
+map <F5> :cclose<CR>
+

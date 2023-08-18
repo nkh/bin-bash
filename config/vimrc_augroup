@@ -1,0 +1,22 @@
+
+au BufRead,BufNewFile *.pl6 set filetype=perl
+au BufRead,BufNewFile *.Rtex set filetype=rnoweb
+au BufRead *.pbs_log  let @/ = "\.pbs_info" | set nospell | AnsiEsc
+au BufRead *.pbs_log_fail  let @/ = "\.pbs_info" | set nospell | AnsiEsc
+au BufNewFile,BufRead pbsfile set syntax=perl
+au BufNewFile,BufRead Pbsfile set syntax=perl
+au FileType man setlocal nospell
+
+au BufNewFile Todo.txt exec append(0, "this is the Todo") 
+	\ | exec append('.', '================')
+	\ | exe "normal! " . 3 . "G" . 1 . "|"
+	" \ | exec cursor(2, 22)
+
+" au BufNewFile *.sh 0r ~/skeletons/bash.sh
+
+" augroup numbertoggle
+" 	autocmd!
+" 	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+" 	autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+" augroup END
+

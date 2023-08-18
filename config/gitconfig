@@ -1,0 +1,62 @@
+[user]
+	name = Nadim Khemir
+	email = nadim.khemir@gmail.com
+[github]
+	user = nkh
+[color]
+	ui = true
+
+[color "status"]
+	added = green
+	changed = cyan
+	untracked = magenta
+	deleted = bold red
+
+[alias]
+	b = branch -vv
+	nb = checkout -b
+	co = checkout
+	s = status -s
+
+	l = log --graph --pretty=format:'%C(yellow)%h %C(white bold)%s %C(blue bold)%d %C(black bold)(%ar, %an)%Creset'
+	l10 = !git --no-pager log -n10 --graph --pretty=format:'%C(yellow)%h %C(white bold)%s %C(blue bold)%d %C(black bold)(%ar, %an)%Creset'
+	ls = ls-tree -r --name-only 
+	lnc = log --graph --pretty=format:'%h %s %d (%ar, %an)'
+	lngnc = log --pretty=format:'--> %h %s %d (%ar, %an)'
+	la =  !git l --all
+	lstatus = !git l --name-status 
+	lb = log --graph --simplify-by-decoration --pretty=format:'%C(blue bold)%d %C(black bold)(%ar)'
+	lba = !git lb --all
+	
+	unstage = reset -q HEAD --
+	discard = checkout --
+	delete-last-commit-hard = reset --hard HEAD^
+	delete-last-commit = reset --soft HEAD^
+	conflicting = status -s | grep '^[UMDA]\\{2\\} '
+
+	github = push -u origin master
+	github-main = push -u origin main
+	permission-reset = !git diff -p -R --no-color | grep -E \"^(diff|(old|new) mode)\" --color=never | git apply
+[help]
+	autocorrect = 1
+[merge]
+	tool = meld
+[diff]
+	tool = meld
+[push]
+	default = tracking
+[hub]
+	protocol = https
+[core]
+	pager = less -+F -R
+	sparseCheckoutCone = false
+[cola]
+	spellcheck = false
+[init]
+	defaultBranch = main
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

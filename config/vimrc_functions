@@ -1,0 +1,210 @@
+
+" --------------------------------------------------
+
+" display log for current/all files and show diff between chosen version and HEAD
+function! s:gvst(all, simplified)
+	let tmp_file = tempname()
+	
+	if a:all == "all"
+		if a:simplified == "simplified"
+			execute "silent" "exec" "'!fgl2 --simplify-by-decoration >"tmp_file"'"
+		else
+			execute "silent" "exec" "'!fgl2 >"tmp_file"'"
+		endif
+	else
+		execute "silent" "exec" "'!fgl2 -- % >"tmp_file"'"
+	endif
+	
+	redraw!
+	
+	let x=readfile(tmp_file)
+	
+	if len(x)> 0
+		execute 'Gvdiffsplit' x[0]
+	endif
+endfunction
+
+command! -bang -nargs=? Gvst call s:gvst('', '')
+command! -bang -nargs=? Gvsta call s:gvst('all', '')
+command! -bang -nargs=? Gvstas call s:gvst('all', 'simplified')
+
+" --------------------------------------------------
+
+function! LessMode()
+if g:lessmode == 0
+	let g:lessmode = 1
+	let onoff = 'on'
+	
+	" Scroll half a page down
+	" noremap <script> d <C-D>
+	
+	" Scroll one line down
+	noremap <script> <Down> <C-E>
+	noremap <script> j <C-E>
+	
+	" Scroll half a page up
+	" noremap <script> u <C-U>
+	
+	" Scroll one line up
+	noremap <script> <Up> <C-Y>
+	noremap <script> k <C-Y>
+else
+	let g:lessmode = 0
+	let onoff = 'off'
+	
+	" unmap d
+	unmap <Down>
+	unmap j
+	" unmap u
+	unmap <Up>
+	unmap k
+endif
+echohl Label | echo "less mode" onoff | echohl None
+endfunction
+
+let g:lessmode = 0
+
+" --------------------------------------------------
+
+function! JumpOrCreateFile(new_tab)
+	let filename = expand(expand("<cfile>"))
+	
+	if filename !~# '^\/'
+		let current_directory = expand('%:p:h')
+		
+		let filename = current_directory . '/' . filename
+	endif
+	
+	if a:new_tab == 0
+		execute 'edit ' . filename
+	else
+		execute 'tabedit ' . filename
+	endif
+endfunction
+
+" --------------------------------------------------
+
+function! FZFPickNkh()
+	let temp = tempname()
+	let id=localtime()
+	
+	if ! has("gui_running")
+		exec "silent !fzf_nkh_files_vim " . shellescape(temp) . " fzf_" . id . " " 
+	endif
+	
+	if !filereadable(temp)
+		redraw!
+		return
+	endif
+	
+	let names = readfile(temp)
+	if empty(names)
+		redraw!
+		return
+	endif
+	
+	for name in names
+		exec 'tabedit ' . fnameescape(name)
+	endfor
+	
+	redraw!
+endfunction
+
+" --------------------------------------------------
+
+function! Ftl(preview)
+	let temp = tempname()
+	let id=localtime()
+	
+	if ! has("gui_running")
+		"exec "silent !echo waiting for signal: ftl_" . id
+		exec "silent !tmux new-window ftlvim " . shellescape(temp) . " ftl_" . id . " " . a:preview . " ; tmux wait ftl_" . id
+	endif
+	
+	if !filereadable(temp)
+		redraw!
+		return
+	endif
+	
+	let names = readfile(temp)
+	if empty(names)
+		redraw!
+		return
+	endif
+	
+	for name in names
+		exec 'tabedit ' . fnameescape(name)
+	endfor
+	
+	redraw!
+endfunction
+
+" --------------------------------------------------
+
+function! TAsciio()
+	let line = getline('.')
+	
+	let tempn = tempname()
+	let tempnt = tempn . '.txt'
+	let temp = shellescape(tempn)
+	let tempt = shellescape(tempnt)
+	
+	exec "normal i Asciio_file:" . tempn . "\<Esc>"
+	
+	if ! has("gui_running")
+		exec "silent !mkdir -p $(dirname " . temp . ")" 
+		exec "silent !cp ~/.config/Asciio/templates/empty.asciio ". temp . "; tasciio " . temp . "; asciio_to_text " . temp . " >" . tempt 
+		exec "read " . tempnt
+	endif
+	
+	redraw!
+endfunction
+
+
+" --------------------------------------------------
+
+"function! RangeChooser()
+"	let temp = tempname()
+"	" The option "--choosefiles" was added in ranger 1.5.1. Use the next line
+"	" with ranger 1.4.2 through 1.5.0 instead.
+"	"exec 'silent !ranger --choosefile=' . shellescape(temp)
+"	if has("gui_running")
+"		exec 'silent !xterm -e ranger --choosefiles=' . shellescape(temp)
+"	else
+"		exec 'silent !ranger --choosefiles=' . shellescape(temp)
+"	endif
+"	if !filereadable(temp)
+"		redraw!
+"		" Nothing to read.
+"		return
+"	endif
+"	let names = readfile(temp)
+"	if empty(names)
+"		redraw!
+"		" Nothing to open.
+"		return
+"	endif
+"	" Edit the first item.
+"	exec 'tabedit ' . fnameescape(names[0])
+"	" Add any remaning items to the arg list/buffer list.
+"	for name in names[1:]
+"		exec 'tabedit ' . fnameescape(name)
+"	endfor
+"	redraw!
+"endfunction
+"command! -bar RangerChooser call RangeChooser()
+"nnoremap <leader>r :<C-U>RangerChooser<CR>
+
+" Jump to tab: <Leader>t
+"function s:tabName(n)
+"	let buflist = tabpagebuflist(a:n)
+"	let winnr = tabpagewinnr(a:n)
+"	return fnamemodify(bufname(buflist[winnr - 1]), ':t')
+"endfunction
+
+"function! s:jumpToTab(line)
+"	let pair = split(a:line, ' ')
+"	let cmd = pair[0].'gt'
+"	execute 'normal' cmd
+"endfunction
+

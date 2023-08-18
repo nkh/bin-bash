@@ -1,0 +1,43 @@
+# . squirrel
+
+# echo "info: $(sqf xxx)" >local_file
+# sqr
+
+# seq 9 | \
+# 	sqh 3 2> >(piper . blue  | sqp xxx) | \
+# 	sqh 2 2> >(piper . green | sqp yyy) | \
+# 	piper . red | \
+# 	sqc xxx - :local_file yyy
+
+sqr() { stmp=/tmp/$USER/stmp/$$ ; rm -rf "$stmp" ; }
+sqf() { stmp=/tmp/$USER/stmp/$$ ; mkdir -p "$stmp" ; printf "$stmp/%s\n" "$@" ; }
+sqh() { tee >(head -$1 1>&2) | tail +$(($1 + 1)) ; }
+sqp() { cat >$(sqf "$1") ; }
+
+sqc()
+{
+for i in "$@"
+	do
+		[[ "$i" == "-" ]] && cat || 
+			{
+			[[ "$i" =~ ^: ]] && cat "${i:1}" ||
+				{
+				f="$(sqf "$i")"
+				
+				[[ -s "$f" ]] && cat $f || 
+					while IFS= read -r fname
+						do
+							[[ -s "$f" ]] && cat "$f" && break
+						done < <(inotifywait -m -q $(dirname "$f"))
+				}
+			}
+	done
+}
+
+export -f sqr
+export -f sqf
+export -f sqh
+export -f sqp
+export -f sqc
+   
+# vim: set ft=bash:

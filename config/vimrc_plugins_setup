@@ -1,0 +1,78 @@
+
+" run plugin managers -------------------------------------------
+filetype off                  " required?
+set rtp+=~/.vim/bundle/Vundle.vim
+
+source $META_HOME/config/vimrc_plugin
+
+" source $META_HOME/config/vimrc_perl
+" map <F6> :!perl -MVi::QuickFix % <CR>
+
+filetype plugin indent on    " set file type detection back on
+" ---------------------------------------------------------------
+
+" winresizer ----------------------------------------------------
+let g:winresizer_start_key = '<C-w>e'
+let g:maximizer_default_mapping_key = '<C-w>r'
+
+" gitgutter -----------------------------------------------------
+let g:gitgutter_enabled = 0 
+hi SignColumn      ctermbg=black
+hi GitGutterAdd    ctermbg=0
+hi GitGutterChange ctermbg=0
+hi GitGutterDelete ctermbg=0
+
+nnoremap <Leader>gt :GitGutterToggle <CR>
+nnoremap <Leader>gn :GitGutterNextHunk <CR>
+nnoremap <Leader>gp :GitGutterPrevHunk <CR>
+nnoremap <Leader>gs :GitGutterStageHunk <CR>
+"stage the hunk with <Leader>hs or undo it with <Leader>hu.
+
+" git fugitive --------------------------------------------------
+nnoremap <Leader>g :G<CR>
+nnoremap <Leader>gdd :Gdiffsplit<CR>
+nnoremap <Leader>gdv :Gvdiffsplit<CR>
+
+" git fga -------------------------------------------------------
+nnoremap <Leader>ga :!bash -i -c fga ; tmux send-key -- C-m<CR>
+
+" info file -----------------------------------------------------
+if &buftype =~? 'nofile'
+	nmap <buffer> gu <Plug>(InfoUp)
+	nmap <buffer> gn <Plug>(InfoNext)
+	nmap <buffer> gp <Plug>(InfoPrev)
+	nmap gg K
+	
+	"use fzf for the menu
+	nmap gm :call fzf#vim#buffer_lines('* ', 0)" add gs which should use fzf
+endif
+
+" fzf && fzf-preview --------------------------------------------
+hi fzf_rg_hl cterm=NONE ctermfg=214 ctermbg=214
+
+let g:fzf_colors = { 'hl': ['fg', 'fzf_rg_hl'], 'hl+': ['fg', 'fzf_rg_hl'] }
+let g:fzf_layout = { 'down': '95%' }
+let g:fzf_preview_window = ['up:60%', 'ctrl-h']
+let g:fzf_mru_no_sort = 1
+
+" preview
+nnoremap <leader>b         :FZFBLines<CR>
+nnoremap <Leader>f         :FZFRg<CR>
+nnoremap <Leader><leader>t :Files<CR>
+nnoremap <Leader>q         :FZFQuickFix<CR>
+
+nnoremap <silent>t         :FZFRg <c-r><c-w><cr>
+
+" fzf
+nnoremap <Leader>t :GFiles<CR>
+" nnoremap <leader>R :FZFMru -m<CR>
+" nnoremap <silent> t :Tags<CR>
+
+" autocmd! FileType fzf
+" autocmd  FileType fzf set laststatus=0 noshowmode noruler
+"   \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+
+" easy align ----------------------------------------------------
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
+

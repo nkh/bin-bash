@@ -1,0 +1,4 @@
+. $FTL_CFG/etc/extra_bindings
+
+# vim: set filetype=sh :
+

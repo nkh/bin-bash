@@ -1,0 +1,39 @@
+
+" --------------------------------------------------
+
+" manually installed https://github.com/szw/vim-maximizer
+
+" --------------------------------------------------
+
+call vundle#begin()
+	Plugin 'VundleVim/Vundle.vim'
+	Plugin 'https://tpope.io/vim/fugitive.git'
+	Plugin 'airblade/vim-gitgutter'
+	Plugin 'https://github.com/simeji/winresizer.git'
+	Plugin 'tpope/vim-commentary'
+	Plugin 'https://github.com/inkarkat/vim-ingo-library'
+	Plugin 'https://github.com/inkarkat/vim-mark'
+	" Plugin 'https://github.com/tpope/vim-surround.git'
+	" Plugin 'git://github.com/honza/vim-snippets.git'
+	" Plugin 'git://github.com/RRethy/vim-hexokinase.git', { 'do': 'make hexokinase' }
+	" Plugin 'mbbill/undotree'
+call vundle#end()            " required
+
+" --------------------------------------------------
+
+call plug#begin('~/.vim/plugged')
+	Plug 'michaeljsmith/vim-indent-object'
+	Plug 'junegunn/fzf.vim'
+	Plug 'pbogut/fzf-mru.vim'
+	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+	Plug 'junegunn/vim-easy-align'
+	Plug 'HiPhish/info.vim'
+	Plug 'chengzeyi/fzf-preview.vim'
+	Plug 'will133/vim-dirdiff'
+	" Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }"
+	" Plug 'madox2/vim-ai'
+	" Plug 'lervag/wiki.vim'
+	" ? christoomey/vim-sort-motion
+call plug#end()
+
+

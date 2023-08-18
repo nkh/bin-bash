@@ -1,0 +1,303 @@
+# vim: ft=dircolors
+
+# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+
+NORMAL                  0               # no color code at all
+FILE                    0               # regular file: use no color at all
+RESET                   0               # reset to "normal" color
+DIR                     38;5;63         # directory
+LINK                    38;5;122         # symbolic link. ('target' instead of value, color as for the file pointed to.)
+EXEC                    38;5;34         # files with execute permission
+MULTIHARDLINK           0               # regular file with more than one link
+FIFO                    40;33           # pipe
+#SOCK                    38;5;139;3      # socket
+SOCK                    0      # socket
+DOOR                    38;5;139;3      # door
+BLK                     40;33;1         # block device driver
+CHR                     40;33;1         # character device driver
+ORPHAN                  40;31;1         # symlink to nonexistent file, or non-stat'able file ...
+MISSING                 0               # ... and the files they point to
+SETUID                  37;41           # file that is setuid (u+s)
+SETGID                  48;5;3;38;5;0   # file that is setgid (g+s)
+CAPABILITY              30;41           # file with capability
+STICKY_OTHER_WRITABLE   30;42           # dir that is sticky and other-writable (+t,o+w)
+OTHER_WRITABLE          30;42           # dir that is other-writable (o+w) and not sticky
+STICKY                  38;5;63;3       # dir with the sticky bit set (+t) and not other-writable
+
+*.extension =   Every file using this extension e.g. *.rpm = files with the ending .rpm# shell not executable
+*.sh                  38;5;22
+
+# documents
+*Makefile             38;5;142
+*README               38;5;142
+#README.md color defined below
+*LICENSE              38;5;142
+*COPYING              38;5;142
+*INSTALL              38;5;142
+*CHANGES              38;5;142
+*Changes              38;5;142
+*TODO                 38;5;142
+
+
+# archives or compressed 
+.tar    38;5;166
+.tgz    38;5;166
+.arc    38;5;166
+.arj    38;5;166
+.taz    38;5;166
+.lha    38;5;166
+.lz4    38;5;166
+.lzh    38;5;166
+.lzma   38;5;166
+.tlz    38;5;166
+.txz    38;5;166
+.tzo    38;5;166
+.t7z    38;5;166
+.zip    38;5;166
+.z      38;5;166
+.Z      38;5;166
+.dz     38;5;166
+.gz     38;5;166
+.lrz    38;5;166
+.lz     38;5;166
+.lzo    38;5;166
+.xz     38;5;166
+.bz2    38;5;166
+.bz     38;5;166
+.tbz    38;5;166
+.tbz2   38;5;166
+.tz     38;5;166
+.deb    38;5;166
+.rpm    38;5;166
+.jar    38;5;166
+.war    38;5;166
+.ear    38;5;166
+.sar    38;5;166
+.rar    38;5;166
+.alz    38;5;166
+.ace    38;5;166
+.zoo    38;5;166
+.cpio   38;5;166
+.7z     38;5;166
+.rz     38;5;166
+.cab    38;5;166
+
+# image formats
+.jpg    38;5;133
+.JPG    38;5;133
+.jpeg   38;5;133 
+.gif    38;5;133 
+.bmp    38;5;133 
+.pbm    38;5;133 
+.pgm    38;5;133 
+.ppm    38;5;133 
+.tga    38;5;133 
+.xbm    38;5;133 
+.xpm    38;5;133 
+.tif    38;5;133 
+.tiff   38;5;133 
+.png    38;5;133
+.svg    38;5;133
+.svgz   38;5;133
+.mng    38;5;133
+.pcx    38;5;133
+.pcx    38;5;133
+.webp   38;5;133
+
+.mov    38;5;127
+.mpg    38;5;127
+.mpeg   38;5;127
+.m2v    38;5;127
+.mkv    38;5;127
+.webm   38;5;127
+.ogm    38;5;127
+.mp4    38;5;127
+.m4v    38;5;127
+.mp4v   38;5;127
+.vob    38;5;127
+.qt     38;5;127
+.nuv    38;5;127
+.wmv    38;5;127
+.asf    38;5;127
+.rm     38;5;127
+.rmvb   38;5;127
+.flc    38;5;127
+.avi    38;5;127
+.fli    38;5;127
+.flv    38;5;127
+.gl     38;5;127
+.dl     38;5;127
+.xcf    38;5;127
+.xwd    38;5;127
+.yuv    38;5;127
+.cgm    38;5;127
+.emf    38;5;127
+.ogv    38;5;127
+.ogx    38;5;127
+
+# audio formats
+.m3u    00;36;3
+.aac    00;36
+.au     00;36
+.flac   00;36
+.m4a    00;36
+.mid    00;36
+.midi   00;36
+.mka    00;36
+.mp3    00;36
+.mpc    00;36
+.ogg    00;36
+.ra     00;36
+.wav    00;36
+.oga    00;36
+.opus   00;36
+.spx    00;36
+.xspf   00;36
+
+#html
+.htm    38;5;178
+.html   38;5;178
+.css    38;5;178
+
+# structured
+.xml    38;5;213 
+.yaml   38;5;213 
+.yml    38;5;213 
+.json   38;5;213 
+
+#documents
+.pdf    38;5;91
+.epub   38;5;91
+.txt    38;5;105
+.cbr    38;5;91
+.cbz    38;5;98
+.chm    38;5;91
+.djvu   38;5;91
+
+# markup 
+.markdown             38;5;147
+.asciio               38;5;147
+.md                   38;5;147
+*README.md            38;5;142
+.mkd                  38;5;147
+.pod                  38;5;147
+.textile              38;5;147
+
+# discreet
+.directory            38;5;240
+
+# documents, spreadsheet, ...
+.csv    38;5;112;3
+.odp    38;5;112
+.doc    38;5;112
+.pps    38;5;112
+.ppt    38;5;112
+.ods    38;5;112
+.sc     38;5;112
+.xla    38;5;112
+.xls    38;5;112
+.xlsx   38;5;112
+.xlsxm  38;5;112
+
+# version control
+.gitignore      38;5;240
+
+# perl
+.pl             38;5;38
+.pm             38;5;38
+.t              38;5;38
+*MANIFEST       38;5;240
+*Makefile.PL    38;5;240
+*Build.PL       38;5;240
+*META.yml       38;5;240
+*META.json      38;5;240
+*MYMETA.yml     38;5;240
+*MYMETA.json    38;5;240
+*Todo.txt       38;5;37
+*TODO           38;5;37:4
+
+# other languages
+
+# pbs
+.pbs_md5        38;5;68
+.pbs_o_dep      38;5;68
+.pbs_log        38;5;65
+.pbs_log_fail   38;5;88
+.pbs_distribution_digest 38;5;240
+.pbs_depend_log 38;5;139;3
+
+# automake, patch files 
+.am             48;5;97;38;5;0
+.ac             48;5;97;38;5;0
+.diff           48;5;97;38;5;0
+.patch          48;5;97;38;5;0
+
+# divers 
+.deb            38;5;220
+.iso            38;5;220
+.bin            38;5;220
+.sqlite         38;5;220
+.pcap           38;5;220
+.cap            38;5;220
+
+# crypto
+.gpg            38;5;192;3
+.signature      38;5;192;3
+.sig            38;5;192;3
+.pgp            38;5;192;3
+.sig            38;5;192;3
+
+# high visibility
+
+.aria2          38;5;208;1
+.torrent        38;5;208;1
+.swp            38;5;208;1
+.swo            38;5;208;1
+.swn            38;5;208;1
+.log            38;5;208;1
+.tmp            38;5;208;1
+.tmp            38;5;208;1
+.pid            38;5;208;1
+.err            38;5;208;1
+.error          38;5;208;1
+.stderr         38;5;208;1
+.dump           38;5;208;1
+
+
+
+# TERM
+
+TERM Eterm
+TERM ansi
+TERM color-xterm
+TERM con[0-9]*x[0-9]*
+TERM cons25
+TERM console
+TERM cygwin
+TERM dtterm
+TERM eterm-color
+TERM gnome
+TERM gnome-256color
+TERM hurd
+TERM jfbterm
+TERM konsole
+TERM kterm
+TERM linux
+TERM linux-c
+TERM mach-color
+TERM mach-gnu-color
+TERM mlterm
+TERM putty
+TERM putty-256color
+TERM rxvt*
+TERM screen*
+TERM st
+TERM st-256color
+TERM terminator
+TERM tmux*
+TERM vt100
+TERM xterm*
+
+

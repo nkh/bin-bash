@@ -1,0 +1,33 @@
+#. /usr/share/bash-completion/completions/git
+
+GV_DIR='.gv'
+
+gv() { git --git-dir="$GV_DIR" --work-tree=. "$@" ; }
+
+gvinit()
+{
+git init --bare "$GV_DIR"
+git --git-dir=.gv config --unset core.bare
+git --git-dir=.gv config core.worktree .. 
+printf "%s\n" '.gitignore' '.gv/' >> $GV_DIR/info/exclude
+printf "%s\n" '.gitignore' '.gv/' >> .gitignore 
+}
+
+gvl() { gv log "$@" ; }
+gvs() { gv s "$@" ; }
+gvc() { gv commit "$@" ; }
+gva() { gv add "$@" ; }
+
+gvd() 
+{
+diff=`gv diff --color $*`
+[[ -n "$diff" ]] && <<<"$diff" diff-so-fancy | /usr/bin/less -RFX --pattern '^(Date|added|deleted|modified): ' || true
+}
+
+gvi() { printf "%s\n" "$@" >> $GV_DIR/info/exclude ; }
+
+gvcm() { gv commit -m "$*" ; }
+gvw() { gv commit -m "WIP: $*" ; }
+
+# vim: set ft=bash:
+

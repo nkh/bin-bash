@@ -1,0 +1,8 @@
+.*.sw*
+axel/
+chromium_bookmarks
+gh_token
+gmail.mutt
+gmail.mutt.gpg
+new_config/
+package-lock.json

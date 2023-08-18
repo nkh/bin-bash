@@ -1,0 +1,123 @@
+#!/bin/bash
+
+bind -x '"'"\C-J"'":"set_command_cursor"'
+
+set_command_cursor() 
+{
+local BACKSPACE=$(printf "0000000 005177\n0000002")
+local TAB=$'\x09' 
+#local SHIFT_TAB=$(printf "????0000000 005033\n0000002") # todo:
+#local SHIFT_TAB="$(echo -e '\e[Z')" #doesn'twork
+local SHIFT_TAB="$(echo -e '\e1\Ci')" #doesn'twork
+local ESCAPE="$(echo -e '\e')"
+local RETURN=$(printf "0000000 000012\n0000001")
+
+#colors
+local MATCH='\e[36m'
+local CURRENT='\e[30;46m'
+local RESET='\e[0m'
+
+local initial_command="$READLINE_LINE"
+local new_command_point=$READLINE_POINT
+
+local highlighted="$initial_command"
+local search=""
+local matches=""
+local index=0
+local max_index=0
+
+local SHOW_STATUS=1
+local status=""
+
+local prompt=$(PS1="$PS1" debian_chroot="$debian_chroot" "$BASH" --norc -i </dev/null 2>&1 | sed -n '${s/^\(.*\)exit$/\1/p}')
+
+tput sc
+
+while true
+do
+	tput rc ; tput ed
+	
+	if [[ $SHOW_STATUS ]] ; then
+		[[ "$search" == "" ]] && status="[0]" || { [[ ${#matches[@]} -gt 1 ]] && status="[$(( ${#matches[@]} - 1 ))]" || status="[!]" ; }
+		
+		status=" $MATCH$status$RESET"
+	fi
+	
+	highlighted=${highlighted//\\/\\\\}
+	printf "$prompt$highlighted$status"
+	
+	IFS='' read -r -sn 1 key
+	
+	printf "%s" "$key"
+	
+	if [[ "$key" =~ [\ A-Za-z0-9_!@#$%()+-={}:\;?\'|,.\<\>] ]]; then
+		search="$search$key"
+		_scc_keep_position
+	
+	elif [[ $(echo "$key" | od) == "$BACKSPACE" ]]; then
+		if [[ "$search" != "" ]] ; then
+			search=${search:0:-1} && _scc_keep_position
+		else
+			matches=("$highlighted")
+		fi
+	
+	elif [[ "$key" == "$TAB" ]]; then
+		[[ $index -lt $max_index ]] && index=$((index + 1)) && _scc
+	
+	elif [[ "$key" == "$SHIFT_TAB" ]]; then
+		echo SHIFT-TAB working!
+		[[ $index -gt 0 ]] && index=$((index - 1)) && _scc
+	
+	elif [[ $(echo "$key" | od) == "$RETURN" ]]; then
+		tput rc ; tput ed
+		READLINE_POINT=${matches[$index]}
+		printf "\r" ; return
+	
+	elif [[ "$key" == "$ESCAPE" ]]; then
+		tput rc ; tput ed
+		return
+	fi
+done
+}
+
+_scc()
+{
+[[ -z "$search" ]] && highlighted="$initial_command" && max_index=0 && return
+
+IFS='' read -r -d '' code <<EOF
+	\$tag='$$_SCC_tag' ;
+	\$search_length = length("$search") ;
+	\$search = quotemeta("$search") ;
+	
+	print pos() - \$search_length . qq[\n] while(/\$search/g) ; # matches
+	/((?:.*?\$search){$index}.*?)(\$search)(.*)/ and \$_="\$1\$tag\$2\$3\\n" ; # tag current
+	s/((?:\$tag)?\$search)/$MATCH\$1$RESET/g ; # highlight all search
+	s/\$tag(\$search)/$CURRENT\$1/ ; # highlight current
+EOF
+
+readarray -t matches <<< $(echo "$initial_command" | perl -pe "$code")
+
+highlighted=${matches[-1]}
+max_index=$(( ${#matches[@]} - 2 )) # highlighted + zero base
+}
+
+_scc_keep_position()
+{
+# if possible keep selection at the same place when search changes
+
+local previous_index=$index
+local previous_position=${matches[$index]}
+
+_scc
+index=0
+
+new_index=0
+for position in "${matches[@]}"
+	do
+	[[ "$position" == "$previous_position" ]] && index=$new_index && break
+	new_index=$((new_index + 1))
+	done
+
+[[ $index !=  $previous_index ]] && _scc
+}
+

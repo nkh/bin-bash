@@ -1,0 +1,35 @@
+
+hi Comment           ctermbg=black   ctermfg=33
+hi CursorLineNr      term=bold       ctermfg=Grey
+
+hi DiffAdd           cterm=NONE      ctermfg=34    ctermbg=235
+hi DiffChange        cterm=NONE      ctermfg=226   ctermbg=235
+hi DiffDelete        cterm=NONE      ctermfg=124   ctermbg=235
+hi DiffText          cterm=NONE      ctermfg=79    ctermbg=22
+
+hi FoldColumn        ctermfg=Blue
+hi Folded            ctermbg=235     ctermfg=blue
+
+hi LineNr            term=bold       cterm=NONE    ctermfg=DarkGrey   ctermbg=NONE
+hi PodFormat         ctermbg=black   ctermfg=75
+hi Search            ctermfg=184     ctermbg=24
+hi SpellBad          ctermbg=52      ctermfg=253
+hi SpellCap          ctermbg=black   ctermfg=blue
+
+hi String            ctermbg=black   ctermfg=68
+hi StatusLine        ctermbg=29      ctermfg=black
+hi StatusLineNC      ctermbg=26      ctermfg=black
+
+hi TabLine           ctermbg=17      ctermfg=245
+hi TabLineFill       ctermbg=240     ctermfg=17
+hi TabLineSel        ctermbg=17      ctermfg=253
+
+hi TagListFileName   ctermbg=black   ctermfg=40
+hi Todo              ctermbg=136     ctermfg=black
+hi VertSplit         ctermbg=22      ctermfg=black
+
+hi shCmSubRegion     ctermbg=black   ctermfg=142
+hi shCommandSub      ctermbg=black   ctermfg=red
+hi shDerefSimple     ctermbg=black   ctermfg=38
+hi shDerefVar        ctermbg=black   ctermfg=38
+

@@ -1,0 +1,81 @@
+
+" move to same indentation level ---------------------------------------------
+nnoremap [d :call search('^'. matchstr(getline('.'), '\(^\s*\)') .'\%<' . line('.') . 'l\S', 'be')<CR>
+nnoremap ]d :call search('^'. matchstr(getline('.'), '\(^\s*\)') .'\%>' . line('.') . 'l\S', 'e')<CR>
+
+" LessMode -------------------------------------------------------------------
+nnoremap <F5> :call LessMode()<CR>
+inoremap <F5> <Esc>:call LessMode()<CR>
+
+" show color for element under cursor ----------------------------------------
+noremap <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+" insert without overriding register -----------------------------------------
+nnoremap å "0p
+vnoremap å "0p
+nnoremap Å "0P
+vnoremap Å "0P
+
+" no highlight search --------------------------------------------------------
+nnoremap <nowait><silent> <C-L> :noh<CR>
+
+" search current selection ---------------------------------------------------
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
+" move current up and down ---------------------------------------------------
+nnoremap <c-j> :m .+1<CR>==
+nnoremap <c-k> :m .-2<CR>==
+inoremap <c-j> <Esc>:m .+1<CR>==gi
+inoremap <c-k> <Esc>:m .-2<CR>==gi
+vnoremap <c-j> :m '>+1<CR>gv=gv
+vnoremap <c-k> :m '<-2<CR>gv=gv
+
+" fold everything but search -------------------------------------------------
+noremap <leader>z :setlocal foldexpr=getline(v:lnum)=~@/?0:1 foldmethod=expr
+
+" go to file which don't exist -----------------------------------------------
+nnoremap <silent> gf :call JumpOrCreateFile(0)<CR>
+nnoremap <silent> gF :call JumpOrCreateFile(1)<CR>
+
+" execute current line/selection by piping to bash ---------------------------
+"nnoremap <Leader>x !!parallel -X -u --tty /home/nadim/do_it <CR>
+nnoremap <Leader>x !!bash<CR>
+vnoremap <Leader>x !bash<CR>
+
+" ??? execute the line -------------------------------------------------------
+nnoremap <Leader>X o<ESC>makyyp!!bash<CR><ESC>
+	\kI```{.bash}<CR>command: <CR><ESC>o--- output ---<ESC>
+	\'ak<CR>I```<ESC>j
+
+" ??? execute the line -------------------------------------------------------
+vnoremap <Leader>X y
+	\O<ESC>kma
+	\gv
+	\<ESC>o<ESC>mb
+	\gv!bash<ESC>
+	\'ajI```{.bash}<CR>commands:<ESC>p<CR>o--- output ---<ESC>
+	\'bI```<ESC>j
+
+" pick from own files --------------------------------------------------------
+map <leader><leader>e :call FZFPickNkh()<cr>
+
+" pick from MRU via fzf ------------------------------------------------------
+nnoremap <leader><leader>r :FZFMru -m<CR>
+
+" ftl as a file picker -------------------------------------------------------
+map <leader><leader>f :call Ftl(1)<cr>
+
+" Tasciio --------------------------------------------------------------------
+map <leader><leader>a :call TAsciio()<cr>
+
+" ??? ------------------------------------------------------------------------
+nnoremap <Leader>p :exec ":silent !clear ; ./pasithee " . expand('%:p') line('.') \| e \| redraw! <CR>
+vnoremap <Leader>P :exec ":silent !./pasithee " . expand('%:p')  line('.') \| e \| redraw! <CR>
+
+" ----------------------------------------------------------------------------
+" nnoremap <silent> <Leader>dd :delete A<CR>
+" nnoremap <silent> <Leader>p :put A<CR>
+" nnoremap <silent> <Leader>P :put! A<CR>
+

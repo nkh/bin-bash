@@ -1,0 +1,108 @@
+
+set colored-completion-prefix on
+set colored-stats on
+#set completion-prefix-display-length 2
+#set completion-query-items 50
+#set page-completions on
+set enable-bracketed-paste on
+set show-all-if-ambiguous on
+set blink-matching-paren on
+set mark-symlinked-directories on
+set horizontal-scroll-mode Off
+#set show-all-if-ambiguous on
+set skip-completed-text on
+
+$if bash
+  SPACE: magic-space
+$endif
+
+# sed -n l     to see the characters typed
+  
+# ^_ undo 
+# ^b beginning of line
+# ^e end of line 
+# ^f find file menu
+# ^T fzf Paste the selected files and directories onto the command line
+# ^r fzf search history
+# ^k kill to end of line, Mk kill to beginning of line
+# ^w kill-yank backwards
+# ^y inserts buffer
+# ^x^e edit line in buffer
+# ^left-right move word
+# ^x^r reload inputrc
+
+# M-s menue complete
+# M-e adds $() around line
+# M-f adds for loop
+# M-o adds option
+# M-* insert all completions
+# M-d kill word, M-backspace kill word backword
+# M--   cd -
+# M-C fzf cd into the selected directory
+# M-z "$( !! | fzf )", ls -1 ; cat M-z => list files, cat result of previous command picked with fzf 
+
+# extra bindings
+
+# ~ has / automatically added
+"~":"\C-v~/"
+
+# C-a used by tmux
+"\C-x":backward-char
+"\C-b":beginning-of-line
+"\C-e":end-of-line
+
+# "\C-j": menu-complete
+# "\C-k": menu-complete-backward
+
+# add option
+"\eo": "\C-p\C-b\ef "
+
+# kill the begining of line
+"\ek":  backward-kill-line
+
+# C-arrow to move words
+"\eOC":forward-word
+"\eOD":backward-word
+
+# bicycle ... race!
+"\eb": '🚲'
+
+"\ef": 'ftl\C-m'
+"\ed": 'ftl_shell_back\C-m'
+"\eg": 'ftl_synch_with_shell\C-m'
+
+# cd -
+"\e-": 'cd -\C-m'
+
+# cmus bindings
+# "\elp": 'cmus-remote --play\C-m'
+# "\elP": 'cmus-remote --pause\C-m'
+# "\eln": 'cmus-remote --next\C-m'
+# "\elp": 'cmus-remote --prev\C-m'
+# "\elc": 'cmus-remote --clear -q\C-m'
+
+
+# realclean
+"\C-K": 'realclean\C-m'
+
+# "$()" around whole command
+"\ee": '\C-b "$(\C-e)"\C-b'
+
+# "$()" in front of cursor
+"\er": '$()\C-x'
+
+# "$( !! | fzf ) | "
+"\ez": '"$(!!|fzf)"\C-e | '
+
+# remap shift-tab so we can use it
+"\e[Z": menu-complete
+
+# for loop
+#"\el": '\C-bfor i in \C-e ; do  $i ; done '
+
+# "$(fgh) "
+"\eh": '"$(fgh)"\C-e'
+
+# find words in current line
+#bind -x '"'"\C-J"'":"set_command_cursor"'
+

@@ -1,0 +1,66 @@
+
+let mapleader = "\<space>" 
+set rtp+=/home/nadim/nadim/bin/
+
+source $META_HOME/config/vimrc_functions
+source $META_HOME/config/vimrc_set
+source $META_HOME/config/vimrc_cursor
+source $META_HOME/config/vimrc_augroup
+source $META_HOME/config/vimrc_colors
+source $META_HOME/config/vimrc_plugins_setup
+source $META_HOME/config/vimrc_mapping
+
+fun! s:ExpandCmdline()
+  let line = getcmdline()
+  let pos = getcmdpos() - 1
+
+  let res = match(strpart(line, 0, pos), '\v\$\w+$')
+  if res == -1
+    return line
+  endif
+
+  let left = strpart(line, 0, res) . expand(strpart(line, res, pos-res))
+  call setcmdpos(strlen(left) + 1)
+  return left . strpart(line, pos)
+endfun
+
+cnoremap <C-R><C-V> <C-\>e<SID>ExpandCmdline()<CR>
+
+
+" leader bindings ------------------------------------------------------------
+
+" n  <Space>gs   * :GitGutterStageHunk <CR>
+" n  <Space>gp   * :GitGutterPrevHunk <CR>
+" n  <Space>gn   * :GitGutterNextHunk <CR>
+" n  <Space>gt   * :GitGutterToggle <CR>
+" n  <Space>hp    @<Plug>(GitGutterPreviewHunk)
+" n  <Space>hu    @<Plug>(GitGutterUndoHunk)
+" n  <Space>hs    @<Plug>(GitGutterStageHunk)
+
+" n  <Space>gdv  * :Gvdiffsplit<CR>
+" n  <Space>gdd  * :Gdiffsplit<CR>
+" n  <Space>g    * :G<CR>
+
+" n  <Space>?      <Plug>MarkSearchAnyPrev
+" n  <Space>/      <Plug>MarkSearchAnyNext
+" n  <Space>#      <Plug>MarkSearchCurrentPrev
+" n  <Space>*      <Plug>MarkSearchCurrentNext
+" n  <Space>n      <Plug>MarkClear
+" n  <Space>r      <Plug>MarkRegex
+" n  <Space>m      <Plug>MarkSet
+
+"    <Space>rwp    <Plug>RestoreWinPosn
+"    <Space>swp    <Plug>SaveWinPosn
+
+" n  <Space>p    * :exec ":silent !clear ; ./pasithee " . expand('%:p') line('.') | e | CR>
+" n  <Space>X    * o<Esc>makyyp!!bash<CR><Esc>kI```{.bash}<CR>command: <CR><Esc>o--- output ---<E
+" n  <Space>x    * !!bash<CR>
+" n  <Space>ga   * :!bash -i -c fga ; tmux send-key -- C-m<CR>
+
+" n  <Space>R    * :FZFMru -m<CR>
+" n  <Space>t    * :GFiles<CR>
+" n  <Space>q    * :FZFQuickFix <CR>
+" n  <Space>T    * :Files<CR>
+" n  <Space>f    * :FZFRg<CR>
+" n  <Space>b    * :FZFBLines<CR>
+

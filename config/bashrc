@@ -1,0 +1,122 @@
+export TERM=xterm-256color   # needed for tmux to run RGB mode
+
+if [ "$TMUX" == "" ]; then
+	tmux new-session \; new-window "tmux set-option -ga terminal-overrides \",$TERM:Tc\"; tmux detach"
+	tmux attach 
+fi
+
+mkdir -p /tmp/$USER
+
+lap() { : ; } #; lap() { echo $1 ; } ; time {
+
+export META_HOME='/home/nadim/nadim'
+export N="$META_HOME"
+export NC="$META_HOME/config"
+export NB="$META_HOME/bin"
+export NBB="$META_HOME/bin/bash"
+export ND="$META_HOME/devel"
+export NDO="$META_HOME/downloads"
+
+export XDG_DATA_HOME=$HOME/.local/share
+export GPG_TTY=$(tty)
+
+set -o vi
+bind -m vi-insert "\C-l":clear-screen
+
+# disable C-s
+stty -ixon
+
+#set -e
+#set -u # warn when unset variables are used
+set -o pipefail
+#set +o histexpand #no !182 but fzf's ^r stops working
+
+shopt -s autocd 
+shopt -s cdspell
+shopt -s checkhash 
+shopt -s checkjobs
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s dirspell
+shopt -s histappend
+shopt -s histreedit
+shopt -s histverify
+shopt -s huponexit
+shopt -s lastpipe
+
+export PATH="${PATH:+${PATH}:}$META_HOME/bin/"
+export PATH="${PATH:+${PATH}:}$META_HOME/bin/bash"
+export PATH="${PATH:+${PATH}:}$HOME/.local/bin"
+export PATH="${PATH:+${PATH}:}$HOME/.go/bin:$HOME/go/bin"
+export PATH="${PATH:+${PATH}:}$HOME/.cargo/bin"
+export PATH="${PATH:+${PATH}:}/home/linuxbrew/.linuxbrew/bin/"
+
+export FIGNORE="blib:_build:.git"
+
+export TERMCMD=tmux
+export BROWSER=google-chrome
+export MANPAGER="vim  -c 'set nospell' +MANPAGER -"
+export MANPATH="$MANPATH:/home/nadim/perl5/man"
+export PAGER="less -R"
+# export PAGER="vim -R -c 'set nospell' -c 'AnsiEsc' -"
+# export PAGER="vimpager -c 'set nospell'"
+export GIT_PAGER="vimpager -c 'set nospell'"
+
+export EDITOR=vim
+export XAUTHORITY=~/.Xauthority 
+
+export LESS_TERMCAP_mb=$'\E[38;5;32m'    # begin blinking
+export LESS_TERMCAP_md=$'\E[38;5;32m'    # begin bold
+export LESS_TERMCAP_me=$'\E[0m'          # end mode
+export LESS_TERMCAP_se=$'\E[0m'          # end standout-mode
+export LESS_TERMCAP_so=$'\E[38;5;32m'    # begin standout-mode - info box #01,30 default
+export LESS_TERMCAP_ue=$'\E[0m'          # end underline
+export LESS_TERMCAP_us=$'\E[38;5;32m'    # begin underline
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+lap 'setting variables'
+
+eval $(dircolors -b "$META_HOME/config/dir_colors")              ; lap 'eval dircolors'
+
+source /usr/share/bash-completion/bash_completion                ; lap 'load bash completions'
+source "$META_HOME/config/ansi_colors.sh"                        ; lap 'ansi colors'
+source "$META_HOME/config/aliases.sh"                            ; lap 'aliases'
+source "$META_HOME/config/history.sh"                            ; lap 'history'
+source "$META_HOME/config/info.sh"                               ; lap 'info'
+source "$META_HOME/bin/completions/completions.sh"               ; lap 'completions'
+source "$META_HOME/bin/bash/bash_divers.sh"                      ; lap 'bash_divers'
+#source "$META_HOME/bin/bash/ditto.sh"                            ; lap ditto
+source "$META_HOME/bin/bash/function.sh"                         ; lap 'functions'
+source "$META_HOME/bin/bash/copy"                                ; lap 'copy' 
+source "$META_HOME/bin/bash/bash_completion.sh"                  ; lap 'bash_completion'
+source "$META_HOME/bin/bash/edit_config"                         ; lap 'edit_config'
+# source "$META_HOME/config/set_command_cursor"                    ; lap 'set_command_cursor'
+source "$META_HOME/config/cd.sh"                                 ; lap 'cd.sh'
+source "$META_HOME/config/perl.sh"                               ; lap 'perl.sh'
+source "$META_HOME/config/tmux.sh"                               ; lap 'tmux'
+source "$META_HOME/config/squirrel"                              ; lap 'squirrel'
+source "$META_HOME/config/ranger.sh"                             ; lap 'ranger'
+source "$META_HOME/config/gv"                                    ; lap 'git gv'
+source "$META_HOME/config/git_bash_integration.sh"               ; lap 'git bash integration'
+source "$META_HOME/config/ftl.sh"                                ; lap 'ftl'
+source "$META_HOME/config/piper.sh"                              ; lap 'piper'
+source "$META_HOME/config/ra.sh"                                 ; lap 'ra' 
+# source "$META_HOME/bin/bash/h.sh"                                ; lap 'h'
+source "$META_HOME/bin/bash/forgit.plugin.sh"                    ; lap 'forgit' 
+source "$META_HOME/bin/bash/cx.sh"                               ; lap 'cx'   
+source "$META_HOME/bin/cheat_sheet/colors"                       ; lap 'colors'
+source "$META_HOME/config/prompt.sh"                             ; lap 'prompt'
+source "$META_HOME/config/docker.sh"                             ; lap 'docker'  
+source "$META_HOME/config/gh_token"                              ; lap 'gh'
+source "$META_HOME/config/fzf.sh"                                ; lap 'fzf'
+
+source "$HOME/.cargo/env"                                        ; lap 'cargo'
+# eval "$(/home/nadim/.rakubrew/bin/rakubrew init Bash)"           ; lap 'rakubrew'
+
+# } | ts -i %.s | piper '[^ ]+' {blue}'sprintf "%.3f", {}'{reset}
+# } | ts -i %.s | sort -r | piper '[^ ]+' {blue}'sprintf "%.3f", {}'{reset}
+

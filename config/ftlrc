@@ -1,0 +1,61 @@
+source $FTL_CFG/etc/ftlrc
+
+leader_key=SPACE
+
+rfilter0='\.sw.$'
+mount_archive=1
+fzf_opt="-p 90% --cycle --reverse --info=inline --color=hl+:214,hl:214"
+CMD_COLS=150 # columns when displaying command mapping in popup
+
+HEXEDIT='hx -g 4 -o 36'
+HEXVIEW="HUXD_COLORS='0x00-0xff=136;printable=251;whitespace=115;nul=160;0x0a=49;0x20=73;offset=240;ascii_borders=240' huxd -l 28"
+GPGID=nadim.khemir
+SXIV=nsxiv
+
+# MD_RENDER1='lowdown -Tterm'
+PAGER_ANSI='moar --no-statusbar -no-linenumbers'
+
+MD_PAGER='moar --no-statusbar -no-linenumbers'
+MD_RENDER2='piper_md'
+pmd() { md="${1:-$n}" ; ((extmode)) && psplit "$MD_RENDER2 \"$md\" | $MD_PAGER" || ptext \"$md\" ;  }
+
+NCDU=gdu
+
+declare -A marks=(
+	[0]=/
+	[1]=$HOME/$
+	[2]=$HOME/nadim/$
+	[3]=$HOME/downloads/$
+	[4]=$HOME/downloads/images/$
+	[5]=$HOME/downloads/music/$
+	[B]=$HOME/nadim/bin/bash$
+	[C]=$HOME/nadim/config/$
+	[F]=$HOME/nadim/devel/repositories/ftl/$
+	[M]=/media/nadim/$
+	[R]=$HOME/nadim/devel/repositories/$
+	[T]=/tmp/$USER/$
+	["'"]="$(tail -n1 $ghist)"
+	)
+
+# how to delete and create an undelete binding 
+RM="rip --graveyard $HOME/graveyard" ; mkdir -p $HOME/graveyard
+
+bind ftl file	U	unbury	"undo last deletion in current directory"
+unbury() { last_bury="$(rip --graveyard $HOME/graveyard -s | tail -n1)" ; [[ -n "$last_bury" ]] && { rip --graveyard $HOME/graveyard -u ; cdir "$PWD" "$(basename "$last_bury")" ; } ; } 
+
+# add marks from fzf-marks to global marks
+gmark_fzf_user() { perl -ape '$_ = "$F[2]/\n"' ~/.fzf-marks ; }
+
+# override preview
+user_pviewers() { [[ $e == pbs_log || $e == pbs_log_fail ]] && ((extmode==1)) && { ptext ; return 0 ; } ; }
+
+# override colors
+declare -A user_colors=(
+	[pasithee]="30;48;5;63"
+	)
+
+# load git etags but keep them invisible
+. ~/.config/ftl/etc/etags/git
+
+# vim: set filetype=bash:
+
