@@ -1,3 +1,6 @@
+# list only untracked files
+git ls-files --others --exclude-standard
+
 # divers vim related
 fugitive: %Gllog, select, Gdiff
 fugitive: Git log --patch -- filename

@@ -140,46 +140,68 @@ __forgit_stash_show() {
     --preview="$cmd"
 }
 
-# git ignore generator
-export FORGIT_GI_CACHE=~/.gicache
-export FORGIT_GI_INDEX=${FORGIT_GI_CACHE}/.index
-__forgit_ignore() {
-    [ -f $FORGIT_GI_INDEX ] || __forgit_ignore_update
-    local preview="echo {} |awk '{print \$2}' |xargs -I% bash -c 'cat $FORGIT_GI_CACHE/% 2>/dev/null || (curl -sL https://www.gitignore.io/api/% |tee $FORGIT_GI_CACHE/%)'"
-    ${IFS+"false"} && unset oldifs || oldifs="$IFS" #store IFS
-    IFS=$'\n'
-    [[ $# -gt 0 ]] && args=($@) || args=($(cat $FORGIT_GI_INDEX |nl -nrn -w4 -s'  ' |__forgit_fzf -m --preview="$preview" --preview-window="right:70%" |awk '{print $2}'))
-    ${oldifs+"false"} && unset IFS || IFS="$oldifs" # restore IFS
-    test -z "$args" && return 1
-    local options=(
-    '(1) Output to stdout'
-    '(2) Append to .gitignore'
-    '(3) Overwrite .gitignore')
-    opt=$(printf '%s\n' "${options[@]}" |__forgit_fzf +m |awk '{print $1}')
-    case "$opt" in
-        '(1)' )
-            __forgit_ignore_get ${args[@]}
-            ;;
-        '(2)' )
-            __forgit_ignore_get ${args[@]} >> .gitignore
-            ;;
-        '(3)' )
-            __forgit_ignore_get ${args[@]} > .gitignore
-            ;;
-    esac
+__forgit_ignore()
+{
+
+files_to_ignore=($(\
+	git ls-files --others --exclude-standard | lscolors |\
+		__forgit_fzf -m \
+			--preview='perl -e "exit -B \$ARGV[0]" -- {}&& tvcat {} 100 -1 || file {}' \
+			--preview-window="right:70%"))
+
+test -z "$files_to_ignore" && return 1
+
+printf "%s\n" "${files_to_ignore[@]}" >>.gitignore
 }
 
-__forgit_ignore_update() {
-  mkdir -p $FORGIT_GI_CACHE
-  curl -sL https://www.gitignore.io/api/list |tr ',' '\n' > $FORGIT_GI_INDEX
-}
-__forgit_ignore_get() {
-    mkdir -p $FORGIT_GI_CACHE
-    echo $@ |xargs -I{} bash -c "cat $FORGIT_GI_CACHE/{} 2>/dev/null || (curl -sL https://www.gitignore.io/api/{} |tee $FORGIT_GI_CACHE/{})"
-}
-__forgit_ignore_clean() {
-    [[ -d $FORGIT_GI_CACHE ]] && rm -rf $FORGIT_GI_CACHE
-}
+# git ignore generator
+# export FORGIT_GI_CACHE=~/.gicache
+# export FORGIT_GI_INDEX=${FORGIT_GI_CACHE}/.index
+
+# __forgit_ignore() {
+#     [ -f $FORGIT_GI_INDEX ] || __forgit_ignore_update
+
+#     local preview="echo {} |awk '{print \$2}' |xargs -I% bash -c 'cat $FORGIT_GI_CACHE/% 2>/dev/null || (curl -sL https://www.gitignore.io/api/% |tee $FORGIT_GI_CACHE/%)'"
+
+#     ${IFS+"false"} && unset oldifs || oldifs="$IFS" #store IFS
+#     IFS=$'\n'
+
+#     [[ $# -gt 0 ]] && args=($@) || args=($(cat $FORGIT_GI_INDEX |nl -nrn -w4 -s'  ' |__forgit_fzf -m --preview="$preview" --preview-window="right:70%" |awk '{print $2}'))
+#     ${oldifs+"false"} && unset IFS || IFS="$oldifs" # restore IFS
+
+#     test -z "$args" && return 1
+#     local options=(
+#     '(1) Output to stdout'
+#     '(2) Append to .gitignore'
+#     # '(3) Overwrite .gitignore'
+#     )
+#     opt=$(printf '%s\n' "${options[@]}" |__forgit_fzf +m |awk '{print $1}')
+#     case "$opt" in
+#         '(1)' )
+#             __forgit_ignore_get ${args[@]}
+#             ;;
+#         '(2)' )
+#             __forgit_ignore_get ${args[@]} >> .gitignore
+#             ;;
+#         '(3)' )
+#             __forgit_ignore_get ${args[@]} > .gitignore
+#             ;;
+#     esac
+# }
+
+# __forgit_ignore_update() {
+#   mkdir -p $FORGIT_GI_CACHE
+#   curl -sL https://www.gitignore.io/api/list |tr ',' '\n' > $FORGIT_GI_INDEX
+# }
+
+# __forgit_ignore_get() {
+#     mkdir -p $FORGIT_GI_CACHE
+#     echo $@ |xargs -I{} bash -c "cat $FORGIT_GI_CACHE/{} 2>/dev/null || (curl -sL https://www.gitignore.io/api/{} |tee $FORGIT_GI_CACHE/{})"
+# }
+
+# __forgit_ignore_clean() {
+#     [[ -d $FORGIT_GI_CACHE ]] && rm -rf $FORGIT_GI_CACHE
+# }
 
 fzf-git() {
 cat <<EOC
@@ -201,10 +223,12 @@ if [[ -z "$FORGIT_NO_ALIASES" ]]; then
   alias ${forgit_add:-fga}=__forgit_add
   alias ${forgit_log:-fgl}=__forgit_log
   alias ${forgit_diff:-fgd}=__forgit_diff
-  #alias ${forgit_ignore:-fgi}=__forgit_ignore
+  alias ${forgit_ignore:-fgi}=__forgit_ignore
   alias ${forgit_restore:-fgr}=__forgit_restore
   alias ${forgit_unstage:-fgu}=__forgit_unstage
   #alias ${forgit_clean:-fgc}=__forgit_clean
   alias ${forgit_stash_show:-fgss}=__forgit_stash_show
 fi
+
+# vim: set ft=bash:
 

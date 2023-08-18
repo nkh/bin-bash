@@ -1,0 +1,92 @@
+
+use strict ;
+use warnings;
+use Term::ANSIColor qw(color colorvalid) ;
+use Data::TreeDumper ;
+
+my $d = <<'EOC' ;
+for (qw(
+	?
+	{a}
+	a{}?
+	?a{}
+	?{a}
+	{a}?{b}
+	{a}{b}{c}
+	{a}{b}{c}{d}
+	{a}bc{d}
+	{a}bcd
+
+	{?}
+
+	{
+	}
+	{{}
+	{a}{{{{{{b}
+	{a}{{{{{{b
+	{a}{{{{{{
+
+	{a}}}}}}{b}
+	{a}}}}}}{b
+	{a}}}}}}b}
+	))
+EOC
+
+my @test_data = qw(
+	{red}text
+	{xred}text{green}
+	{red}text{xgreen}
+	{xred}text{xgreen}
+	{red}text{green}
+	{redtext{green}
+	{text
+	{}text{}
+	{}text
+	text{}
+	{}
+	{}{}
+	{}{}{}
+	{}{}{}{}
+	{}{red}{}
+	{}red{}
+	{red}
+	{red}{green}
+	{red}{reset}
+	red
+	{red}{}
+	{}{green}
+	) ;
+
+my $debug = 1 ;
+my $keep_match ;
+
+my $empty_string = '' ;
+
+for (@test_data, $empty_string)
+	{{
+printf "%-25s", $_ if $debug ;
+
+		s/^(?'cd1'\{(?'c1'[^\{\}]*)\})// ;
+		my ($v1, $c1, $cd1) = (0, $+{c1} // '', $+{cd1} // '') ;
+ 		($v1, $c1) = (1, color($c1)) if $c1 !~ /^\s*$/ && colorvalid($c1) ; 
+
+		$_ = reverse ; # search from end
+
+		s/^(?'cd2'\}(?'c2'[^\{\}]*)\{)// ;
+		my $v2 = 0 ; my $c2 = reverse($+{c2} // '') ; my $cd2 = reverse($+{cd2} // '') ;
+ 		($v2, $c2) = (1, color($c2)) if $c2 !~ /^\s*$/ && colorvalid($c2) ; 
+
+		my $t = reverse $_ ;
+		($c1, $t) = ('', $cd1 . $t) if !$v1 && $cd1 ne '{}' ;
+		($c2, $t) = ('', $t . $cd2) if !$v2 && $cd2 ne '{}' ;
+ 
+		($c1, $cd1, $t, $c2, $cd2) = (color($t), ">$t<", $keep_match, color('reset'), ">reset<") 
+			if !$v1 && $cd1 ne '{}' && !$v2 && $cd1 ne '{}' && $t !~ /^\s*$/ && colorvalid($t) ;
+
+		$t = $keep_match if defined $t && $t eq '' && ($v1) ;
+
+print "${c1}$cd1 - @{[$t // '*keep match*']} - ${c2}$cd2 ..." . color('reset') . "\n" if $debug ;
+
+		#[$c1, $t, $c2] 
+ 
+	}}
