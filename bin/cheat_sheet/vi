@@ -1,3 +1,6 @@
+#macro to join with ,
+qjgJi,Escq 
+
 # multipane window
 vim -c 'windo set scrollbind nomodifiable' -O all* <(seq 5)
 

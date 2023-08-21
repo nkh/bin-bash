@@ -37,7 +37,7 @@ tmux bind C-M    run "tmux-man"
 tmux bind g      split-window c_fzf
 tmux bind C-G    new-window -n cheat c_fzf
 
-tmux bind k      split-window -h -l 21 tcol
+tmux bind k      split-window -h -l 21 'tcol --oc'
 
 # new window via fzf-mark ----------------------------------------------------
 tmux bind C-C    new-window -c "#{pane_current_path}" "cd \$(tmux_new_window_fzm) ; bash -i" 

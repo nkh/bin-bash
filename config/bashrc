@@ -61,6 +61,7 @@ export PAGER="less -R"
 # export PAGER="vim -R -c 'set nospell' -c 'AnsiEsc' -"
 # export PAGER="vimpager -c 'set nospell'"
 export GIT_PAGER="vimpager -c 'set nospell'"
+export GREP_COLORS='ms=32:mc=32:sl=:cx=:fn=38;5;97:ln=38;5;28:bn=38;5;28:se=36'
 
 export EDITOR=vim
 export XAUTHORITY=~/.Xauthority 
@@ -90,6 +91,7 @@ source "$META_HOME/config/info.sh"                               ; lap 'info'
 source "$META_HOME/bin/completions/completions.sh"               ; lap 'completions'
 source "$META_HOME/bin/bash/bash_divers.sh"                      ; lap 'bash_divers'
 #source "$META_HOME/bin/bash/ditto.sh"                            ; lap ditto
+source "$META_HOME/bin/bash/declare_A"                           ; lap 'functions'
 source "$META_HOME/bin/bash/function.sh"                         ; lap 'functions'
 source "$META_HOME/bin/bash/copy"                                ; lap 'copy' 
 source "$META_HOME/bin/bash/bash_completion.sh"                  ; lap 'bash_completion'

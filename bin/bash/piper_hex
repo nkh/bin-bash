@@ -1,0 +1,25 @@
+BG=on_ansi236
+FG=ansi252
+DARK_FG=ansi245
+
+OFFSET="$DARK_FG" NL="cyan $BG" SPACE="ansi245 $BG" ANY="$FG $BG" ASCII="$DARK_FG"
+
+[[ "$1" =~ --no-color ]] && { no_color=1             ; shift ; }
+[[ "$1" =~ - ]]          && { hexdump_options+=" $1" ; shift ; }
+
+fs="$(mktemp -u -p /tmp/$USER/piper XXXXXXXX)" ; mkdir -p $fs # work directory
+
+cat $1 >$fs/data 
+
+paste -d' ' \
+	<(\
+		<$fs/data hexdump $hexdump_options -v -e '"%08_ax " 16/1 " %02X" "X\n"' | \
+		{ (( no_color )) && cat || piper --global '^.{9}' "$OFFSET" ' 0A' "$NL" ' 20' "$SPACE" ' [0-9A-F]{2}' "$ANY" 'X' {$BG}' '{reset} ; } \
+	) \
+	<(<$fs/data hexdump $hexdump_options -v -e '16/1 "%_p" "\n"' | { (( no_color )) && cat || piper '.*' $DARK_FG ; })
+
+rm -rf $fs
+
+
+# vim: set ft=bash:
+

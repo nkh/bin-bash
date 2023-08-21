@@ -192,6 +192,7 @@ alias glb='git lb' ; __git_complete gld _git_log
 alias glba='git lba' ; __git_complete gld _git_log
 alias gdo='git diff' ; __git_complete gdo _git_diff
 alias gts='git-tree-status'
+alias git_has='< <(git ls-files) grep'
 
 gl10() { git --no-pager l -10 "$@" ; echo ; }
 __git_complete gl _git_log

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# perl -e 'while(<>) { chomp ; @s2 = split // ; for (@s2) { $s1c = (shift @s1) ; print $_ eq $s1c ? "." : $_ } ; print "\n" ; @s1 = @s2 }'
+
+declare_A()
+{
+[[ "$1" == -n ]] && { shift ; echo declare -A: "$@" ; }
+(( ${#@} ))      || return 0
+
+declare -p "$@" | grep -oP '\[.*?\]=".*?"' | sort | perl -ne '/\[(.*?)\]="(.*)"/ ; print "$1===$2\n"' | column -ts'==='
+}
+
+declare_Ac()
+{
+declare_A "$@" | piper '^declare -A:.*' ansi36 '^\w+' blue '.*' ansi250
+}
+

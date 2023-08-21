@@ -7,11 +7,11 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-alias f=~/nadim/bin/fzfpp
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias fw='cat /usr/share/dict/words | fzf | copy'
+alias vless='/usr/share/vim/vim82/macros/less.sh -R'
 
 alias ls='ls --color=auto -h -v --group-directories-first -b'
 alias lsx='ls --color=auto -h -v --group-directories-first -X -b'
