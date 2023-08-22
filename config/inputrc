@@ -1,4 +1,3 @@
-
 set colored-completion-prefix on
 set colored-stats on
 #set completion-prefix-display-length 2
@@ -50,6 +49,8 @@ $endif
 "\C-x":backward-char
 "\C-b":beginning-of-line
 "\C-e":end-of-line
+"\e\C-e":shell-expand-line
+
 
 # "\C-j": menu-complete
 # "\C-k": menu-complete-backward

@@ -43,6 +43,7 @@ shopt -s histreedit
 shopt -s histverify
 shopt -s huponexit
 shopt -s lastpipe
+shopt -s direxpand
 
 PATH="$META_HOME/bin/:${PATH}"
 PATH="$META_HOME/bin/bash:${PATH}"

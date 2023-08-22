@@ -1,3 +1,8 @@
+# FZF bindings
+CTRL-T - Paste the selected file path into the command line
+CTRL-R - Paste the selected command from history into the command line
+ALT-C  - cd into the selected directory
+
 # set keyboard rate
 xset r rate 250 100
 
