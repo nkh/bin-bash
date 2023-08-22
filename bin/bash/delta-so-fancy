@@ -1,0 +1,22 @@
+delta \
+	--line-numbers \
+	--line-numbers-left-style '#3a3a3a' \
+	--line-numbers-right-style '#3a3a3a' \
+	--file-modified-label "modified:" \
+	--diff-so-fancy \
+	--file-style '#909000' \
+	--file-decoration-style 'ol #404000' \
+	--hunk-header-decoration-style '' \
+	--hunk-header-style '' \
+	--minus-emph-style '#c6c6c6 #560000' \
+	--plus-emph-style '#c6c6c6 #004500' \
+	--right-arrow '…'
+
+# --file-added-label    Text to display before an added file path [default: added:]
+# --file-copied-label   Text to display before a copied file path [default: copied:]
+# --file-modified-label Text to display before a modified file path [default: ]
+# --file-removed-label  Text to display before a removed file path [default: removed:]
+# --file-renamed-label  Text to display before a renamed file path [default: renamed:]
+
+# vim: set ft=bash:
+

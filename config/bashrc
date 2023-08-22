@@ -44,12 +44,13 @@ shopt -s histverify
 shopt -s huponexit
 shopt -s lastpipe
 
-export PATH="${PATH:+${PATH}:}$META_HOME/bin/"
-export PATH="${PATH:+${PATH}:}$META_HOME/bin/bash"
-export PATH="${PATH:+${PATH}:}$HOME/.local/bin"
-export PATH="${PATH:+${PATH}:}$HOME/.go/bin:$HOME/go/bin"
-export PATH="${PATH:+${PATH}:}$HOME/.cargo/bin"
-export PATH="${PATH:+${PATH}:}/home/linuxbrew/.linuxbrew/bin/"
+PATH="$META_HOME/bin/:${PATH}"
+PATH="$META_HOME/bin/bash:${PATH}"
+PATH="${PATH:+${PATH}:}$HOME/.local/bin"
+PATH="${PATH:+${PATH}:}$HOME/.go/bin:$HOME/go/bin"
+PATH="${PATH:+${PATH}:}$HOME/.cargo/bin"
+PATH="${PATH:+${PATH}:}/home/linuxbrew/.linuxbrew/bin/"
+export PATH
 
 export FIGNORE="blib:_build:.git"
 
