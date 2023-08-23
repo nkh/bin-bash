@@ -35,9 +35,12 @@ vnoremap <c-k> :m '<-2<CR>gv=gv
 " fold everything but search -------------------------------------------------
 noremap <leader>z :setlocal foldexpr=getline(v:lnum)=~@/?0:1 foldmethod=expr
 
-" go to file which don't exist -----------------------------------------------
+" go to file which doesn't exist -----------------------------------------------
 nnoremap <silent> gf :call JumpOrCreateFile(0)<CR>
 nnoremap <silent> gF :call JumpOrCreateFile(1)<CR>
+
+" open file in ftl instance
+nnoremap <silent> gm :call OpenFileInFtl()<CR>
 
 " execute current line/selection by piping to bash ---------------------------
 "nnoremap <Leader>x !!parallel -X -u --tty /home/nadim/do_it <CR>

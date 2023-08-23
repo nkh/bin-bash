@@ -66,6 +66,21 @@ let g:lessmode = 0
 
 " --------------------------------------------------
 
+function! OpenFileInFtl()
+	let filename = expand(expand("<cfile>"))
+	
+	if filename !~# '^\/'
+		let current_directory = expand('%:p:h')
+		
+		let filename = current_directory . '/' . filename
+	endif
+	
+	exec "silent !tmux new-window -n ftl ftl " . shellescape(filename) 
+	redraw!
+endfunction
+
+" --------------------------------------------------
+
 function! JumpOrCreateFile(new_tab)
 	let filename = expand(expand("<cfile>"))
 	
