@@ -16,20 +16,16 @@ is_bash_internal() { help -d $1 2> /dev/null ; }
 alias_which() {
 
 alias_definition=$(alias $1 2>/dev/null)
+own_definitions=$(ack -1 --nogroup --no-color --output="🚲\$\`\$&\$'" "alias $1=" ~/nadim/config ~/nadim/bin | perl -pe 's/(.*:)🚲/$1 =~tr[:][ ]r/ge')
 
 if [[ -n "$alias_definition" ]] ; then
-	own_definitions=$(ack -1 --nogroup --no-color --output="🚲\$\`\$&\$'" "alias $1=" ~/nadim/config ~/nadim/bin | perl -pe 's/(.*:)🚲/$1 =~tr[:][ ]r/ge')
-	found_current=$(printf "$own_definitions" | grep "$alias_definition")
+	found_current=$(echo -n "$own_definitions" | grep "$alias_definition")
 
-	if [[ -z "$found_current" ]] ; then
-		[[ -n "$own_definitions" ]] && printf "$own_definitions\n"
-		printf "${YELLOW}current: ${alias_definition}${RESET}\n"
-	else
-		[[ -n "$own_definitions" ]] && printf "$own_definitions\n"
-	fi
-	
+	[[ -n "$own_definitions" ]] && echo "$own_definitions"
+	echo "${YELLOW}current: ${alias_definition}${RESET}"
 	return 0
 else
+	[[ -n "$own_definitions" ]] && echo "Unused alias: $own_definitions"
 	return 1
 fi
 
