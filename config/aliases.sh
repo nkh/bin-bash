@@ -82,6 +82,8 @@ alias :wq='echo "*** not in vim ***"'
 alias :q='echo "*** not in vim ***"'
 alias q='echo "*** not in vim ***"'
 
+alias br="perl -E 'say q~-~ x (\$ARGV[0] // 79)'"
+
 alias cmx='chmod +x'
 alias cmnx='chmod -x'
 #alias 755='chmod 755'
