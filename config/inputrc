@@ -49,7 +49,7 @@ $endif
 "\C-x":backward-char
 "\C-b":beginning-of-line
 "\C-e":end-of-line
-"\e\C-e":shell-expand-line
+# "\e\C-e":shell-expand-line
 
 
 # "\C-j": menu-complete

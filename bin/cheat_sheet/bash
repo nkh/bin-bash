@@ -1,3 +1,6 @@
+# esc from less
+echo "\e\e quit" >>~/.lesskey
+
 # FZF bindings
 CTRL-T - Paste the selected file path into the command line
 CTRL-R - Paste the selected command from history into the command line

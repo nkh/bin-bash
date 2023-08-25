@@ -119,6 +119,8 @@ source "$META_HOME/config/gh_token"                              ; lap 'gh'
 source "$META_HOME/config/fzf.sh"                                ; lap 'fzf'
 
 source "$HOME/.cargo/env"                                        ; lap 'cargo'
+# source ~/.local/share/intelli-shell/bin/intelli-shell.sh         ; lap 'intellishell'
+
 # eval "$(/home/nadim/.rakubrew/bin/rakubrew init Bash)"           ; lap 'rakubrew'
 
 # } | ts -i %.s | piper '[^ ]+' {blue}'sprintf "%.3f", {}'{reset}
