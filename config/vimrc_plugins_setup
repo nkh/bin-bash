@@ -63,16 +63,16 @@ let g:fzf_preview_window = ['up:60%', 'ctrl-h']
 let g:fzf_mru_no_sort = 1
 
 " preview
-nnoremap <leader>b         :FZFBLines<CR>
+nnoremap <Leader>b         :FZFBLines<CR>
 nnoremap <Leader>f         :FZFRg<CR>
-nnoremap <Leader><leader>t :Files<CR>
+nnoremap <Leader><Leader>t :Files<CR>
 nnoremap <Leader>q         :FZFQuickFix<CR>
 
 nnoremap <silent>t         :FZFRg <c-r><c-w><cr>
 
 " fzf
 nnoremap <Leader>t :GFiles<CR>
-" nnoremap <leader>R :FZFMru -m<CR>
+" nnoremap <Leader>R :FZFMru -m<CR>
 " nnoremap <silent> t :Tags<CR>
 
 " autocmd! FileType fzf

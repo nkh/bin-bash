@@ -1,3 +1,10 @@
+# count deep processes
+strace -fo s.log process ; grep 'execve(' s.log | cut -d' ' -f 1 | sort -u | wc -l
+
+# count shallow processes
+set -o monitor ; trap "((++fork))" CHLD
+echo $fork FORKS
+
 # esc from less
 echo "\e\e quit" >>~/.lesskey
 

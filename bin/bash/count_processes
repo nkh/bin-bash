@@ -1,0 +1,5 @@
+#!/bin/bash
+log="$(mktemp -p /tmp/$USER/ XXXXXXXX)"
+
+strace -fo "$log" "$@"
+{ echo -n "processes: " ; grep 'execve(' "$log" | cut -d' ' -f 1 | sort -u | wc -l ; } 1>&2
