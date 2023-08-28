@@ -1,5 +1,7 @@
 
-i() { sudo apt install "$@" && echo "$@" >> ~/nadim/config/apt_get_install  ;}
+br() { perl -E 'say q~-~ x ($ARGV[0] || 79)' "$1" ; }
+
+i() { sudo apt install "$@" && echo "$@" >> ~/nadim/config/apt_get_install  ; }
 complete -F _apt i
 
 alias is="fzf_apt_search"
