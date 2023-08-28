@@ -1,0 +1,34 @@
+#!/bin/bash
+
+find_top_dirs() # min_size, dir1, dir2
+{
+du -d 1 "$2"  | sort -rh | head -5 | \
+perl -e 'scalar <STDIN> ; while(<STDIN>) { m~ (.*) \t $ARGV[1] / (.*) ~x and do { print "$2\n" if -e "$ARGV[2]/$2" and $1 > $ARGV[0] }}' "$@"
+}
+
+gen_diff_command()
+{
+local                        depth      dir1      dir2
+min_size="$1" max_depth="$2" depth="$3" dir1="$4" dir2="$5"
+
+local top_diff="diff -rq $dir1 $dir2"
+
+(( depth < max_depth )) && \
+	for dir in  $(find_top_dirs "$min_size" "$dir1" "$dir2") ; do
+		top_diff+=" -x $dir"
+		gen_diff_command "$min_size" "$max_depth" $(( depth + 1 )) "$dir1/$dir" "$dir2/$dir"
+	done
+
+$top_diff &
+# echo "[$depth] $top_diff &"
+}
+
+:                ${MIN_SIZE:=100000} ${MAX_DEPTH:=3}
+gen_diff_command "$MIN_SIZE"         "$MAX_DEPTH"     0 "$1" "$2" #| ts -i %.s
+wait
+
+# diff <(diff -rq dir2 dir3 | sort) <(./gen_diff_command dir2 dir3 | sort)
+# for i in $(seq 0 5) ; do diff -q <(<diff_base sort) <(MAX_DEPTH=$i ./gen_diff_command dir2 dir3 | sort) ; done
+# for i in $(seq 0 5) ; do time MAX_DEPTH=$i ./gen_diff_command dir2 dir3 | wc -l ; done
+
+# vim: set ft=bash:
