@@ -1,43 +1,80 @@
-# . squirrel
-
-# echo "info: $(sqf xxx)" >local_file
-# sqr
-
+# NAME
+#    squirrel
+#
+# DESCRIPTION
+#
+#    squirrel - squirrels away your data
+#
+# DOCUMENTATION
+#
+# a set of utilities that help you split a stream and put it back after processing pieces
+#
+# EXAMPLE ( uses 27 processes )
+#
+# # generate a sequence to work on
 # seq 9 | \
-# 	sqh 3 2> >(piper . blue  | sqp xxx) | \
-# 	sqh 2 2> >(piper . green | sqp yyy) | \
-# 	piper . red | \
-# 	sqc xxx - :local_file yyy
+#
+#	# cut out 3 lines      # sends them in a command    # sqiirrel result into blue
+#	sqh 3                  2> >(piper . blue            | sqp blue) | \
+#	
+#	# cut out 2 i+ 2 lines # sends them in a command    # squirrel result into green   # send them in command    # squirrel into yellow 
+#	sqhn 2 2               3> >(piper . green           | sqp green)                   4> >(piper . yellow       | sqp yellow) | \
+#	
+#	# get what's left from the sequence and process it
+#	piper . red | \
+#	
+#	# put the pieces back together in any order
+#	#   <-->   stdin  file          <------>  <---> 
+#	sqc blue   -      :local_file    yellow   green
+#
+# without comments
+#
+# seq 9 | \
+#	sqh 3 3> >(piper . blue  | sqp xxx) | \
+#	sqhn 2 2 3> >(piper . green | sqp green) 4> >(piper . yellow | sqp yellow) | \
+#	piper . red | \
+#	sqc blue - :local_file green yellow
 
+# reset the cache
 sqr() { stmp=/tmp/$USER/stmp/$$ ; rm -rf "$stmp" ; }
+
+# lookup name to file
 sqf() { stmp=/tmp/$USER/stmp/$$ ; mkdir -p "$stmp" ; printf "$stmp/%s\n" "$@" ; }
-sqh() { tee >(head -$1 1>&2) | tail +$(($1 + 1)) ; }
+
+# any command that splits data into 2 or more chunks
+# leave fd 2 for errors and use as many fd as you want
+
+# cuts a lines from beginning of input
+sqh() { tee >(head -$1 1>&3) | tail +$(($1 + 1)) ; }
+
+sqhn() { perl -e '$of=2 ; for (@ARGV) { $of++ ; open $fh, ">&=", $of ; print $fh scalar<STDIN> for (1.. $_) ; } print <STDIN>' "$@"  ; }
+
+# squirrel away your data in the cache
 sqp() { cat >$(sqf "$1") ; }
 
+# collect parts
 sqc()
 {
-for i in "$@"
-	do
-		[[ "$i" == "-" ]] && cat || 
+
+for i in "$@" ; do
+	[[ "$i" == "-" ]] \
+		&& cat || \
+		{
+		[[ "$i" =~ ^: ]] \
+			&& cat "${i:1}" || \
 			{
-			[[ "$i" =~ ^: ]] && cat "${i:1}" ||
-				{
-				f="$(sqf "$i")"
-				
-				[[ -s "$f" ]] && cat $f || 
-					while IFS= read -r fname
-						do
-							[[ -s "$f" ]] && cat "$f" && break
-						done < <(inotifywait -m -q $(dirname "$f"))
-				}
+			f="$(sqf "$i")"
+			
+			[[ -s "$f" ]] && cat $f || 
+				while IFS= read -r fname ; do
+					[[ -s "$f" ]] && cat "$f" && break
+				done < <(inotifywait -m -q $(dirname "$f"))
 			}
-	done
+		}
+done
+
 }
 
-export -f sqr
-export -f sqf
-export -f sqh
-export -f sqp
-export -f sqc
+export -f sqr sqf sqh sqhn sqp sqc
    
 # vim: set ft=bash:
