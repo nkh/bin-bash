@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#./hgrep $(rg -i paneless --no-heading --line-number | cut -d':' -f1-2 | sed 's/$/:6/' | tr ':\n' '  ')
+# ./hgrep rg ... any amount of options got to rg
+
+#todo: hilight option + config
+#todo: pass options to rg/grep
+#todo: grep + justification
+#todo: color setup
+
+while (( $# > 2 )) ; do
+	file=$1 ; start=$2 ; lines=$3 ; shift 3
+
+	[[ "$previous_file" = "$file" ]] &&
+		{
+		echo -e "\e[38;5;244;48;5;237m...\e[m"
+		} || 
+		{
+		separator="$(perl -e 'print "—" x $ARGV[0]' $(( $(tput cols) - ( ${#file} + 1) )) )"
+		echo -e "\e[38;5;245m$(echo "$file" | lscolors) \e[38;5;240m$separator\e[m"
+		}
+	
+	tvcat "$file" | tail -n +$start | head -$lines | ph getop exit 
+
+	previous_file="$file"
+done
+
+# vim: set ft=bash:
+
