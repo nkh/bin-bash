@@ -22,6 +22,6 @@ fi
 # qdbus org.kde.klipper /klipper getClipboardContents
 
 for i in $(seq 0 10) ; do /usr/lib/qt5/bin/qdbus org.kde.klipper /klipper org.kde.klipper.klipper.getClipboardHistoryItem $i ; done \
-| sed '/^[[:space:]]*$/d' | fzf
+| sed '/^[[:space:]]*$/d' | fzf -m
 
 

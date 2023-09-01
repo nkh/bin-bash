@@ -503,3 +503,7 @@ ascii
 kmag
 wdiff
 cloc
+mutt
+ispell
+pinentry-tty
+golang

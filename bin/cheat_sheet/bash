@@ -1,3 +1,12 @@
+# add '>' to every other line
+sed 's/^/>/;n'
+
+# print the 2nd line of every 4 lines
+sed -n '2~4p' 
+
+# print every other line
+sed 'R file2' file1 ; paste -d'\n'
+
 # count lines of code
 clear ; cloc . --md | perl -ne 'print unless /^--- \| ---$/' | mdless
 clear ; cloc . --by-file | perl -pe 's/^\s+// ; s/\r\s+/ - /' | piper --global '-'  {blue}'─'{reset}

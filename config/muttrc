@@ -8,7 +8,7 @@ set timeout = 10
 set sort=reverse-threads
 set sort_aux=last-date-received
 
-set signature = "~/madim/config/mutt_signature"
+set signature = "~/nadim/config/mutt_signature"
 set copy = no
 set header_cache = "~/.mutt/header_cache"
 

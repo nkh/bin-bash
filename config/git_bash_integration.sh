@@ -7,6 +7,8 @@ __git_complete git-stat-color _git_diff
 
 # environment variable MINI_GIT has some control over the prompt. when set, some elements are smaller; IE: unstaged. To make it work with tmux status, set MINI_GIT with the set_mini_git function
 
+vg() { git_files="$(git -c color.status=always s | fzf -m --ansi | cut -c4-)" ; [[ "$git_files" ]] && v $git_files ; }
+
 git_mini_prompt()
 {
 mkdir -p ~/.tmux/plugins/tmuxake/pids/$$
