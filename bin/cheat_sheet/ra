@@ -1,22 +1,27 @@
-#extract info from requirements
+# Custom
+
+> Ra
+> 
+
+- extract info from requirements
 ra show --include_type requirement --include_description_data  --format raw  requirements/sorted/Servers/ -requirement_fields_filter_file <(echo "'LONG_DESCRIPTION' => 1, 'DESCRIPTION' => 1")
 
-#extract information from requirements, colorize headers, appends file name, run through fzf with the viewer
+
+- extract information from requirements, colorize headers, appends file name, run through fzf with the viewer
 # set to display the requirement file name 
 ra show --include_type requirement --include_description_data  --format raw  requirements/sorted/Servers/ -requirement_fields_filter_file <(echo "'LONG_DESCRIPTION' => 1, 'DESCRIPTION' => 1") | perl -pe 's/^\s+$// ' | perl -ne 'BEGIN {my $f} ; chomp ; if(/^DEFINED_AT (.+)/) {$f = $1; next} ; printf "%-90s >>> $f\n", $_ ; ' | colout '(NAME)*(DESCRIPTION)*(LONG_)*' red,blue,blue | fzf --no-sort -m --ansi --preview-window down:3 --no-hscroll --preview "perl -e '\$ARGV[0] =~ />>> (.*)/ ; print \$1' {} "
 
-#find invalid files, select some and exit them in vi, with user dictionary
-# note that extra files can be given as arguments, those will be passed to vi
+
+- find invalid files, select some and exit them in vi, with user dictionary
 ra check --invalid_requirement_list requirements/sorted/ 2>/dev/null | fzf -m | quote_lines | parallel -X --tty ra edit --user_dictionary PBS2_spellcheck_dictionary.txt
 
 
-# find the files that contain a text in their name and open them in vi
+- find the files that contain a text in their name and open them in vi
 find -type f | grep -i maketool | pvi
 
 
-# find all the files that contin the text
+- find all the files that contin the text
 find -type f | xargs  grep -l -i -s maketool
 
 ra_files=$(ls -1 xxx/ | fzf -m | tr "\n" " ") && ra edit --no_spellcheck $( echo $ra_files) ; unset ra_files
-
 

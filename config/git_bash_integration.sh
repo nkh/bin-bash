@@ -202,7 +202,7 @@ __git_complete gl _git_log
 gla10() { git --no-pager la -10 "$@" ; echo ; }
 __git_complete gla _git_log
 
-git_ls_files() { git ls-tree -r --name-only ${1:-HEAD} ; } ; __git_complete git_ls_files _git_branch
+git_ls_files() { git ls-tree -r --name-only ${1:-HEAD} | lscolors ; } ; __git_complete git_ls_files _git_branch
 alias gls='git_ls_files' ; __git_complete gls _git_branch
 
 gsv() 

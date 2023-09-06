@@ -14,6 +14,7 @@ call vundle#begin()
 	Plugin 'tpope/vim-commentary'
 	Plugin 'https://github.com/inkarkat/vim-ingo-library'
 	Plugin 'https://github.com/inkarkat/vim-mark'
+	Plugin  'https://github.com/AndrewRadev/linediff.vim.git'
 	" Plugin 'https://github.com/tpope/vim-surround.git'
 	" Plugin 'git://github.com/honza/vim-snippets.git'
 	" Plugin 'git://github.com/RRethy/vim-hexokinase.git', { 'do': 'make hexokinase' }
@@ -23,6 +24,8 @@ call vundle#end()            " required
 " --------------------------------------------------
 
 call plug#begin('~/.vim/plugged')
+	" Plug 'junegunn/goyo.vim'
+	" Plug 'junegunn/limelight.vim'
 	Plug 'michaeljsmith/vim-indent-object'
 	Plug 'junegunn/fzf.vim'
 	Plug 'pbogut/fzf-mru.vim'

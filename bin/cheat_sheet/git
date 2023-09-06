@@ -1,132 +1,102 @@
-# list only untracked files
-git ls-files --others --exclude-standard
+# Custom git
 
-# divers vim related
-fugitive: %Gllog, select, Gdiff
-fugitive: Git log --patch -- filename
-git log --oneline --follow -- documentation/mdbook_asciio/src/stencils/asciio_shapes.md
-lsdiff -n the_whole_diff --strip 1 | perl -ane '$F[0] <= 168 and $file=$F[1] or { print "$file" and exit}'
-topleft vertical diffsplit old_version of file
+> custom git pages
+> 
 
-# force color
-status:    git -c color.status=always status | less -REX
-diff, show, log and grep : git -c color.ui=always diff, or git diff --color=always
+- checkout branch from other repo
 
-# move master's HEAD to current HEAD, if fast-forward
-git fetch . HEAD:master
-
-# find when a file was added
-git log --follow --diff-filter=A --find-renames=40% path_finder
-
-# pick hunks from cherry_pick
-git cherry-pick -n <commit> # get your patch, but don't commit (-n = --no-commit)
-git reset                   # unstage the changes from the cherry-picked commit
-git add -p                  # make all your choices (add the changes you do want)
-git commit                  # make the commit!
-
-# checkout branch from other repo
-git remote add quin https://github.com/qindapao/P5-App-Asciio
-git fetch quin 
-git co quin/cross_overlay -b quin_overlay
+git remote add {{remote_name}} https://github.com/{{author}}/{{project}}
+git fetch      {{remote_name}} 
+git co         {{remote_name}}/{{branch}} -b {{local_branch}}
 
 
-#github fluff
-https://github.com/iamerikjolson/GitHub-Issues-Process
+- find when a file was added
 
-# delete remote branch
+git log --follow --diff-filter=A --find-renames=40% {{path}}
 
-git push -d <remote_name> <branchname>
-git branch -d <branchname>
 
-#create repo on github from current local repo
+- interactive cherry-pick
+
+git cherry-pick -n {{commit}} # get patch, don't commit [-n]
+git reset                     # unstage commit changes
+git add -p                    # interactive add
+git commit                    # commit
+
+
+- create repo on github
+
 gh auth login
-gh repo create my-newrepo --public --source=. --remote=origin --push
+gh repo create {{new_repo_name}} --public --source=. --remote=origin --push
 
-# checkout old commit in directory
-git --work-tree=./old checkout 38023b9 -- .
 
-#show log for specific line
-git log -L150,+1:'ftl'
+- checkout old commit in directory
 
-# split commmit in multiple commit
+git --work-tree=./old checkout {{commit}} -- .
 
-git rebase -i 123abcd~ or gsh 
 
-mark commit as "edit", save
+- delete remote branch
 
+git push   -d {{remote_name}} {{branch_name}}
+git branch -d                 {{branch_name}}
+
+
+- split commmit into multiple commit
+
+git rebase -i {{commit}}
 git reset HEAD~
-
-Commit the pieces individually
-
+git commit # for each new commit
 git rebase --continue
 
-#Remove file from the repository but keep it locally
+
+- force color (diff, show, log, grep)
+
+git -c color.status=always {{command}}
+
+
+- move main:HEAD to current HEAD, if fast-forward
+
+git fetch . HEAD:main
+
+-show log for specific line
+
+git log -L150,+1:'ftl'
+
+
+-Remove file from the repository but keep it locally
+
 git rm --cached -r somedir
 git rm --cached somefile.ext
 
-# is branch merged
-git branch --merged master
-git branch --no-merged master
 
-# create repo on github
-hub create -d "A tmux side-pane manager"
+- is branch merged to main?
 
-#diff fancy
+git branch --merged main
+git branch --no-merged main
+
+- diff fancy with search
+
 gd --color | diff-so-fancy | /usr/bin/less --tabs=4 -RFX --pattern '^(Date|added|deleted|modified): '
 
 
--u shows the contents of directories not yet added to the repo ... gs -u
+- log with files listed
 
-#preview a merge
-gmeldd other
-git log --name-status --pretty=format:'%C(yellow)%h%Creset %C(white bold)%s%Creset%C(blue bold)%d%Creset %C(black bold)(%ar, %an)%Creset'  other..
-git diff --name-status otherbranch
-gitk otherbranch
+git log --name-status
 
+- divers
 
-# remotes and branches
+git whatchanged                         # for end used
+git diff-tree --name-only               # for scripts
+git show --name-status {{commit}}       #
+git log --since="3 days ago" [{{file}}] #
+
+https://github.com/iamerikjolson/GitHub-Issues-Process
+
+- divers remotes and branches
+
 git branch -v or -vv
 git ls-remote
 git for-each-ref
 git remote -v
 git branch --track name origin/name
 git remote show origin
-
-
-# committing too much
-command: git commit a b X
-error: X is not part of that commit
-fix: git reset HEAD^ X; git commit --amend; 
-
-git reflog
-
-
-# log with files listed
-git log --name-status
-
-
-# diff with meld
-meld <(git show HEAD:$1) $1
-
-
-"git whatchanged" for end used; "git diff-tree --name-only" for scripts
-git show --name-status <commit>
-
-git log --since="3 days ago" [file]
-
-
-# adding a github remote
-    $ git remote add origin git@github.com:username/Hello-World.git
-    $ git push origin master
-    
-#display which branches need to be merged in our current branch
-git branch --merged --no-merged
-
-opend editor for config: git config --global -e
-
-# partly cherry-pick
-git cherry-pick -n <commit> # get your patch, but don't commit (-n = --no-commit)
-git reset                   # unstage the changes from the cherry-picked commit
-git add -p                  # make all your choices (add the changes you do want)
-git commit                  # make the commit!
 

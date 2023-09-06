@@ -1,0 +1,33 @@
+ansi2html: https://github.com/theZiz/aha
+espeak-ng: https://github.com/espeak-ng/espeak-ng
+b2sum:     https://github.com/dchest/b2sum
+
+bat
+cbconvert
+diagon
+ffs
+fuse-archive
+gdu
+get_cmus_selection
+gitstatus
+gotty
+gron
+hegemon
+hub
+huxd
+json-tui
+lowdown
+lscolors
+mimemagic
+mount_old_disk
+ncdu2
+rgb-tui
+tdu
+tmsu
+tmuxake
+up
+vimcat
+vimcolor
+vimpager
+w3mimgdisplay
+vrim
