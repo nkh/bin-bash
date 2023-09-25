@@ -7,6 +7,8 @@ mount_archive=1
 fzf_opt="-p 90% --cycle --reverse --info=inline --color=hl+:214,hl:214"
 CMD_COLS=150 # columns when displaying command mapping in popup
 
+tag_new_tab="$HOME/nadim/downloads"
+
 HEXEDIT='hx -g 4 -o 36'
 HEXVIEW="HUXD_COLORS='0x00-0xff=136;printable=251;whitespace=115;nul=160;0x0a=49;0x20=73;offset=240;ascii_borders=240' huxd -l 28"
 GPGID=nadim.khemir
@@ -17,7 +19,7 @@ PAGER_ANSI='moar --no-statusbar -no-linenumbers'
 
 MD_PAGER='moar --no-statusbar -no-linenumbers'
 MD_RENDER2='piper_md'
-pmd() { md="${1:-$n}" ; ((extmode)) && psplit "$MD_RENDER2 \"$md\" | $MD_PAGER" || ptext \"$md\" ;  }
+pmd() { md="${1:-$n}" ; [[ "$1" ]] && psplit "$MD_RENDER2 \"$md\" | $MD_PAGER" || ptext \"$md\" ;  }
 
 NCDU=gdu
 

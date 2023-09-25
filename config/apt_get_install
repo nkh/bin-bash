@@ -507,3 +507,7 @@ mutt
 ispell
 pinentry-tty
 golang
+ncat
+openssh-server
+gnupg2
+gifsicle

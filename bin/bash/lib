@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ln -s "$PWD/$1" "$HOME/nadim/bin/$2"
+
+# vim: ft=bash:

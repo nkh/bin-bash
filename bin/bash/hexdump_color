@@ -1,8 +1,10 @@
 BG=on_ansi236
 FG=ansi252
-DARK_FG=ansi245
+DARK_FG=ansi240
+ASCII_FG=ansi_245
+SPACE_FG=ansi130
 
-OFFSET="$DARK_FG" NL="cyan $BG" SPACE="ansi245 $BG" ANY="$FG $BG" ASCII="$DARK_FG"
+OFFSET="$DARK_FG" NL="cyan $BG" SPACE="$SPACE_FG $BG" ANY="$FG $BG" ASCII="$ASCII_FG"
 
 [[ "$1" =~ --no-color ]] && { no_color=1             ; shift ; }
 [[ "$1" =~ - ]]          && { hexdump_options+=" $1" ; shift ; }
