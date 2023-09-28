@@ -868,9 +868,9 @@ __git_complete git_checkout_branch_in _git_branch
 
 gdiffd()
 {
-
 revision=$1
 compare_to=$2
+diff_tool=${DDIFF_TOOL:-meld}
 
 if [ -z $revision ] ; then revision='HEAD' ; fi
 
@@ -891,14 +891,14 @@ else
 		if [ -z $compare_to ] ; then
 			compare_to=`pwd`
 
-			$(meld $path $compare_to &>/dev/null)
+			$diff_tool $path $compare_to
 		else
 			compare_to=$(git_checkout_branch_in $compare_to "/tmp/gdiffd/$repo")
 		
 			if [ $? -ne 0 ] ; then
 				echo $compare_to
 			else
-				$(meld $path $compare_to &>/dev/null)
+				$diff_tool $path $compare_to
 			fi
 		fi
 			
@@ -914,6 +914,7 @@ gdiff()
 {
 file=$1
 revision=$2
+diff_tool=${FDIFF_TOOL:-meld}
 
 if [ ! -z $file ] ; then
 	if [ -z $revision ] ; then revision='HEAD' ; fi
@@ -921,7 +922,7 @@ if [ ! -z $file ] ; then
 	diff -q  <(git show $revision:$file) $file &>/dev/null
 
 	if [ $? -ne 0 ] ; then
-		$(meld <(git show $revision:$file) $file &>/dev/null)
+		$diff_tool <(git show $revision:$file) $file
 	else
 		echo "files are identical"
 	fi

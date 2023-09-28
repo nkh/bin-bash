@@ -66,7 +66,9 @@ export GIT_PAGER="vimpager -c 'set nospell'"
 export GREP_COLORS='ms=32:mc=32:sl=:cx=:fn=38;5;97:ln=38;5;28:bn=38;5;28:se=36'
 
 export EDITOR=vim
+export DDIFF_TOOL=tdiff
 export XAUTHORITY=~/.Xauthority 
+
 
 export LESS_TERMCAP_mb=$'\E[38;5;32m'    # begin blinking
 export LESS_TERMCAP_md=$'\E[38;5;32m'    # begin bold

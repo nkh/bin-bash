@@ -1,0 +1,53 @@
+BG=on_ansi236
+FG=ansi250
+DARK_FG=ansi240
+LIGHT_FG=ansi250
+ASCII_BG=on_ansi236
+ASCII_FG=ansi_245
+SPACE_FG=ansi130
+
+OFFSET="$DARK_FG" CTL="cyan $BG" SPACE="$SPACE_FG $BG" ANY="$FG $BG" ASCII="$ASCII_FG"
+
+hex_width=32
+hex_offset=
+ascii_offset=
+sed_color='\x1b[48:5:236m'
+
+[[ "$1" =~ -16 ]]        && { hex_width="16" ; shift ; }
+[[ "$1" =~ --no-color ]] && { no_color=1 ; sed_color= ; shift ; }
+[[ "$1" =~ --offset   ]] && { hex_offset='"%08_ax"' ascii_offset="\t" sed_color= ; shift ; }
+
+fs="$(mktemp -u -p /tmp/$USER/piper XXXXXXXX)" ; mkdir -p $fs # work directory
+
+cat $1 >$fs/data 
+
+paste -d'\t' \
+	<(\
+		<$fs/data hexdump -v -e "$hex_offset $hex_width/1 \" %02X\" \" ß\n\"" | \
+		{ 
+		(( no_color )) && cat || piper --global  \
+						'^ '            "$ANY"   \
+						'^.{9}'        "$OFFSET" \
+						'09 '          "$CTL"    \
+						'0A '          "$CTL"    \
+						'1B '          "$CTL"    \
+						'20 '          "$SPACE"  \
+						'[0-9A-F]{2} ' "$ANY"    \
+						'...' "$ANY"
+		} 
+	) \
+	<(
+		<$fs/data hexdump -v -e "$hex_width/1 \"%-3_c\" \"ð\n\" " | \
+		{ 
+		(( no_color )) && cat || piper --global \
+						'\\t ' "$CTL"                \
+						'\\n ' "$CTL"                \
+						'033' "{$CTL}esc{$BG reset}" \
+						'...' "$ANY"
+		} 
+	) | sed -e "s/\t/$sed_color /" -e "s/ß/\n$ascii_offset/" -e 's/ð/\n/'
+
+rm -rf $fs
+
+# vim: set ft=bash:
+
