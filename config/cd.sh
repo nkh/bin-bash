@@ -44,8 +44,13 @@ cdh()  { new_dir=$(cdhl | uniq | fzf) ; [[ -n "$new_dir" ]] && cd $new_dir ; }
 
 cdd()
 {
-start_directory=${1:-.}
-end_directory=$(fd . --color always --type d "$start_directory" | fzf --ansi)
+start_directory='.'
+[[ "$1" == "-d" ]] && { start_directory="$2" ; shift 2 ; }
+
+fzf_query=
+[[ $# > 0 ]] && fzf_query="$@"
+
+end_directory=$(fd . --color always --type d "$start_directory" | fzf --ansi -q "$fzf_query")
 
 [[ $? == 0 ]] && cd "$end_directory"
 }

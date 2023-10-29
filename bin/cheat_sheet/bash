@@ -152,6 +152,10 @@ stopwatch() {
     done
 }
 
+- time execution
+start=`date +%s.%N`
+end=`date +%s.%N`
+runtime=$( echo "$end - $start" | bc -l )
 
 - time stopwatch
 while true; do printf '%s\r' "$(date +%H:%M:%S:%N)"; done
