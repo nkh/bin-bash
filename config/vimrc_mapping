@@ -18,6 +18,8 @@ vnoremap å "0p
 nnoremap Å "0P
 vnoremap Å "0P
 
+nnoremap ä "Ayy
+
 " no highlight search --------------------------------------------------------
 nnoremap <nowait><silent> <C-L> :noh<CR>
 

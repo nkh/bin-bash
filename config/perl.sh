@@ -11,9 +11,6 @@ export PATH="${PATH:+${PATH}:}$META_HOME/devel/repositories/rakudo/install/share
 
 export PERLDOC="-MPod::Text::Color::Delight"
 
-alias pm='perldoc'
-complete -F ? pm
-
 alias pf='perldoc -f'
 complete -F ? pm
 

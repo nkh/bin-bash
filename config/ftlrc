@@ -1,5 +1,8 @@
 source $FTL_CFG/etc/ftlrc
 
+# file not loaded when running via tmux
+eval $(dircolors -b "$META_HOME/config/dir_colors")
+
 leader_key=SPACE
 
 rfilter0='\.sw.$'
@@ -58,6 +61,10 @@ declare -A user_colors=(
 
 # load git etags but keep them invisible
 . ~/.config/ftl/etc/etags/git
+
+nkh_test() { custom_dir ; }
+
+bind nkh test	"LEADER n t"		nkh_test	"nkh test"
 
 # vim: set filetype=bash:
 

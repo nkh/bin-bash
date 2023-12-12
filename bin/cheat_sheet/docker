@@ -9,3 +9,17 @@ docker --detach-keys ...
 - stop docker
 sudo systemctl stop docker
 
+> podman
+>
+
+- setup registry
+
+ech0 'unqualified-search-registries = ["docker.io"]' >~/.config/containers/registries.conf
+
+> IPerl (jupyter notebook, not lab)
+>
+
+- run
+sudo docker run -it -p 8080:8080 -v $PWD:/opt/jupyter stuffox/jupyter-perl
+
+podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/nadim" 

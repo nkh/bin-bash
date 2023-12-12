@@ -65,6 +65,9 @@ alias open='xdg-open'
 alias jobs='jobs -l'
 alias retro_term='cool-retro-term'
 
+alias pm=podman
+alias bh=buildah
+
 alias bash_functions='declare -F'
 alias bash_function='declare -f'
 alias all_commands='compgen -c'

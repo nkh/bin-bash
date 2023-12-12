@@ -168,13 +168,13 @@ STICKY                  38;5;63;3       # dir with the sticky bit set (+t) and n
 .json   38;5;213 
 
 #documents
-.pdf    38;5;91
-.epub   38;5;91
+.pdf    38;5;141
+.epub   38;5;141
 .txt    38;5;105
-.cbr    38;5;91
+.cbr    38;5;141
 .cbz    38;5;98
-.chm    38;5;91
-.djvu   38;5;91
+.chm    38;5;141
+.djvu   38;5;141
 
 # markup 
 .markdown             38;5;147

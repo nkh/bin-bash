@@ -199,8 +199,13 @@ alias git_has='< <(git ls-files) grep'
 gl10() { git --no-pager l -10 "$@" ; echo ; }
 __git_complete gl _git_log
 
-gla10() { git --no-pager la -10 "$@" ; echo ; }
+gla10() { git --no-pager l $(ref_no_gh_pages) -10 "$@" ; echo ; }
 __git_complete gla _git_log
+
+ref_no_gh_pages()
+{
+git show-ref --abbrev | cut -d' ' -f2 | grep -v gh-pages
+}
 
 git_ls_files() { git ls-tree -r --name-only ${1:-HEAD} | lscolors ; } ; __git_complete git_ls_files _git_branch
 alias gls='git_ls_files' ; __git_complete gls _git_branch
@@ -508,8 +513,8 @@ exit ! @counts ;
 EOF
 }
 
-alias gbd='git branch'
-__git_complete gbd _git_branch
+# alias gbd='git branch'
+# __git_complete gbd _git_branch
 
 alias gb='gb_fancy refs/heads'
 __git_complete gb _git_branch

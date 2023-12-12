@@ -47,6 +47,7 @@ shopt -s direxpand
 
 PATH="$META_HOME/bin/:${PATH}"
 PATH="$META_HOME/bin/bash:${PATH}"
+PATH="${PATH:+${PATH}:}$HOME/python/bin"
 PATH="${PATH:+${PATH}:}$HOME/.local/bin"
 PATH="${PATH:+${PATH}:}$HOME/.go/bin:$HOME/go/bin"
 PATH="${PATH:+${PATH}:}$HOME/.cargo/bin"
@@ -103,6 +104,7 @@ source "$META_HOME/bin/bash/edit_config"                         ; lap 'edit_con
 # source "$META_HOME/config/set_command_cursor"                    ; lap 'set_command_cursor'
 source "$META_HOME/config/cd.sh"                                 ; lap 'cd.sh'
 source "$META_HOME/config/perl.sh"                               ; lap 'perl.sh'
+source "$META_HOME/config/python.sh"                             ; lap 'perl.sh'
 source "$META_HOME/config/tmux.sh"                               ; lap 'tmux'
 source "$META_HOME/config/ranger.sh"                             ; lap 'ranger'
 source "$META_HOME/config/gv"                                    ; lap 'git gv'
@@ -130,3 +132,4 @@ source "$META_HOME/config/gpg.sh"                                ; lap 'gpg'
 #} | ts -i %.s | piper '[^ ]+' {blue}'sprintf "%.3f", {}'{reset}
 #} | ts -i %.s | sort -r | piper '[^ ]+' {blue}'sprintf "%.3f", {}'{reset}
 
+. "$HOME/.cargo/env"
