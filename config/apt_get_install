@@ -539,3 +539,8 @@ pipx
 pip
 python3-xlib
 httpie
+bfs
+bookworm
+wine
+wine winetricks
+winehq-stable

@@ -3,11 +3,16 @@ source $FTL_CFG/etc/ftlrc
 # file not loaded when running via tmux
 eval $(dircolors -b "$META_HOME/config/dir_colors")
 
+FTLI_H=19	# hint FTLI about Character height
+FTLI_W=10	# hint FTLI about Character width
+
 leader_key=SPACE
 
 rfilter0='\.sw.$'
-mount_archive=1
 fzf_opt="-p 90% --cycle --reverse --info=inline --color=hl+:214,hl:214"
+FZF_LISTEN_COMMAND='fd -I -H -E ".git/"'
+
+mount_archive=1
 CMD_COLS=150 # columns when displaying command mapping in popup
 
 tag_new_tab="$HOME/nadim/downloads"
@@ -17,12 +22,11 @@ HEXVIEW="HUXD_COLORS='0x00-0xff=136;printable=251;whitespace=115;nul=160;0x0a=49
 GPGID=nadim.khemir
 SXIV=nsxiv
 
-# MD_RENDER1='lowdown -Tterm'
 PAGER_ANSI='moar --no-statusbar -no-linenumbers'
-
 MD_PAGER='moar --no-statusbar -no-linenumbers'
+
+MD_RENDER1='glow -s dark'
 MD_RENDER2='piper_md'
-pmd() { md="${1:-$n}" ; [[ "$1" ]] && psplit "$MD_RENDER2 \"$md\" | $MD_PAGER" || ptext \"$md\" ;  }
 
 NCDU=gdu
 
@@ -61,10 +65,6 @@ declare -A user_colors=(
 
 # load git etags but keep them invisible
 . ~/.config/ftl/etc/etags/git
-
-nkh_test() { custom_dir ; }
-
-bind nkh test	"LEADER n t"		nkh_test	"nkh test"
 
 # vim: set filetype=bash:
 
