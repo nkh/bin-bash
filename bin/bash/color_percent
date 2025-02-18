@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#echo -e "1%\n13%\n22%\n33%\n40%\n56%\n66%\n71%\n80%\n95%\n100%\n1000%\n" | color_percent
+
+piper --global "$@" \
+'1\d%'		bright_blue \
+'2\d%'		rgb040 \
+'3\d%'		rgb030 \
+'4\d%'		rgb030 \
+'5\d%'		rgb550 \
+'6\d%'		rgb550 \
+'7\d%'		rgb530 \
+'8\d%'		rgb520 \
+'9\d%'		'black on_yellow' \
+'100%'		'black on_red' \
+'\d{4,}%'	'bright_yellow on_red' \
+'\d%'		blue \
+

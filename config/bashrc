@@ -1,5 +1,9 @@
 export TERM=xterm-256color   # needed for tmux to run RGB mode
 
+export LC_ALL=C.UTF-8
+export LC_ALL=sv_SE.UTF-8
+export LC_ALL=en_US.UTF-8
+
 if [ "$TMUX" == "" ]; then
 	tmux new-session \; new-window "tmux set-option -ga terminal-overrides \",$TERM:Tc\"; tmux detach"
 	tmux attach 
@@ -7,7 +11,7 @@ fi
 
 mkdir -p /tmp/$USER
 
-lap() { : ; } #; lap() { echo $1 ; } ; time {
+lap() { : ; } # ; lap() { echo $1 ; } ; time {
 
 export META_HOME='/home/nadim/nadim'
 export N="$META_HOME"
@@ -113,7 +117,7 @@ source "$META_HOME/config/prompt.sh"                             ; lap 'prompt'
 source "$META_HOME/config/ftl.sh"                                ; lap 'ftl'
 source "$META_HOME/config/piper.sh"                              ; lap 'piper'
 source "$META_HOME/config/ra.sh"                                 ; lap 'ra' 
-# source "$META_HOME/bin/bash/h.sh"                                ; lap 'h'
+# source "$META_HOME/bin/bash/h.sh"                                ; lap 'h' # replaced by hp (via piper)
 source "$META_HOME/bin/bash/squirrel"                            ; lap 'squirrel'
 source "$META_HOME/bin/bash/forgit.plugin.sh"                    ; lap 'forgit' 
 source "$META_HOME/bin/bash/cx.sh"                               ; lap 'cx'   
@@ -133,3 +137,5 @@ source "$META_HOME/config/gpg.sh"                                ; lap 'gpg'
 #} | ts -i %.s | sort -r | piper '[^ ]+' {blue}'sprintf "%.3f", {}'{reset}
 
 . "$HOME/.cargo/env"
+
+

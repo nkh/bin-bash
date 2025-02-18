@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# arguments:
+# -digit maximum columns to color
+# column_color [column_color ...]
+
+max_columns=100 ; [[ "$1" =~ -[0-9]+ ]] && { max_columns="${1:1}" ; shift ; }
+
+colors=(green yellow blue magenta cyan white bright_yellow )
+colors=("${colors[@]}" "${colors[@]}" "${colors[@]}" "${colors[@]}" )
+
+(($#)) && colors=("$*" "${colors[@]}")
+
+command="piper"
+
+column=0
+for color in "${colors[@]}"
+	do
+		((column++ >= max_columns)) && break
+		command+=" '\S+\h*' $color "
+	done
+
+eval $command
+
+# vim: set ft=bash :
+

@@ -3,6 +3,18 @@
 > Bash
 > 
 
+- curl usage by brew
+"Error: Failure while executing; `/usr/bin/env /home/linuxbrew/.linuxbrew/Homebrew/Library/Homebrew/shims/shared/curl --disable --cookie /dev/null --globoff --user-agent Linuxbrew/4.4.2\ \(Linux\;\ x86_64\ Ubuntu\ 23.04\)\ curl/7.88.1 --header Accept-Language:\ en --fail --progress-bar --remote-time --output /home/nadim/.cache/Homebrew/api/formula.jws.json --location --disable --cookie /dev/null --globoff --show-error --user-agent Linuxbrew/4.4.2\ \(Linux\;\ x86_64\ Ubuntu\ 23.04\)\ curl/7.88.1 --header Accept-Language:\ en --fail --progress-bar --compressed --speed-limit 100 --speed-time 5 https://formulae.brew.sh/api/formula.jws.json` exited with 28. Here's the output:
+curl: (28) Operation too slow. Less than 100 bytes/sec transferred the last 5 seconds   #              #              #
+"
+
+- reset touchpad
+sudo  modprobe -r psmousese
+sudo modprobe psmousese
+
+- play sine wave 
+ffplay -nodisp -f lavfi -i "sine=f=1000"
+
 - gpg
 eval `gpg-agent --homedir $HOME/.gnupg --daemon --enable-ssh-support -s > $HOME/.gpg-agent-info`
 

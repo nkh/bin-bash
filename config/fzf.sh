@@ -1,4 +1,3 @@
-
 export FZF_DEFAULT_OPTS="--cycle --reverse --inline-info --color='hl:106'"
 export FZF_PREVIEW_COMMAND="tvcat {}"
 

@@ -1,9 +1,8 @@
 #!/bin/bash
 
-sqr
+sqn
 
 df -h | \
-sqh 1 2> >(piper '.*' 'ansi252 on_ansi236' | sqp xxx) | \
-sort -h -r -k 4 | \
-piper '\S+\h+' green '\S+\h+' blue '\S+\h+' yellow '\S+\h+' green  '\S+\h+' cyan '.*' blue | \
-sqc xxx -
+sqc 1 3> >(piper '.*' 'ansi252 on_ansi236' | sqs xxx) | \
+sort -h -r -k 4 | color_columns -5 | color_percent |
+sqg xxx -

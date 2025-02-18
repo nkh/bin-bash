@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# tmux set-environment LC_ALL C 
+tmux set-environment LC_ALL en_US.UTF-8
+
 source ~/nadim/bin/completions/bash_completion_tmux.sh
 
 # ftl binding in "$META_HOME/config/ftl.sh" 

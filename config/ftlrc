@@ -27,6 +27,7 @@ MD_PAGER='moar --no-statusbar -no-linenumbers'
 
 MD_RENDER1='glow -s dark'
 MD_RENDER2='piper_md'
+MD_DIR_RENDER='glow --pager -s dark'
 
 NCDU=gdu
 
