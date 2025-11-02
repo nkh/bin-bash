@@ -1,0 +1,38 @@
+#!/bin/sh                                                                      
+
+unexpected() {
+        result=$(echo "$check"|sed -e 's/^@/\\033/')
+        printf '? unexpected reply: %s\n' "$result"
+        exit 1
+}
+
+exec </dev/tty
+old=`stty -g`
+stty raw -echo min 0  time 5
+printf '\033[?1049$p'
+read status
+stty $old
+
+if [ -n "$status" ]
+then
+        check=$(echo "$status" |tr '\033' '@')
+        if [ "$check" != "$status" ]
+        then
+                case "$check" in
+                '@[?1049;1$y')
+                        echo "alternate screen"
+                        ;;
+                '@[?1049;2$y')
+                        echo "normal screen"
+                        ;;
+                *)
+                        unexpected
+                        ;;
+                esac
+        else
+                unexpected
+        fi
+else
+        echo "? no reply from terminal"
+fi
+

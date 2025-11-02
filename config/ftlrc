@@ -31,6 +31,8 @@ MD_DIR_RENDER='glow --pager -s dark'
 
 NCDU=gdu
 
+# bind ftl selection	PT		kgen	"" ; kgen()    { printf '%s\n' "${bindings[@]}" | sort -h > ./key_bindings ; }
+
 declare -A marks=(
 	[0]=/
 	[1]=$HOME/$
@@ -45,6 +47,15 @@ declare -A marks=(
 	[R]=$HOME/nadim/devel/repositories/$
 	[T]=/tmp/$USER/$
 	["'"]="$(tail -n1 $ghist)"
+	)
+
+declare -A dir_dest=(
+	[b]=$HOME/downloads/bikes
+	[B]=$HOME/downloads/boat
+	[i]=$HOME/downloads/images
+	[M]=$HOME/downloads/music
+	[m]=$HOME/downloads/memes
+	[p]=$HOME/downloads/palestine
 	)
 
 # how to delete and create an undelete binding 

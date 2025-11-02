@@ -5,6 +5,10 @@ __git_complete git-stat-color _git_diff
 : ${GIT_PROMPT_MASTER:='master'}
 : ${MAX_DISTANCE_TO_ORGIN_MASTER:=10}
 
+export GITHUB_TOKEN="$(get_github_token)"
+export GITHUB_OWNER=nkh
+export GITHUB_REPO="$(basename `git rev-parse --show-toplevel`)"
+
 # environment variable MINI_GIT has some control over the prompt. when set, some elements are smaller; IE: unstaged. To make it work with tmux status, set MINI_GIT with the set_mini_git function
 
 vg() { git_files="$(git -c color.status=always s | fzf -m --ansi | cut -c4-)" ; [[ "$git_files" ]] && v $git_files ; }
@@ -387,6 +391,11 @@ alias gsq=git_rebase_interactive_fzf
 git_pwb()
 {
 git rev-parse --abbrev-ref HEAD 2>/dev/null | grep -v HEAD
+}
+
+git_pwc()
+{
+git rev-parse  HEAD 2>/dev/null | cut -c 1-7
 }
 
 git_branch_erase()

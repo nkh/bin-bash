@@ -1,4 +1,4 @@
-echo bash_profile start $(($(date +%s%N)/1000)) >> ~/time_bashrc
+echo bash_profile start $(($(date +%s%N)/1000)) $(date) >> ~/time_bashrc
 
 if [ -f ~/.bashrc ] ; then 
 	source ~/.bashrc 

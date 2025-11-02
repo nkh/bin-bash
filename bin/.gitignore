@@ -73,6 +73,7 @@ rgb-tui
 tdu
 tmsu
 tmuxake
+pixelhopper
 up
 vimcat
 vimcolor
@@ -87,6 +88,7 @@ cheat_sheet/links
 cheat_sheet/loop
 cheat_sheet/mailing_lists
 cheat_sheet/todo
+bash/get_openai_token
 bash/get_github_token
 vrim
 custom_tldr

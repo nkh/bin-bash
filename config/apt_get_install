@@ -562,3 +562,12 @@ speedometer
 ifstat
 php-mbstring
 libxft2-dev
+openscad
+libegl1-mesa-dev
+curl
+wget
+nodejs
+nodejs
+ca-certificates curl gnupg
+build-essential python3
+gh
