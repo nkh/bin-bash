@@ -37,6 +37,9 @@ vnoremap <c-k> :m '<-2<CR>gv=gv
 " fold everything but search -------------------------------------------------
 noremap <leader>z :setlocal foldexpr=getline(v:lnum)=~@/?0:1 foldmethod=expr
 
+" fold current block
+noremap <F1> zfa{
+
 " go to file which doesn't exist -----------------------------------------------
 nnoremap <silent> gf :call JumpOrCreateFile(0)<CR>
 nnoremap <silent> gF :call JumpOrCreateFile(1)<CR>

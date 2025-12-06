@@ -7,8 +7,8 @@ hi DiffChange        cterm=NONE      ctermfg=226   ctermbg=235
 hi DiffDelete        cterm=NONE      ctermfg=124   ctermbg=235
 hi DiffText          cterm=NONE      ctermfg=79    ctermbg=22
 
-hi FoldColumn        ctermfg=Blue
-hi Folded            ctermbg=235     ctermfg=blue
+hi FoldColumn        ctermbg=235    ctermfg=237
+hi Folded            ctermbg=236    ctermfg=blue
 
 hi LineNr            term=bold       cterm=NONE    ctermfg=DarkGrey   ctermbg=NONE
 hi PodFormat         ctermbg=black   ctermfg=75

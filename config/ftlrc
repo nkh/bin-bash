@@ -21,6 +21,7 @@ HEXEDIT='hx -g 4 -o 36'
 HEXVIEW="HUXD_COLORS='0x00-0xff=136;printable=251;whitespace=115;nul=160;0x0a=49;0x20=73;offset=240;ascii_borders=240' huxd -l 28"
 GPGID=nadim.khemir
 SXIV=nsxiv
+GIF_VIEWER=pixelhopper
 
 PAGER_ANSI='moar --no-statusbar -no-linenumbers'
 MD_PAGER='moar --no-statusbar -no-linenumbers'

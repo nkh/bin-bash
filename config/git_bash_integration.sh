@@ -235,7 +235,14 @@ git difftool -y -t vimdiff "$@"
 }
 __git_complete gvimdiff _git_diff
 
+gvdiff()
+{
+VERSION=${1:-HEAD}
 
+vim -p `git diff "$VERSION" --name-only | rg -v 'png|gif|jpg'` -c "tabdo: Gvdiffsplit $VERSION"
+}
+
+# vim: set filetype=bash :
 gdc() { tmux splitw -h -l 40% git commit -a ; gd ; }
 
 alias gco='git checkout --quiet' ; __git_complete gco _git_checkout
@@ -607,10 +614,10 @@ __git_complete gbrg _git_checkout
 # gbd() { git branch -dr origin/"$1" && git branch -d "$1" || echo "You need to force removal of local branch" && false ; }
 # __git_complete gbd _git_branch
 
-gbDf() { git branch -Dr origin/"$1" 2>&- ; git branch -D "$1" ; }
+gbDf() { git branch -Dr origin "$1" 2>&- ; git branch -D "$1" ; }
 __git_complete gbDf _git_branch
 
-gbD() { git branch -Dr origin/"$1" && git branch -D "$1" || echo "You need to force removal of local branch" && false ; }
+gbD() { git branch -Dr origin "$1" && git branch -D "$1" || echo "You need to force removal of local branch" && false ; }
 __git_complete gbD _git_branch
 
 gff() { git rev-list $* ; }
