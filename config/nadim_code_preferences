@@ -1,0 +1,50 @@
+## Markdown Document Formatting
+
+  - Separators
+      - Do not use horizontal separators (`---`) in markdown documents.
+  - Numbering
+      - Do not use numerical lists or numbering.
+  - Punctuation and Icons
+      - Do not use smileys or icons (unicode or otherwise).
+  - Path Formatting
+      - Use Linux path format (e.g., `/home/user/document.txt`).
+  - List and Point Formatting
+      - Only use hyphens (`-`) for list items.
+      - Do not use bold formatting (i.e., `**text**`) for list point headings.
+      - Place the list heading (point) and its explanations on separate lines.
+      - Explanations should be presented as indented sub-points, using a hyphen (`-`). Example:
+        ```markdown
+        - Heading
+            - Explanation 1
+            - Explanation 2
+        ```
+
+## Perl Code Formatting (Specific Constraints)
+
+  - Variable Declaration
+      - Multiple variable declarations must be combined into a single `my` statement (e.g., `my $window; my $notebook;`).
+      - The `my` variable declaration and `= @_` assignment must be on the same line.
+  - Function Calls and Structure
+      - For multi-line function calls, insert a newline after the function name.
+      - Indent the arguments using hard tabs, and indent the final closing brace.
+      - Between each function, insert a line consisting of a ` #  ` and 78 hyphens (`-`).
+  - Comments and Style
+      - The semicolon at the end of a line must be preceded by a space.
+      - Minimize comments that do not add to comprehension.
+      - Do not add a comment at the end of functions.
+      - Do not use unicode.
+
+## Code style preferences: 
+
+Whitesmiths indentation style with hard tabs, 'else' on its own line, no numbers in comments unless asked for, always avoid using icons (emojis), and no first indentations in subs.
+When calling a function, there should be no space between the function call and the opening parenthesis.
+When calling a function, the opening brace for arguments, the arguments, and the closing brace are on the same line.
+When calling a function, there should be a space between the closing parenthesis and the semicolon.
+Indent arguments under the function name using hard tabs.
+For multi-line function calls, a newline is inserted after the function name, the arguments are indented, and the final closing brace is also indented. The indentation of arguments presented on multiple lines should be lined with the function name, using hard tabs.
+Semicolon at the end of a line is always preceded by a space.
+In Perl code, the "my" variable declaration and "= @_" assignment should be on the same line.
+Put sub arguments on the same line as the sub.
+Do not add a comment at the end of functions.
+Minimize comments that add nothing to the comprehension, especially when the function name is obvious.
+

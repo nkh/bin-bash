@@ -134,3 +134,9 @@ vsplit, ^w
 	k word from dico
 	t thesaurus
 
+- count patterns
+	:%s/pattern//ng
+
+- synchronized scrolling
+	:set scrollbind
+	:set noscrollbind

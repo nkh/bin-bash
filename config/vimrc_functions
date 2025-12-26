@@ -81,7 +81,7 @@ endfunction
 
 " --------------------------------------------------
 
-function! JumpOrCreateFile(new_tab)
+function! JumpOrCreateFile(mode)
 	let filename = expand(expand("<cfile>"))
 	
 	if filename !~# '^\/'
@@ -90,10 +90,12 @@ function! JumpOrCreateFile(new_tab)
 		let filename = current_directory . '/' . filename
 	endif
 	
-	if a:new_tab == 0
+	if a:mode == 0
 		execute 'edit ' . filename
-	else
+	elseif a:mode == 1
 		execute 'tabedit ' . filename
+	else
+		execute 'vsplit ' . filename
 	endif
 endfunction
 

@@ -41,8 +41,10 @@ noremap <leader>z :setlocal foldexpr=getline(v:lnum)=~@/?0:1 foldmethod=expr
 noremap <F1> zfa{
 
 " go to file which doesn't exist -----------------------------------------------
-nnoremap <silent> gf :call JumpOrCreateFile(0)<CR>
-nnoremap <silent> gF :call JumpOrCreateFile(1)<CR>
+nnoremap <silent> gf  :call JumpOrCreateFile(0)<CR>
+nnoremap <silent> gtf :call JumpOrCreateFile(1)<CR>
+nnoremap <silent> gF  :call JumpOrCreateFile(1)<CR>
+nnoremap <silent> gsf :call JumpOrCreateFile(2)<CR>
 
 " open file in ftl instance
 nnoremap <silent> gm :call OpenFileInFtl()<CR>

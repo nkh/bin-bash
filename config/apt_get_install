@@ -576,3 +576,8 @@ num-utils
 peek
 pulseaudio
 pulseaudio
+procps
+libvte-2.91-dev
+libvte-2.91-doc
+flex
+file

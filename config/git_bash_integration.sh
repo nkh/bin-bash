@@ -200,10 +200,10 @@ alias gdo='git diff' ; __git_complete gdo _git_diff
 alias gts='git-tree-status'
 alias git_has='< <(git ls-files) grep'
 
-gl10() { git --no-pager l -10 "$@" ; echo ; }
+gl10() { git --no-pager l -10 "$@" --color | ph `git_pwb` ; echo ; }
 __git_complete gl _git_log
 
-gla10() { git --no-pager l $(ref_no_gh_pages) -10 "$@" ; echo ; }
+gla10() { git --no-pager l $(ref_no_gh_pages) -10 "$@" --color | ph `git_pwb` ; echo ; }
 __git_complete gla _git_log
 
 ref_no_gh_pages()
@@ -235,6 +235,8 @@ git difftool -y -t vimdiff "$@"
 }
 __git_complete gvimdiff _git_diff
 
+gvd1() { gvdiff HEAD^ ; }
+
 gvdiff()
 {
 VERSION=${1:-HEAD}
@@ -248,6 +250,7 @@ gdc() { tmux splitw -h -l 40% git commit -a ; gd ; }
 alias gco='git checkout --quiet' ; __git_complete gco _git_checkout
 alias gnb='git checkout -b' ; __git_complete gnb _git_branch
 alias gm='git merge' ; __git_complete gm _git_merge
+alias grb='git rebase' ; __git_complete grb _git_rebase
 alias git_remove_from_index='git reset' ; __git_complete git_remove_from_index _git_rm
 
 # alias gan='git annex'
