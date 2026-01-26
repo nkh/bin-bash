@@ -10,7 +10,7 @@ set clipboard^=unnamed,unnamedplus
 set dictionary+=/usr/share/dict/words
 set diffopt+=vertical
 set encoding=utf-8
-set foldcolumn=0
+set foldcolumn=1
 set formatoptions-=cro
 set hidden
 set hlsearch

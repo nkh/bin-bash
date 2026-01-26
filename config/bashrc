@@ -44,6 +44,7 @@ shopt -s checkjobs
 shopt -s checkwinsize
 shopt -s cmdhist
 shopt -s dirspell
+shopt -s globstar
 shopt -s histappend
 shopt -s histreedit
 shopt -s histverify
@@ -141,5 +142,4 @@ source "$META_HOME/config/gpg.sh"                                ; lap 'gpg'
 . "$HOME/.cargo/env"
 
 # export BASH_ENV="~/.bashrc"
-
 

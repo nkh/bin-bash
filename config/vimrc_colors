@@ -1,5 +1,5 @@
 
-hi Comment           ctermbg=black   ctermfg=33
+hi Comment           ctermbg=black   ctermfg=25
 hi CursorLineNr      term=bold       ctermfg=Grey
 
 hi DiffAdd           cterm=NONE      ctermfg=34    ctermbg=235
@@ -7,8 +7,8 @@ hi DiffChange        cterm=NONE      ctermfg=226   ctermbg=235
 hi DiffDelete        cterm=NONE      ctermfg=124   ctermbg=235
 hi DiffText          cterm=NONE      ctermfg=79    ctermbg=22
 
-hi FoldColumn        ctermbg=235    ctermfg=237
-hi Folded            ctermbg=236    ctermfg=blue
+hi FoldColumn        ctermbg=235    ctermfg=238
+hi Folded            ctermbg=236    ctermfg=100
 
 hi LineNr            term=bold       cterm=NONE    ctermfg=DarkGrey   ctermbg=NONE
 hi PodFormat         ctermbg=black   ctermfg=75

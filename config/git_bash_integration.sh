@@ -2,6 +2,9 @@
 . /usr/share/bash-completion/completions/git
 __git_complete git-stat-color _git_diff
 
+GBI="$BASH_SOURCE"
+alias sg="source $GBI"
+
 : ${GIT_PROMPT_MASTER:='master'}
 : ${MAX_DISTANCE_TO_ORGIN_MASTER:=10}
 
@@ -184,6 +187,7 @@ local dir="/tmp/$USER/gcl" ; mkdir -p "$dir" ; local clone_dir=$(mktemp -p "$dir
 git clone "$@" |& tee >(perl -ne "/^Cloning into '(.*)'...$/ && qx~echo \$1 > $clone_dir~") && cd $(<$clone_dir) 
 }
 
+alias eg='e git_bash_integration.sh'
 alias gcl1='gcl --depth=1'
 alias ga='git add'
 alias gs='git s'
@@ -200,10 +204,10 @@ alias gdo='git diff' ; __git_complete gdo _git_diff
 alias gts='git-tree-status'
 alias git_has='< <(git ls-files) grep'
 
-gl10() { git --no-pager l -10 "$@" --color | ph `git_pwb` ; echo ; }
+gl10() { git --no-pager l -10 "$@" --color | ph -i 16 `git_pwb` origin/main main; echo ; }
 __git_complete gl _git_log
 
-gla10() { git --no-pager l $(ref_no_gh_pages) -10 "$@" --color | ph `git_pwb` ; echo ; }
+gla10() { git --no-pager l $(ref_no_gh_pages) -10 "$@" --color | ph -i 16 `git_pwb` origin/main main ; echo ; }
 __git_complete gla _git_log
 
 ref_no_gh_pages()
@@ -220,6 +224,7 @@ files="$(git -c color.status=always status --short | fzf --ansi -m)"
 [[ "$files" ]] && v $(echo "$files" | perl -ne 'chomp ; s/\e\[([0-9;]*)m//g ; s/\[K//g ; s/.{3}// ; print qq~$_ ~')
 }
 
+gd1() { gd @^ ; }
 gd() { diff=`git diff --color $*` ; [[ "$diff" ]] && <<<"$diff" diff-so-fancy | /usr/bin/less -RFX --pattern '^(Date|added|deleted|modified): ' || true ; }
 __git_complete gd _git_diff
 

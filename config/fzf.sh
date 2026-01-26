@@ -11,6 +11,26 @@ source ~/nadim/devel/repositories/fzf-marks/fzf-marks.plugin.bash
 
 # export FZF_PREVIEW_COMMAND="tvcat {} 2>/dev/null | head -20"
 
+# alt-T for recusives files, ctl-t for current directory
+export FZF_CTRL_T_COMMAND='find . -maxdepth 1 -type f -printf "%P\n"'
+export FZF_ALT_T_COMMAND='find . -type f'
+
+fzf-file-widget-recursive()
+{
+selected=$( ${FZF_ALT_T_COMMAND} | sed 's/^.\///' | fzf --multi) || return
+
+local IFS=$'\n'
+
+for path in $selected ; do
+	echo $path
+	READLINE_LINE+="$(printf '%q ' "$path")"
+done
+
+READLINE_POINT=${#READLINE_LINE}
+}
+
+bind -x '"\et": fzf-file-widget-recursive'
+
 # from fzf-extra 
 
 # fgcob - checkout git branch/tag

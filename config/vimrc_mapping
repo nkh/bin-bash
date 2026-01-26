@@ -13,12 +13,20 @@ noremap <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> t
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " insert without overriding register -----------------------------------------
-nnoremap å "0p
-vnoremap å "0p
-nnoremap Å "0P
-vnoremap Å "0P
+" nnoremap å "0p
+" vnoremap å "0p
+" nnoremap Å "0P
+" vnoremap Å "0P
 
-nnoremap ä "Ayy
+" nnoremap ä "Ayy
+
+" quicklist ------------------------------------------------------------------
+nnoremap å :cp<CR>
+nnoremap ä :cn<CR>
+
+" close tab and splits -------------------------------------------------------
+nnoremap qt :tabclose<CR>
+:command Qt tabclose
 
 " no highlight search --------------------------------------------------------
 nnoremap <nowait><silent> <C-L> :noh<CR>

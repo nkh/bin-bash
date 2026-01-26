@@ -66,13 +66,15 @@ let g:fzf_mru_no_sort = 1
 " preview
 nnoremap <Leader>b         :FZFBLines<CR>
 nnoremap <Leader>f         :FZFRg<CR>
-nnoremap <Leader><Leader>t :Files<CR>
 nnoremap <Leader>q         :FZFQuickFix<CR>
+nnoremap <Leader>s         :GFiles?<CR>
+nnoremap <Leader>t         :GFiles<CR>
+nnoremap <Leader><Leader>t :Files<CR>
+nnoremap <Leader><Leader>r :History<CR>
 
 nnoremap <silent>t         :FZFRg <c-r><c-w><cr>
 
 " fzf
-nnoremap <Leader>t :GFiles<CR>
 " nnoremap <Leader>R :FZFMru -m<CR>
 " nnoremap <silent> t :Tags<CR>
 
@@ -84,3 +86,42 @@ nnoremap <Leader>t :GFiles<CR>
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
 
+" align markdown table
+nmap <Leader>at vip:EasyAlign *<Bar><CR>
+"nmap <Leader>ap vip:EasyAlign 
+
+" === generic visual-confirm framework ===
+
+" contains one entry to align selection with EasyAlign
+
+let g:visual_confirm_action = ''
+let g:last_easyalign_spec = ''
+
+nnoremap <leader>ap :call SetVisualConfirmAction('easyalign')<CR>vip
+nnoremap <leader>ai :call SelectEasyAlignIndent()<CR>
+
+" dispatch to chosen function when <CR> is pressed ---
+xnoremap <silent> <CR> :<C-u>call VisualConfirmDispatch()<CR>
+
+function! SelectEasyAlignIndent() abort
+	call SetVisualConfirmAction('easyalign')
+	normal vii
+endfunction
+
+function! SetVisualConfirmAction(action) abort
+	let g:visual_confirm_action = a:action
+endfunction
+
+function! VisualConfirmDispatch() abort
+	if g:visual_confirm_action ==# 'easyalign'
+		let g:visual_confirm_action = ''
+		let l:spec = input('EasyAlign by: ', g:last_easyalign_spec)
+		
+		if empty(l:spec)
+			return
+		endif
+		
+		let g:last_easyalign_spec = l:spec
+		execute "'<,'>EasyAlign " . l:spec
+	endif
+endfunction

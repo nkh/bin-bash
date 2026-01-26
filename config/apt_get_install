@@ -581,3 +581,7 @@ libvte-2.91-dev
 libvte-2.91-doc
 flex
 file
+systemtap-sdt-dev/lunar
+perf-tools-unstable/lunar
+libaspell-dev
+snap
