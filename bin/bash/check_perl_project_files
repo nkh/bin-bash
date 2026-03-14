@@ -1,0 +1,120 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use File::Find;
+
+# ----------------------------------------
+# Load MANIFEST
+# ----------------------------------------
+open my $mf, '<', 'MANIFEST' or die "Can't open MANIFEST: $!";
+my %manifest;
+while (<$mf>) {
+    next if /^\s*#/;
+    next if /^\s*$/;
+    my ($file) = split;
+    $manifest{$file} = 1;
+}
+
+# ----------------------------------------
+# Load MANIFEST.SKIP rules
+# ----------------------------------------
+my @skip;
+if (-e 'MANIFEST.SKIP') {
+    open my $sk, '<', 'MANIFEST.SKIP' or die "Can't open MANIFEST.SKIP: $!";
+    while (<$sk>) {
+        chomp;
+        next if /^\s*#/;
+        next if /^\s*$/;
+        push @skip, qr/$_/;
+    }
+}
+
+sub skip_manifest {
+    my ($file) = @_;
+    for my $re (@skip) {
+        return 1 if $file =~ $re;
+    }
+    return 0;
+}
+
+# ----------------------------------------
+# Git-tracked files
+# ----------------------------------------
+my @git_files = `git ls-files`;
+chomp @git_files;
+my %git = map { $_ => 1 } @git_files;
+
+# ----------------------------------------
+# Walk filesystem
+# ----------------------------------------
+my %fs;
+find(
+    sub {
+        return if -d $_;
+        my $path = $File::Find::name;
+        $path =~ s!^\./!!;
+
+        # Skip .git internals
+        return if $path =~ m{^\.git/};
+
+        $fs{$path} = 1;
+    },
+    '.'
+);
+
+# ----------------------------------------
+# Helper: check .gitignore
+# ----------------------------------------
+sub git_ignored {
+    my ($file) = @_;
+    my $exit = system("git", "check-ignore", "-q", $file);
+    return $exit == 0;
+}
+
+# ----------------------------------------
+# Checks
+# ----------------------------------------
+
+# 1. MANIFEST → filesystem
+my @missing_from_fs =
+    grep { !$fs{$_} && !skip_manifest($_) }
+    keys %manifest;
+
+# 2. MANIFEST → Git
+my @missing_from_git =
+    grep { !$git{$_} && !skip_manifest($_) }
+    keys %manifest;
+
+# 3. filesystem → Git (excluding ignored + skipped)
+my @untracked_fs =
+    grep {
+        !$git{$_} &&
+        !git_ignored($_) &&
+        !skip_manifest($_)
+    }
+    keys %fs;
+
+# ----------------------------------------
+# Report
+# ----------------------------------------
+if (@missing_from_fs) {
+    print "Files listed in MANIFEST but missing from filesystem:\n";
+    print "  $_\n" for @missing_from_fs;
+    print "\n";
+}
+
+if (@missing_from_git) {
+    print "Files listed in MANIFEST but NOT tracked by Git:\n";
+    print "  $_\n" for @missing_from_git;
+    print "\n";
+}
+
+if (@untracked_fs) {
+    print "Files in working directory NOT tracked by Git (and not ignored/skipped):\n";
+    print "  $_\n" for @untracked_fs;
+    print "\n";
+}
+
+if (!@missing_from_fs && !@missing_from_git && !@untracked_fs) {
+    print "Everything is consistent: MANIFEST, MANIFEST.SKIP, .gitignore, Git, and filesystem match\n";
+}

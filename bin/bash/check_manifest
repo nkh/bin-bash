@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+# Read MANIFEST
+open my $m, '<', 'MANIFEST' or die "Can't open MANIFEST: $!";
+my %manifest;
+while (<$m>) {
+    next if /^\s*#/;
+    next if /^\s*$/;
+    my ($file) = split;
+    $manifest{$file} = 1;
+}
+
+# Read git-tracked files
+my @git_files = `git ls-files`;
+chomp @git_files;
+my %git = map { $_ => 1 } @git_files;
+
+# Check: MANIFEST → Git
+my @missing = grep { !$git{$_} } keys %manifest;
+
+# Check: Git → MANIFEST
+my @extra = grep { !$manifest{$_} } @git_files;
+
+if (@missing) {
+    print "Files listed in MANIFEST but missing from Git:\n";
+    print "  $_\n" for @missing;
+}
+
+if (@extra) {
+    print "Files tracked by Git but missing from MANIFEST:\n";
+    print "  $_\n" for @extra;
+}
+
+if (!@missing && !@extra) {
+    print "MANIFEST and Git are in perfect sync\n";
+}

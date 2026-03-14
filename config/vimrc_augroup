@@ -5,7 +5,9 @@ au BufRead *.pbs_log  let @/ = "\.pbs_info" | set nospell | AnsiEsc
 au BufRead *.pbs_log_fail  let @/ = "\.pbs_info" | set nospell | AnsiEsc
 au BufNewFile,BufRead pbsfile set syntax=perl
 au BufNewFile,BufRead Pbsfile set syntax=perl
+
 au FileType man setlocal nospell
+au FileType markdown setlocal tabstop=8 shiftwidth=8 softtabstop=8 noexpandtab
 
 au BufNewFile Todo.txt exec append(0, "this is the Todo") 
 	\ | exec append('.', '================')

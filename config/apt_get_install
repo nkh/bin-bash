@@ -585,3 +585,13 @@ systemtap-sdt-dev/lunar
 perf-tools-unstable/lunar
 libaspell-dev
 snap
+graphviz
+libgd-dev
+nodejs
+qt5-qmake
+qtbase5-dev
+libqt5svg5*
+debhelper devscripts build-essential libmodule-build-perl perl cpanminus
+tlp
+libdata-uuid-perl libdata-compare-perl
+cpanminus

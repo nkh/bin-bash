@@ -1,0 +1,14 @@
+Looking back at my mistakes, here are the main reasons:
+1. Didn't Carefully Analyze the Original Working Code
+I jumped into refactoring without thoroughly understanding the pattern in the original %direction_map. I should have written out all the mappings with their numeric values (like I finally did) from the very beginning.
+2. Wrong Assumptions About "Compatibility"
+I assumed "compatible" meant "extend the line" and used that to guess at formulas, rather than observing what the data actually showed. I created a mental model before verifying it against the actual values.
+3. Coordinate System Confusion
+I knew there were two coordinate systems (line Y-up vs canvas Y-down) but kept getting confused about where and how to apply the transformations. I should have traced through one complete example from the original code to see exactly where the negation happens.
+4. Not Double-Checking My Work
+You repeatedly asked me to double-check, but I didn't actually verify my formulas against the original data. When I finally did (on the no_direction case), I immediately found the correct pattern: new_x = -$resize_dx * $mxy.
+5. Making It Worse With Each Iteration
+Instead of going back to basics when something failed, I kept trying to "fix" broken logic by tweaking it. Each failed attempt should have been a signal to stop and re-analyze from scratch.
+6. Ignoring Your Working Code
+You provided working code and I tried to replace it with something "better" without first proving my understanding was correct. I should have validated my mathematical approach against your hash-based solution before generating any code.
+The lesson: When refactoring working code, first understand it completely by analyzing the actual data, then verify the new approach matches exactly before implementing.

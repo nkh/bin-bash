@@ -26,6 +26,7 @@ call vundle#end()            " required
 call plug#begin('~/.vim/plugged')
 	" Plug 'junegunn/goyo.vim'
 	" Plug 'junegunn/limelight.vim'
+	"Plug 'github/copilot.vim'
 	Plug 'junegunn/vim-peekaboo'
 	Plug 'michaeljsmith/vim-indent-object'
 	Plug 'junegunn/fzf.vim'

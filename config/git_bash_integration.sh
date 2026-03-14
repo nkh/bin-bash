@@ -234,6 +234,8 @@ git_diff_stash() { diff=`git diff --color stash@{0} $*` ; <<<"$diff" diff-so-fan
 __git_complete gd _git_diff
 
 
+vod() { vim -p `git diff @ --name-only | rg -v 'png|gif|jpg'` ; }
+
 gvimdiff() 
 {
 git difftool -y -t vimdiff "$@"
@@ -973,6 +975,7 @@ echo "git grep --line-number -e dk -e dz --all-match \$(git rev-list --all) -- <
 echo "git grep <search> \$(git rev-list <rev1>..<rev2>)"
 echo "git grep -C 3 -v --count --max-depth 2"
 echo "git log -S<search> --since=2009.1.1 --until=2010.1.1 -- path_containing_change"
+echo "git rev-list --all | (     while read revision; do         git grep -F 'load_animation_slide' $revision;     done; )"
 }
 
 git_grep_reformat()

@@ -3,6 +3,9 @@
 > Bash
 > 
 
+- ls with full path
+ls -d -1 "$PWD/"**/*
+
 - trace process execution
 sudo dtrace -n 'proc:::exec-success /progenyo f($target)/ { trace(curpsinfo->pr_psargs) ; }' -c command
 
