@@ -1,0 +1,202 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Getopt::Long;
+
+# ---------------- OPTIONS ----------------
+my $show_free     = 0;
+my $show_alloc    = 0;
+my $show_map      = 0;
+my $show_help     = 0;
+
+GetOptions(
+    "not-allocated" => \$show_free,
+    "allocated"     => \$show_alloc,
+    "action-map"    => \$show_map,
+    "help"          => \$show_help,
+) or die "Error in command line options\n";
+
+if ($show_help) {
+    print <<"EOF";
+Usage: $0 [--allocated] [--not-allocated] [--action-map]
+
+  --allocated       Show all allocated shortcuts
+  --not-allocated   Show all shortcuts NOT allocated
+  --action-map      Show shortcut → action mapping
+  --help            Show this help
+EOF
+    exit 0;
+}
+
+# Default: show allocated
+$show_alloc = 1 if !$show_free && !$show_map;
+
+# ---------------- FILES ----------------
+my $global  = "$ENV{HOME}/.config/kglobalshortcutsrc";
+my $hotkeys = "$ENV{HOME}/.config/khotkeysrc";
+
+my %allocated;
+my %action_map;   # shortcut → [ actions ]
+
+# ---------------- PARSE kglobalshortcutsrc ----------------
+if (-f $global) {
+    open my $fh, "<", $global or die "Cannot open $global: $!";
+
+    while (my $line = <$fh>) {
+        chomp $line;
+        next if $line =~ /^\s*#/;
+        next if $line =~ /^\s*
+
+\[/;
+        next unless $line =~ /=/;
+
+        my ($action, $val) = split /=/, $line, 2;
+
+        # Only lines with primary,alternate,description
+        my $comma_count = () = $val =~ /,/g;
+        next if $comma_count < 2;
+
+        my ($primary, $alternate, $desc) = split /,/, $val, 3;
+
+        for my $field ($primary, $alternate) {
+            next unless defined $field;
+
+            # Literal backslash+t in your file → split on \\t
+            for my $s (split /\\t/, $field) {
+                $s =~ s/^\s+|\s+$//g;
+                next if $s eq '' || $s eq 'none';
+
+                $allocated{$s} = 1;
+                push @{ $action_map{$s} }, $action;
+            }
+        }
+    }
+
+    close $fh;
+}
+
+# ---------------- PARSE khotkeysrc ----------------
+if (-f $hotkeys) {
+    open my $fh, "<", $hotkeys or die "Cannot open $hotkeys: $!";
+
+    my $in_shortcut = 0;
+    my $current_action = undef;
+
+    while (my $line = <$fh>) {
+        chomp $line;
+
+        if ($line =~ /^
+
+\[(.*)\]
+
+/) {
+            $current_action = $1;
+            next;
+        }
+
+        if ($line =~ /^Type=SHORTCUT/) {
+            $in_shortcut = 1;
+            next;
+        }
+
+        if ($in_shortcut && $line =~ /^Key=(.*)$/) {
+            my $s = $1;
+            $s =~ s/^\s+|\s+$//g;
+            if ($s ne '' && $s ne 'none') {
+                $allocated{$s} = 1;
+                push @{ $action_map{$s} }, $current_action if defined $current_action;
+            }
+            $in_shortcut = 0;
+            next;
+        }
+
+        if ($line =~ /^
+
+\[/) {
+            $in_shortcut = 0;
+        }
+    }
+
+    close $fh;
+}
+
+# ---------------- SANITY CHECK ----------------
+die "BUG: Alt+F4 not seen as allocated\n"
+    unless exists $allocated{'Alt+F4'};
+
+# ---------------- ACTION MAP ----------------
+if ($show_map) {
+    for my $shortcut (sort keys %action_map) {
+        my %uniq;
+        $uniq{$_} = 1 for @{ $action_map{$shortcut} };
+        my @actions = sort keys %uniq;
+
+        print "$shortcut → @actions\n";
+    }
+    exit 0;
+}
+
+# ---------------- SHOW ALLOCATED ----------------
+if ($show_alloc && !$show_free) {
+    print "$_\n" for sort keys %allocated;
+    exit 0;
+}
+
+# ---------------- KEYSPACE ----------------
+my %keyspace;
+
+# Letters
+for my $c ('A'..'Z') {
+    for my $mod (
+        'Ctrl', 'Alt', 'Meta',
+        'Ctrl+Alt', 'Ctrl+Shift',
+        'Alt+Shift', 'Ctrl+Alt+Shift'
+    ) {
+        $keyspace{"$mod+$c"} = 1;
+    }
+}
+
+# Numbers
+for my $n (0..9) {
+    for my $mod ('Ctrl', 'Alt', 'Meta', 'Ctrl+Alt') {
+        $keyspace{"$mod+$n"} = 1;
+    }
+}
+
+# Function keys
+for my $f (1..24) {
+    for my $s (
+        "F$f", "Ctrl+F$f", "Alt+F$f",
+        "Meta+F$f", "Ctrl+Alt+F$f",
+        "Ctrl+Shift+F$f"
+    ) {
+        $keyspace{$s} = 1;
+    }
+}
+
+# Navigation
+for my $k (qw(Up Down Left Right Home End PageUp PageDown Insert Delete)) {
+    for my $s ($k, "Ctrl+$k", "Alt+$k", "Meta+$k", "Ctrl+Alt+$k") {
+        $keyspace{$s} = 1;
+    }
+}
+
+# Common keys
+for my $k (qw(Space Tab Backspace Return Escape)) {
+    for my $s ($k, "Ctrl+$k", "Alt+$k", "Meta+$k") {
+        $keyspace{$s} = 1;
+    }
+}
+
+# Punctuation
+for my $k (qw(minus equal bracketleft bracketright semicolon apostrophe comma period slash backslash)) {
+    for my $s ("Ctrl+$k", "Alt+$k", "Meta+$k", "Ctrl+Alt+$k") {
+        $keyspace{$s} = 1;
+    }
+}
+
+# ---------------- FREE = keyspace - allocated ----------------
+for my $s (sort keys %keyspace) {
+    next if exists $allocated{$s};
+    print "$s\n";
+}

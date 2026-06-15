@@ -2,6 +2,10 @@
 . /usr/share/bash-completion/completions/git
 __git_complete git-stat-color _git_diff
 
+alias pw=pushwithtoken
+alias pwf='pushwithtoken -f'
+alias lwt=lazyworktree
+
 GBI="$BASH_SOURCE"
 alias sg="source $GBI"
 
@@ -177,6 +181,11 @@ if $(git rev-parse 2> /dev/null) ; then
 fi
 } ;
 
+gpl()
+{
+git fetch ; git log --oneline @..@{u} ; git merge
+}
+
 gclo='git clone' ;
 gclo1='git clone --depth=1'
 
@@ -225,6 +234,8 @@ files="$(git -c color.status=always status --short | fzf --ansi -m)"
 }
 
 gd1() { gd @^ ; }
+gdn() { gd @~$1 ; }
+
 gd() { diff=`git diff --color $*` ; [[ "$diff" ]] && <<<"$diff" diff-so-fancy | /usr/bin/less -RFX --pattern '^(Date|added|deleted|modified): ' || true ; }
 __git_complete gd _git_diff
 

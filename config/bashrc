@@ -143,3 +143,5 @@ source "$META_HOME/config/gpg.sh"                                ; lap 'gpg'
 
 # export BASH_ENV="~/.bashrc"
 
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

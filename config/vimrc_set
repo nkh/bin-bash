@@ -17,7 +17,7 @@ set hlsearch
 set incsearch
 set linebreak
 set number relativenumber
-set paste
+"set paste
 set ruler
 set scroll=1
 set spell

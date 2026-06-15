@@ -595,3 +595,11 @@ debhelper devscripts build-essential libmodule-build-perl perl cpanminus
 tlp
 libdata-uuid-perl libdata-compare-perl
 cpanminus
+krita
+chafa
+ffmpeg
+nasm
+awesome
+awesome-extra
+distro-info-data
+blender

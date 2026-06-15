@@ -1,3 +1,94 @@
+" --------------------------------------------------
+
+function! s:RunSplitOnExit(...) abort
+  " Handle any callback signature
+  if a:0 >= 2
+    let l:code = a:2
+  elseif a:0 == 1
+    let l:code = a:1
+  else
+    let l:code = -1
+  endif
+
+  let l:keep = get(b:, 'RunSplit_keepopen', 0)
+
+  if l:code == 0 && !l:keep
+    silent! bd!
+  else
+    echo 'Command exited with code ' . l:code
+  endif
+endfunction
+
+
+function! RunSplit(...) abort
+  let l:raw = copy(a:000)
+
+  let l:direction = 'v'
+  let l:keepopen  = 0
+  let l:percent   = -1
+
+  let l:cmdlist = []
+
+  " --- Parse all flags and percentage in ANY order ---
+  for item in l:raw
+    if item ==# '-h'
+      let l:direction = 'h'
+    elseif item ==# '-v'
+      let l:direction = 'v'
+    elseif item ==# '-k'
+      let l:keepopen = 1
+    elseif item =~# '^\d\+$' && item >= 0 && item <= 100 && l:percent < 0
+      let l:percent = item
+    else
+      call add(l:cmdlist, item)
+    endif
+  endfor
+
+  if l:percent < 0
+    let l:percent = 50
+  endif
+
+  if empty(l:cmdlist)
+    echoerr "RunSplit requires a command"
+    return
+  endif
+
+  let l:cmd = join(l:cmdlist, ' ')
+
+  " --- Open exactly one split ---
+  if l:direction ==# 'h'
+    let l:size = float2nr(&lines * l:percent / 100.0)
+    split
+    execute 'resize ' . l:size
+  else
+    let l:size = float2nr(&columns * l:percent / 100.0)
+    vsplit
+    execute 'vertical resize ' . l:size
+  endif
+
+  " --- Run terminal in THIS window ---
+  call term_start(l:cmd, {
+        \ 'curwin': 1,
+        \ 'exit_cb': function('s:RunSplitOnExit')
+        \ })
+
+  let b:RunSplit_keepopen = l:keepopen
+endfunction
+
+command! -nargs=+ RunSplit call RunSplit(<f-args>)
+" --------------------------------------------------
+
+function! RunSilent(cmd)
+  try
+    set nomore
+    execute 'silent !' . a:cmd
+  finally
+    set more
+    redraw!
+  endtry
+endfunction
+
+command! -nargs=+ RunSilent call RunSilent(<q-args>)
 
 " --------------------------------------------------
 

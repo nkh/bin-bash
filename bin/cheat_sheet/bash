@@ -3,6 +3,10 @@
 > Bash
 > 
 
+- maybe better tools
+procs
+procfd
+
 - ls with full path
 ls -d -1 "$PWD/"**/*
 

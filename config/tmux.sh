@@ -5,7 +5,7 @@ tmux set-environment LC_ALL en_US.UTF-8
 
 source ~/nadim/bin/completions/bash_completion_tmux.sh
 
-# ftl binding in "$META_HOME/config/ftl.sh" 
+# you are in ftl bindings definition in file "$META_HOME/config/ftl.sh" 
 
 # tmux-power-zoom, Z
 # tmux-butler,     C-w C-p C-l
@@ -30,6 +30,7 @@ tmux bind -Ttable_ctl_v C-h new-window -c "#{pane_current_path" "vim -p -c ':FZF
 tmux bind -Ttable_ctl_v C-v new-window -c "#{pane_current_path" 'tmp=$(mktemp -p /tmp XXXXXXXX) ftl 3>\$tmp ; vim -p $(cat \$tmp)'
 
 # command specific windows ---------------------------------------------------
+tmux bind b      new-window -c '#{pane_current_path}' -n btop btop
 tmux bind r      new-window -c '#{pane_current_path}' -n ranger ranger
 tmux bind C-?    switch-client -t cmus
 

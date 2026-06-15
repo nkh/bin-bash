@@ -125,3 +125,13 @@ function! VisualConfirmDispatch() abort
 		execute "'<,'>EasyAlign " . l:spec
 	endif
 endfunction
+
+" copilot ------------------------------------------------------
+" Accept by word with Shift-Tab
+imap <silent> <S-Tab> <Plug>(copilot-accept-word)
+
+inoremap <silent> <C-p> <Esc>:Copilot panel<CR>a
+
+" imap <silent> <C-n> <Plug>(copilot-next)
+" imap <silent> <C-p> <Plug>(copilot-previous)
+

@@ -13,5 +13,7 @@ asciio : /home/nadim/nadim/devel/repositories/perl_modules/P5-App-Asciio
 tpl : /home/nadim/nadim/devel/repositories/bash-tpl
 bash : /home/nadim/nadim/bin/bash
 perl : /home/nadim/nadim/devel/repositories/perl_modules
-repos : /home/nadim/nadim/devel/repositories
+fzf : /home/nadim/nadim/devel/repositories/perl_modules/P5-App-Asciio/P5-Gtk3-Fzf
+editor : /home/nadim/nadim/devel/repositories/perl_modules/P5-App-Asciio/P5-Gtk3-Fzf/examples/FzfPreview/text_editor/zai_2/xxx/P5-Gtk3-SourceEditor
 pbs : /home/nadim/nadim/devel/repositories/perl_modules/P5-PerlBuildSystem
+repos : /home/nadim/nadim/devel/repositories

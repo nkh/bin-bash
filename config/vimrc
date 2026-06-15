@@ -1,5 +1,6 @@
 
-let mapleader = "\<space>" 
+let mapleader = " "
+
 set rtp+=/home/nadim/nadim/bin/
 
 source $META_HOME/config/vimrc_functions
