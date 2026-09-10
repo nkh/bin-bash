@@ -5,6 +5,24 @@ repair trolley, buy stuff at Jula for them
 new windows
 
 	measure
+		guest room 2 * 50~ * 121
+
+		bedroom 4 * 51~ * 121
+		bedroom 3 * 52 * 121
+
+		living room door 2 * 45 * 121
+		livingroom 3 * 51~ * 121
+		livingroom 180 * 129
+
+		kitchen door 60 * 121
+		kitchen 45 * 121
+
+		outdoor 50 * 180 * 5~ mm
+
+		cellar keep current
+
+		1st floor frame min 85 * 165
+
 	put 
 		small windows and single pane windows in side green house
 		doors in shed
@@ -14,14 +32,10 @@ new windows
 
 
 roof
-	solar?
-	chimney
 	heat from roof to cellar
 
 out room
-	roof
-	floor
-	furniture
+	doors
 
 upstairs
 	window
@@ -32,15 +46,12 @@ living room
 	lamps
 		dinning table
 		sofa area
-	
-	dinning table
 
-corridor, small corridor
-	lamps
+corridor
+	lamp
 	floor
 
 bedroom 
-	decoration
 	curtain
 
 guest room
@@ -48,15 +59,13 @@ guest room
 	floor
 
 kitchen
-	deck outside
+	finish deck border outside
 	shade/roof
 	automatic light
-	electrical contact
 
 bathroom
 	electrical
 	silicon joint
-	paint door frame
 
 Tamburen
 	decoration
@@ -73,13 +82,12 @@ cellar
 	automatic lights
 		light in stairs
 	sauna
-	
 
 garden
 	water
 	electricity
 	solar shade
-	greenhouse
+	greenhouse windows
 	stone deck
 	plantings
 		fruit trees
@@ -87,13 +95,6 @@ garden
 outer garden
 	water pipe
 	parking slot
-
-middle garden
-	dry storage
-	floor shed
-
-west side house
-	planting under large window
 
 garage
 	widen

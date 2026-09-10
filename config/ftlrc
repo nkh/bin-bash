@@ -59,6 +59,13 @@ declare -A dir_dest=(
 	[p]=$HOME/downloads/palestine
 	)
 
+# use colored dfc2 to show disk free space in a popup 
+free_space() { tmux popup -h 25% -w 35% -E -d "$PWD" "dfc2 ; read -sn1" ; }
+
+# open file in less mode
+vim_less_mode() { [[ -f "${files[file]}" ]] && { tcpreview ; alt_screen ; inotify_k ; ${EDITOR} "${1:-${files[file]}}" -c 'silent! call LessMode()' ; alt_screen ; emode=0 ; cdir ; } ; } 
+bind ftl entry		L		vim_less_mode		"vim in less mode"
+
 # how to delete and create an undelete binding 
 RM="rip --graveyard $HOME/graveyard" ; mkdir -p $HOME/graveyard
 
@@ -68,16 +75,39 @@ unbury() { last_bury="$(rip --graveyard $HOME/graveyard -s | tail -n1)" ; [[ -n 
 # add marks from fzf-marks to global marks
 gmark_fzf_user() { perl -ape '$_ = "$F[2]/\n"' ~/.fzf-marks ; }
 
+# open multiple files in split vim
+bind ftl file	"LEADER p"	open_selection_in_vim	"open multiple files in split vim"
+
+open_selection_in_vim()
+{
+(( ${#selection[@]} >= 2 )) && 
+	{
+	local files=0 directories=0
+	local file_selection=()
+
+	for entry in ${selection[@]}
+		do
+			[[ -f "$entry" ]] && { file_selection+=("$entry") ; ((files++)) ; }
+		done
+	
+	((files >= 2)) && { tcpreview ; alt_screen ; inotify_k ; ${EDITOR} -O "${file_selection[@]}"; alt_screen ; cdir ; }
+	
+	[[ $1 ]] || selection=()  # clear selection if no argument is passed
+	}
+}
+
 # override preview
 user_pviewers() { [[ $e == pbs_log || $e == pbs_log_fail ]] && ((extmode==1)) && { ptext ; return 0 ; } ; }
 
 # override colors
 declare -A user_colors=(
-	[pasithee]="30;48;5;63"
+	[.ftl_project_marks]="30;48;5;237"
+	[.ftlrc_dir]="30;48;5;237"
+	[.directory]="30;48;5;237"
 	)
 
 # load git etags but keep them invisible
-. ~/.config/ftl/etc/etags/git
+etag1_s="$HOME/.config/ftl/etc/etags/git" ; . "$etag1_s" ; etag1_name=git
 
 # vim: set filetype=bash:
 

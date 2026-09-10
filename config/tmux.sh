@@ -40,15 +40,15 @@ tmux bind m      new-window  fzf_man2
 
 # tmux bind m      new-window  'while : ; do page="$(. ~/.bashrc &>/dev/null ; man -k . -s 1,3 | sort -u | piper ".*?\W-" blue | fzf --ansi --cycle -q ^ | cut -d" " -f1)" ; [[ $page ]] && man2 $page ; read -sn1 ; [[ "$REPLY" == "q" ]] && exit ; done'
 
-tmux bind C-M    run "tmux-man"
+tmux bind C-m    run "tmux-man"
 
 tmux bind g      split-window c_fzf
-tmux bind C-G    new-window -n cheat c_fzf
+tmux bind C-g    new-window -n cheat c_fzf
 
 tmux bind k      split-window -h -l 21 'tcol --oc'
 
 # new window via fzf-mark ----------------------------------------------------
-tmux bind C-C    new-window -c "#{pane_current_path}" "cd \$(tmux_new_window_fzm) ; bash -i" 
+tmux bind C-c    new-window -c "#{pane_current_path}" "cd \$(tmux_new_window_fzm) ; bash -i" 
 
 # new session ----------------------------------------------------------------
 tmux bind v run 'U=$(hexdump -n 4 -v -e "/1 \"%02X\"" /dev/urandom) ; tmux new-session -d -s $U ; tmux switch-client -t $U ; tmux send-keys -t $U c d t'

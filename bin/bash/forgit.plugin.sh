@@ -131,6 +131,38 @@ __forgit_clean() {
   #echo 'Nothing to clean.'
 }
 
+# with preview
+__forgit_clean() {
+    # Collect untracked files
+    local files
+    files="$(git ls-files --others --exclude-standard)"
+    [[ -z "$files" ]] && return
+
+    # Use fzf with preview
+    local selected
+    selected="$(
+        printf '%s\n' "$files" |
+        fzf --multi \
+            --prompt="untracked> " \
+            --header="Clean untracked files" \
+            --preview '
+                if file --mime {} | grep -q "charset=binary"; then
+                    echo "[binary file]"
+                else
+                    bat --style=numbers --color=always --line-range=:500 {} 2>/dev/null ||
+                    sed -n "1,200p" {} 2>/dev/null
+                fi
+            ' \
+            --preview-window=right:60%
+    )"
+
+    [[ -z "$selected" ]] && return
+
+    # Confirm deletion
+    printf '%s\n' "$selected" |
+        xargs -I{} git clean -f -- "{}"
+}
+
 __forgit_stash_show() {
   __forgit_inside_work_tree || return 1
   local cmd="git stash show \$(echo {}| cut -d: -f1) --color=always --ext-diff $forgit_fancy"
@@ -211,7 +243,8 @@ cat <<EOC
   fgd:   diff
   fgr:   restore
   fgss:  show stash
-
+  fgcl:  clean
+  fgi:   ignore
   fgcob: checkout git branch/tag
   fgco:  checkout git commit
   fgh:   get git commit sha
@@ -226,7 +259,7 @@ if [[ -z "$FORGIT_NO_ALIASES" ]]; then
   alias ${forgit_ignore:-fgi}=__forgit_ignore
   alias ${forgit_restore:-fgr}=__forgit_restore
   alias ${forgit_unstage:-fgu}=__forgit_unstage
-  #alias ${forgit_clean:-fgc}=__forgit_clean
+  alias ${forgit_clean:-fgcl}=__forgit_clean
   alias ${forgit_stash_show:-fgss}=__forgit_stash_show
 fi
 

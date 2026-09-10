@@ -1,3 +1,6 @@
+" make vim recognize keys send by ftl
+nnoremap <silent> <C-[> <C-F>
+nnoremap <silent> <C-\> <C-B>
 
 " move to same indentation level ---------------------------------------------
 nnoremap [d :call search('^'. matchstr(getline('.'), '\(^\s*\)') .'\%<' . line('.') . 'l\S', 'be')<CR>

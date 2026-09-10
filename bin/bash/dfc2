@@ -1,0 +1,4 @@
+#!/bin/bash
+
+df -h | \
+sort -h -r -k 4 | color_columns -5 | color_percent

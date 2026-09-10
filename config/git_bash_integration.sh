@@ -2,6 +2,7 @@
 . /usr/share/bash-completion/completions/git
 __git_complete git-stat-color _git_diff
 
+alias gp='git push'
 alias pw=pushwithtoken
 alias pwf='pushwithtoken -f'
 alias lwt=lazyworktree

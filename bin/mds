@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "Starting md-serve..." ; #read -n 1 -s -r -p "Press any key to continue..." ; echo
+
+while true; do
+    port=$(( (RANDOM % 16384) + 49152 ))
+    if ! grep -q ":$port " /proc/net/tcp /proc/net/tcp6 2>/dev/null; then
+        : #echo "$port"
+        break
+    fi
+done
+
+md-serve -Dmd-serve.port="$port" \
+    | rg --line-buffered -m1 --color=never 'Listening on:' \
+    | tee >( read string
+        address="${string#*on: }"
+        #echo "address: <$address>"
+        #echo -n -e "\e]0m" # unterminated OSC escape sequence, nothing will be printed after this, but it will reset the terminal title to default
+        [[ -n "$1" ]] && $1 "$address" || $BROWSER --new-tab "$address"
+        )
+
