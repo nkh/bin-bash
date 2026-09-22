@@ -57,6 +57,8 @@ declare -A dir_dest=(
 	[M]=$HOME/downloads/music
 	[m]=$HOME/downloads/memes
 	[p]=$HOME/downloads/palestine
+	[z]=$HOME/downloads/bdz
+	[f]=$HOME/downloads/food
 	)
 
 # use colored dfc2 to show disk free space in a popup 
