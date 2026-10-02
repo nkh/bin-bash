@@ -3,7 +3,6 @@ p2 : /home/nadim/nadim/devel/repositories/perl_modules/not_on_cpan/PBS2
 vimkat : /home/nadim/nadim/devel/repositories/vimkat
 downloads : /home/nadim/downloads
 rust : /home/nadim/nadim/devel/repositories/rust
-ftl : /home/nadim/nadim/devel/repositories/ftl
 tdiff : /home/nadim/nadim/devel/repositories/tdiff
 tcol : /home/nadim/nadim/devel/repositories/tcol
 bin : /home/nadim/nadim/bin
@@ -22,3 +21,4 @@ vrunner : /home/nadim/nadim/devel/repositories/vrunner
 rdw : /home/nadim/nadim/devel/repositories/rdw
 lalala : /home/nadim/.local/share/worktrees/nkh/ftl/whimsical-falcon-reformat
 gitanime : /home/nadim/nadim/devel/repositories/gitanime
+ftl : /home/nadim/nadim/devel/repositories/ftl

@@ -32,7 +32,7 @@ tmux bind -Ttable_ctl_v C-v new-window -c "#{pane_current_path" 'tmp=$(mktemp -p
 # command specific windows ---------------------------------------------------
 tmux bind b      new-window -c '#{pane_current_path}' -n btop btop
 tmux bind r      new-window -c '#{pane_current_path}' -n ranger ranger
-tmux bind C-?    switch-client -t cmus
+tmux bind C-m    switch-client -t cmus
 
 tmux bind h      split-window -v -l 7 htop
 

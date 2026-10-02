@@ -59,6 +59,7 @@ declare -A dir_dest=(
 	[p]=$HOME/downloads/palestine
 	[z]=$HOME/downloads/bdz
 	[f]=$HOME/downloads/food
+	[s]=$HOME/downloads/screenshots
 	)
 
 # use colored dfc2 to show disk free space in a popup 
@@ -96,6 +97,15 @@ open_selection_in_vim()
 	
 	[[ $1 ]] || selection=()  # clear selection if no argument is passed
 	}
+}
+
+# show latest changed files in current directory and subdirectories, 1 month old, sorted by date, and allow selection via fzf
+bind ftl file	"LEADER L"	show_latest_changes	"show latest changed files"
+
+show_latest_changes()
+{
+local file="$(latest_changes 'f' "$1" | fzf-tmux $fzf_opt -w 60% -h 70% --ansi -m | tr -s ' ' | sed 's/^[[:space:]]*//' | cut -d' ' -f3- )"
+[[ -f "$file" ]] && { cdir "$(dirname "$file")" "$(basename "$file")" ; } || list
 }
 
 # override preview
