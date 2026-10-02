@@ -1,11 +1,14 @@
 > vim
 > 
 
-- append all matches to A register
+- move in insert mode
 
-g/^sub/yank A
+alt shift a     // end of the line
+alt shift i     // start of the line- append all matches to A register
 
 - copy current file to register
+
+g/^sub/yank A
 
 let @" = expand("%")
 

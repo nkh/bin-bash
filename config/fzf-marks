@@ -3,7 +3,6 @@ p2 : /home/nadim/nadim/devel/repositories/perl_modules/not_on_cpan/PBS2
 vimkat : /home/nadim/nadim/devel/repositories/vimkat
 downloads : /home/nadim/downloads
 rust : /home/nadim/nadim/devel/repositories/rust
-ftl : /home/nadim/nadim/devel/repositories/ftl
 tdiff : /home/nadim/nadim/devel/repositories/tdiff
 tcol : /home/nadim/nadim/devel/repositories/tcol
 bin : /home/nadim/nadim/bin
@@ -12,7 +11,6 @@ paneless : /home/nadim/nadim/devel/repositories/paneless
 asciio : /home/nadim/nadim/devel/repositories/perl_modules/P5-App-Asciio
 tpl : /home/nadim/nadim/devel/repositories/bash-tpl
 bash : /home/nadim/nadim/bin/bash
-perl : /home/nadim/nadim/devel/repositories/perl_modules
 fzf : /home/nadim/nadim/devel/repositories/perl_modules/P5-App-Asciio/P5-Gtk3-Fzf
 editor : /home/nadim/nadim/devel/repositories/perl_modules/P5-App-Asciio/P5-Gtk3-Fzf/examples/FzfPreview/text_editor/zai_2/xxx/P5-Gtk3-SourceEditor
 pbs : /home/nadim/nadim/devel/repositories/perl_modules/P5-PerlBuildSystem
@@ -22,3 +20,5 @@ vrunner : /home/nadim/nadim/devel/repositories/vrunner
 rdw : /home/nadim/nadim/devel/repositories/rdw
 lalala : /home/nadim/.local/share/worktrees/nkh/ftl/whimsical-falcon-reformat
 gitanime : /home/nadim/nadim/devel/repositories/gitanime
+ftl : /home/nadim/nadim/devel/repositories/ftl
+perl : /home/nadim/nadim/devel/repositories/perl_modules

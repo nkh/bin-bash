@@ -18,7 +18,6 @@ sed_color='\x1b[48:5:236m'
 [[ "$1" =~ --offset   ]] && { hex_offset='"%08_ax"' ascii_offset="\t" sed_color= ; shift ; }
 
 fs="$(mktemp -u -p /tmp/$USER/piper XXXXXXXX)" ; mkdir -p $fs # work directory
-
 cat $1 >$fs/data 
 
 paste -d'\t' \

@@ -609,3 +609,7 @@ tre-command
 flatpak
 cmake
 dateutils
+elinks
+pass
+age
+libgpgme-dev libx11-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev

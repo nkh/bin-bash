@@ -28,6 +28,7 @@ MD_PAGER='moar --no-statusbar -no-linenumbers'
 
 MD_RENDER1='glow -s dark'
 MD_RENDER2='piper_md'
+MD_RENDER3='leaf'
 MD_DIR_RENDER='glow --pager -s dark'
 
 NCDU=gdu
@@ -59,14 +60,26 @@ declare -A dir_dest=(
 	[p]=$HOME/downloads/palestine
 	[z]=$HOME/downloads/bdz
 	[f]=$HOME/downloads/food
+	[s]=$HOME/downloads/screenshots
+	)
+
+# override preview
+user_pviewers() { [[ $e == pbs_log || $e == pbs_log_fail ]] && ((extmode==1)) && { ptext ; return 0 ; } ; }
+
+# override colors
+declare -A user_colors=(
+	[.ftl_project_marks]="30;48;5;237"
+	[.ftlrc_dir]="30;48;5;237"
+	[.directory]="30;48;5;237"
+	[graveyard]="30;48;5;124"
 	)
 
 # use colored dfc2 to show disk free space in a popup 
 free_space() { tmux popup -h 25% -w 35% -E -d "$PWD" "dfc2 ; read -sn1" ; }
 
 # open file in less mode
-vim_less_mode() { [[ -f "${files[file]}" ]] && { tcpreview ; alt_screen ; inotify_k ; ${EDITOR} "${1:-${files[file]}}" -c 'silent! call LessMode()' ; alt_screen ; emode=0 ; cdir ; } ; } 
 bind ftl entry		L		vim_less_mode		"vim in less mode"
+vim_less_mode() { [[ -f "${files[file]}" ]] && { tcpreview ; alt_screen ; inotify_k ; ${EDITOR} "${1:-${files[file]}}" -c 'silent! call LessMode()' ; alt_screen ; emode=0 ; cdir ; } ; } 
 
 # how to delete and create an undelete binding 
 RM="rip --graveyard $HOME/graveyard" ; mkdir -p $HOME/graveyard
@@ -98,18 +111,94 @@ open_selection_in_vim()
 	}
 }
 
-# override preview
-user_pviewers() { [[ $e == pbs_log || $e == pbs_log_fail ]] && ((extmode==1)) && { ptext ; return 0 ; } ; }
-
-# override colors
-declare -A user_colors=(
-	[.ftl_project_marks]="30;48;5;237"
-	[.ftlrc_dir]="30;48;5;237"
-	[.directory]="30;48;5;237"
-	)
-
 # load git etags but keep them invisible
 etag1_s="$HOME/.config/ftl/etc/etags/git" ; . "$etag1_s" ; etag1_name=git
+
+# extra external utilities
+external_utilities=(
+	"<LEADER f s>   show disk usage"
+	"<LEADER r l>   show latest changed files"
+	"<LEADER r w w> show weather"
+	"<LEADER r w r> show radar"
+	"<LEADER r n>   show numr"
+	"<LEADER r z>   show timezone"
+	"<LEADER r s>   show spreadsheet"
+	"<LEADER w d>   duck duck go search"
+	"<LEADER w w>   wikipedia search"
+	"<LEADER c f>   cheatcheats fzf"
+	"<LEADER c c>   cheatcheat todo_today"
+	"<zt>           show tree"
+	)
+
+cmd_aliases+=(
+	[slc]='show_latest_changes' #show latest changed files
+	[sww]='show_weather'
+	[swr]='show_radar'
+	[sw]='show_weather'
+	[sn]='show_numr'
+	[st]='show_timezone'
+	[ss]='show_spreadsheet'
+	[zt]='show_tree'
+	[df]='free_space'
+	[cc]='cheatsheet_today'
+	[ct]='cheatsheet_fzf'
+	[ddg]='show_ddgr'
+	[wp]='show_wikipedia'
+	)
+
+bind ftl utils	"LEADER r r"	pick_utility	"display a list of utilities to run"
+pick_utility()
+{
+local utility="$(printf "%s\n" "${external_utilities[@]}" | fzf-tmux $fzf_opt -w 60% -h 70% --ansi -m | tr -d ' ' | sed -n 's/^<\([^>]*\)>.*/\1/p')"
+[[ "$utility" ]] && { keys_command= REPLY="$utility" ; key_command ; } || list
+}
+
+# duck duck go search
+bind ftl utils	"LEADER w d"	show_ddgr	"duck duck go search"
+show_ddgr()
+{
+tmux popup -h 90% -w 90% -E -d "$PWD" "ddgr"
+}
+
+# wikipedia search
+bind ftl utils	"LEADER w w"	show_wikipedia	"wikipedia search"
+show_wikipedia()
+{
+tmux popup -h 90% -w 90% -E -d "$PWD" "wiki-tui"
+}
+
+# show latest changed files in current directory and subdirectories, 1 month old, sorted by date, and allow selection via fzf
+bind ftl file	"LEADER r l"	show_latest_changes	"show latest changed files"
+show_latest_changes()
+{
+local file="$(latest_changes 'f' "$1" | fzf-tmux $fzf_opt -w 60% -h 70% --ansi -m | tr -s ' ' | sed 's/^[[:space:]]*//' | cut -d' ' -f3- )"
+[[ -f "$file" ]] && { cdir "$(dirname "$file")" "$(basename "$file")" ; } || list
+}
+
+bind ftl utils	"LEADER r w w"	show_weather	"show weather"
+show_weather() { tmux popup -h 90% -w 90% -E -d "$PWD" "linecast weather --location malmö" ;}
+
+bind ftl utils	"LEADER r w r"	show_radar	"show radar"
+show_radar() { tmux popup -h 90% -w 90% -E -d "$PWD" "linecast radar --zoom 2 --location malmö" ;}
+
+bind ftl utils	"LEADER r z"	show_timezone	"show timezone"
+show_timezone() { tmux popup -h 90% -w 90% -E -d "$PWD" "ztl" ;}
+
+bind ftl utils	"LEADER r s"	show_spreadsheet	"show spreadsheet"
+show_spreadsheet() { tmux popup -h 90% -w 90% -E -d "$PWD" "sheets" ; }
+
+bind ftl utils	"LEADER r n"	show_numr	"show numr"
+show_numr() { tmux popup -h 90% -w 90% -E -d "$PWD" "numr" ; }
+
+bind ftl utils	"LEADER c f"	cheatsheet_fzf	"cheatsheet fzf"
+cheatsheet_fzf() 
+{
+tmux popup -h 90% -w 90% -E -d "$PWD" \
+	'source ~/nadim/bin/bash/cx.sh ; export -f c ; c_file="$(c --list | fzf --preview-window=right:80% --preview "c --cat {}")" ; echo lalal $c_file ; [[ $c_file ]] && c "$c_file"'
+}
+
+bind ftl utils	"LEADER c c"	cheatsheet_today	"cheatsheet todo_today" 'todo_today'
+cheatsheet_today() { tmux popup -h 90% -w 90% -E -d "$PWD" 'source ~/nadim/bin/bash/cx.sh ; c "'$1'"' ; }
 
 # vim: set filetype=bash:
 
